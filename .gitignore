@@ -1,0 +1,4 @@
+# ignore .env[*] environment files
+/**/.env
+/**/.env.yml
+/**/.env.properties

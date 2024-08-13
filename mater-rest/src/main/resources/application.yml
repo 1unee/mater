@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${SPRING.DATASOURCE.HOST}:${SPRING.DATASOURCE.PORT}/examiner_db?currentSchema=telegram
+    username: ${SPRING.DATASOURCE.USERNAME}
+    password: ${SPRING.DATASOURCE.PASSWORD}
+  jpa:
+    hibernate.ddl-auto: none
+    show-sql: true
+  flyway:
+    enabled: true
+  config:
+    import:
+      - optional:file:.env
+      - optional:file:.env.yml
+      - optional:file:.env.properties
+
+
+server:
+  port: 8082
+
+
+http-integration:
+  services:
+    rest-examiner:
+      secured: false
+      host: localhost
+      port: 8081
+      path-segments:
+        - exams
+
+
+telegram.bot:
+  name: ${TELEGRAM.BOT.NAME}
+  token: ${TELEGRAM.BOT.TOKEN}
