@@ -1,4 +1,4 @@
-package com.oneune.mater.rest.enums;
+package com.oneune.mater.rest.store.enums;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,10 +8,11 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
 @Getter
-public enum Constants {
+public enum UpdateType {
 
-    URL("https://mater-webapp.web.app"),
-    URL2("https://google.com");
+    COMMAND("/", "Команда"),
+    UNKNOWN("", "Неизвестно");
 
-    String field;
+    String prefix;
+    String description;
 }

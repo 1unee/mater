@@ -31,6 +31,7 @@ if [ -z "$p12_exists" ]; then
 fi
 
 # validation *.env.yml
+# todo: fix incorrect validation (doesn't check default values)
 result=$(yq e "select(.[] == \"$UNWANTED_VALUE\") | keys" $ENV_FILE)
 
 if [ -n "$result" ]; then

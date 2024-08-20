@@ -27,4 +27,12 @@ telegram:
     token: ${TELEGRAM.BOT.TOKEN}
     command:
       start:
-        description: Начать
+        description: Начать выбирать машину
+      cars_menu:
+        description: Главное меню с машинами
+      notifications_menu:
+        description: Меню уведомлений об изменениях
+      contact_seller:
+        description: Связаться с продавцом
+      contact_developer:
+        description: Связаться с разработчиком бота

@@ -1,4 +1,4 @@
-package com.oneune.mater.rest;
+package com.oneune.mater.rest.utils;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;

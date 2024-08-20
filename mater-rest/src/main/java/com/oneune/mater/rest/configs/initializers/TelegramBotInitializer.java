@@ -1,6 +1,6 @@
 package com.oneune.mater.rest.configs.initializers;
 
-import com.oneune.mater.rest.MaterTelegramBot;
+import com.oneune.mater.rest.bot.MaterTelegramBot;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

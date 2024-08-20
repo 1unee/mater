@@ -1,6 +1,6 @@
 package com.oneune.mater.rest.aop.aspects;
 
-import com.oneune.mater.rest.BeanUtils;
+import com.oneune.mater.rest.utils.BeanUtils;
 import com.oneune.mater.rest.aop.annotations.ConfigurationBeansInfo;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.BeansException;
