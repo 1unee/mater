@@ -1,4 +1,4 @@
-package com.oneune.mater.rest.bot.utils;
+package com.oneune.mater.bot.utils;
 
 import com.oneune.mater.rest.store.enums.UpdateType;
 import lombok.experimental.UtilityClass;

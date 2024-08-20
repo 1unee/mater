@@ -1,6 +1,6 @@
-package com.oneune.mater.rest.bot.dispatchers;
+package com.oneune.mater.bot.dispatchers;
 
-import com.oneune.mater.rest.bot.contracts.Dispatcher;
+import com.oneune.mater.bot.contracts.Dispatcher;
 import com.oneune.mater.rest.services.BotService;
 import com.oneune.mater.rest.services.CarService;
 import com.oneune.mater.rest.services.ContactService;

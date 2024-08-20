@@ -1,4 +1,4 @@
-package com.oneune.mater.rest.bot.contracts;
+package com.oneune.mater.bot.contracts;
 
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.meta.api.objects.Update;

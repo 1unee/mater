@@ -1,6 +1,6 @@
-package com.oneune.mater.rest.bot.utils;
+package com.oneune.mater.bot.utils;
 
-import com.oneune.mater.rest.configs.properties.TelegramBotProperties;
+import com.oneune.mater.bot.configs.properties.TelegramBotProperties;
 import lombok.experimental.UtilityClass;
 
 import java.util.Map;

@@ -1,14 +1,14 @@
 spring:
-#  datasource:
-#    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://${DATASOURCE.HOST}:${DATASOURCE.PORT}/mater_db?currentSchema=mater
-#    username: ${DATASOURCE.USERNAME}
-#    password: ${DATASOURCE.PASSWORD}
-#  jpa:
-#    hibernate.ddl-auto: none
-#    show-sql: true
-#  flyway:
-#    enabled: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DATASOURCE.HOST}:${DATASOURCE.PORT}/mater_db?currentSchema=mater
+    username: ${DATASOURCE.USERNAME}
+    password: ${DATASOURCE.PASSWORD}
+  jpa:
+    hibernate.ddl-auto: none
+    show-sql: true
+  flyway:
+    enabled: true
   config:
     import: classpath:.env.yml
 

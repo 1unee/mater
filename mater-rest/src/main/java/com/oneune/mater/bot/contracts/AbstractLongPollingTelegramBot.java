@@ -1,7 +1,7 @@
-package com.oneune.mater.rest.bot.contracts;
+package com.oneune.mater.bot.contracts;
 
-import com.oneune.mater.rest.bot.utils.TelegramBotUtils;
-import com.oneune.mater.rest.configs.properties.TelegramBotProperties;
+import com.oneune.mater.bot.utils.TelegramBotUtils;
+import com.oneune.mater.bot.configs.properties.TelegramBotProperties;
 import jakarta.ws.rs.NotAcceptableException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;

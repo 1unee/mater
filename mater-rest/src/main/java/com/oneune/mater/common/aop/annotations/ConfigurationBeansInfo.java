@@ -1,4 +1,4 @@
-package com.oneune.mater.rest.aop.annotations;
+package com.oneune.mater.common.aop.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

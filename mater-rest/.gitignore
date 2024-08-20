@@ -33,5 +33,5 @@ build/
 .vscode/
 
 # ignore logs
-#logs
-#*.log
+logs
+*.log

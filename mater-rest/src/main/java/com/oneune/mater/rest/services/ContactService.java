@@ -1,7 +1,7 @@
 package com.oneune.mater.rest.services;
 
-import com.oneune.mater.rest.bot.contracts.Command;
-import com.oneune.mater.rest.bot.utils.TelegramBotUtils;
+import com.oneune.mater.bot.contracts.Command;
+import com.oneune.mater.bot.utils.TelegramBotUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
