@@ -1,4 +1,6 @@
-get_env_var = $(shell yq eval '.${1}' .env.yml)
+ENV_PATH_PREFIX := './src/main/resources'
+ENV_DEFAULT_VALUE := 'DEFAULT'
+get_env_var = $(shell yq eval '.${1}' '$(ENV_PATH_PREFIX)/.env.yml')
 
 APP_NAME := $(shell mvn help:evaluate -Dexpression=project.name -q -DforceStdout)
 APP_VERSION := $(shell mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
@@ -13,6 +15,9 @@ log-vars:
 	@echo "App version: $(APP_VERSION)."
 	@echo "Service port: $(SERVICE_PORT)."
 	@echo "Telegram bot token: $(TELEGRAM_BOT_TOKEN)."
+validate-env:
+	chmod +x ./scripts/validate_env.sh
+	./scripts/validate_env.sh $(ENV_PATH_PREFIX) $(ENV_DEFAULT_VALUE)
 build:
 	chmod +x ./scripts/docker_build.sh
 	./scripts/docker_build.sh $(APP_NAME) $(APP_VERSION)
@@ -21,6 +26,8 @@ run:
 	./scripts/docker_run.sh $(APP_NAME) $(SERVICE_PORT) $(TELEGRAM_BOT_TOKEN)
 workflow:
 	@echo 'Workflow started...'
+	chmod +x ./scripts/validate_env.sh
+	./scripts/validate_env.sh $(ENV_PATH_PREFIX) $(ENV_DEFAULT_VALUE)
 	chmod +x ./scripts/remove_docker_container.sh
 	./scripts/remove_docker_container.sh $(CONTAINER_NAME)
 	chmod +x ./scripts/remove_docker_image.sh
