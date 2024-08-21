@@ -1,35 +1,22 @@
-import {Component, NgZone} from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import {TestService} from "./services/test.service";
-import {ButtonDirective} from "primeng/button";
+import {Component, OnInit} from '@angular/core';
+import {ThemeService} from "./services/theme.service";
+import {StartPageComponent} from "./components/start-page/start-page.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ButtonDirective],
+  imports: [
+    StartPageComponent
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
-  public event: string = 'not inited';
-  public field: string = 'not touched';
-
-  constructor(private testService: TestService,
-              private ngZone: NgZone) {
+  constructor(private themeService: ThemeService) {
   }
 
-  async test(from: string): Promise<void> {
-    this.zone(from);
-    this.field = `${new Date().toLocaleTimeString()} (from ${from})`;
-    try {
-      await this.testService.test();
-    } catch (e) {
-      this.event = JSON.stringify(e);
-    }
-  }
-
-  private zone(from: string): void {
-    this.ngZone.run((): void => { this.event = from; });
+  ngOnInit(): void {
+    this.themeService.setThemeMode(window.Telegram.WebApp.colorScheme);
   }
 }

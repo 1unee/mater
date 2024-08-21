@@ -4,11 +4,18 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import BusinessVariableModel from "./store/business-variable.model";
 import {provideHttpClient} from "@angular/common/http";
+import {DialogService} from "primeng/dynamicdialog";
+import {provideAnimations} from "@angular/platform-browser/animations";
+import {ConfirmationService, MessageService} from "primeng/api";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient()
+    provideHttpClient(),
+    DialogService,
+    provideAnimations(),
+    MessageService,
+    ConfirmationService
   ]
 };
 

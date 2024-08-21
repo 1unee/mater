@@ -1,5 +1,6 @@
 package com.oneune.mater.rest.main.services;
 
+import com.oneune.mater.rest.main.store.enums.Constants;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -10,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 
 import java.util.List;
 
@@ -24,8 +26,8 @@ public class ButtonService {
         List<List<InlineKeyboardButton>> startOptionButtons = List.of(
                 List.of(InlineKeyboardButton.builder()
                         .text("Start!")
-                        .url("https://oneune.duckdns.org:8081/test")
-//                        .webApp(WebAppInfo.builder().url(Constants.URL.getField()).build())
+//                        .url("https://oneune.duckdns.org:8081/test")
+                        .webApp(WebAppInfo.builder().url(Constants.URL.getField()).build())
                         .build())
         );
 
