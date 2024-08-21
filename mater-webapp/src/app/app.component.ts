@@ -1,11 +1,12 @@
 import {Component, NgZone} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {TestService} from "./services/test.service";
+import {ButtonDirective} from "primeng/button";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ButtonDirective],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

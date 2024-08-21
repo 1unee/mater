@@ -5,7 +5,7 @@ spring:
     username: ${DATASOURCE.USERNAME}
     password: ${DATASOURCE.PASSWORD}
   jpa:
-    hibernate.ddl-auto: none
+    hibernate.ddl-auto: update
     show-sql: true
   flyway:
     enabled: true
