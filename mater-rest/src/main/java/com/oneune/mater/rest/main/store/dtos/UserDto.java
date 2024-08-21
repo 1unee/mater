@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Instant;
 import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -15,8 +16,10 @@ import java.util.List;
 @SuperBuilder
 @Data
 public class UserDto extends AbstractDto {
-    PersonalDto personal;
     String username;
-    String password;
+    String email;
+    Long telegramId;
+    Instant registeredAt;
     List<RoleDto> roles;
+    PersonalDto personal;
 }

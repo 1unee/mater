@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
 @Getter
-public enum ContactDestination {
+public enum ContactDestinationEnum {
 
     DEVELOPER("Разработчик", "Связаться с разработчиком"),
     SELLER("Продавец", "Связаться с продавцом"),

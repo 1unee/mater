@@ -8,11 +8,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
 @Getter
-public enum UpdateType {
+public enum TextWrapperType {
 
-    COMMAND("/", "Команда"),
-    UNKNOWN("", "Неизвестно");
+    HTML("html"),
+    MARKDOWN("Markdown");
 
-    String prefix;
-    String description;
+    String dependencyKind;
 }

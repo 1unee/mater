@@ -5,14 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
-@Deprecated(forRemoval = true)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor
 @Getter
-public enum Constants {
+public enum WebAppDataEnum {
 
-    URL("https://mater-webapp.web.app"),
-    URL2("https://google.com");
+    REGISTER_USER("", "");
 
-    String field;
+    String value;
+    String description;
 }

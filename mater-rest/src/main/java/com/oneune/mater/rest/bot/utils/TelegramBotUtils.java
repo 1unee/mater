@@ -4,8 +4,10 @@ import com.oneune.mater.rest.main.store.exceptions.BusinessLogicException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -55,6 +57,17 @@ public class TelegramBotUtils {
         return TelegramBotUtils.uncheckedExecute(bot, informAboutDevelopingMessage);
     }
 
+    public Message informAboutSuccess(DefaultAbsSender bot, Update update) {
+        Long chatId = TelegramBotUtils.extractChatId(update);
+        SendMessage informAboutDevelopingMessage = SendMessage.builder()
+                .chatId(chatId.toString())
+                .text("""
+                        Все успешно обработано и сохранено!
+                        """)
+                .build();
+        return TelegramBotUtils.uncheckedExecute(bot, informAboutDevelopingMessage);
+    }
+
     public static Message handleUnknownUpdateType(Update update, DefaultAbsSender bot) {
         log.warn("Unknown update type!");
         SendMessage unknownUpdateTypeMessage = SendMessage.builder()
@@ -62,5 +75,14 @@ public class TelegramBotUtils {
                 .text("Я тебя не понял...\nВыбери знакомые мне команды\n")
                 .build();
         return uncheckedExecute(bot, unknownUpdateTypeMessage);
+    }
+
+    public static Boolean alert(DefaultAbsSender bot, CallbackQuery callbackQuery, String message) {
+        AnswerCallbackQuery telegramAlert = AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId())
+                .text(message)
+                .showAlert(true)
+                .build();
+        return uncheckedExecute(bot, telegramAlert);
     }
 }

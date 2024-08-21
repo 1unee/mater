@@ -12,8 +12,11 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Getter
 public enum RoleEnum {
-    USER,
-    SELLER,
-    SUPPORT,
-    ADMIN
+
+    USER("Покупатель"),
+    SELLER("Продавец"),
+    SUPPORT("Поддержка"),
+    ADMIN("Администратор");
+
+    String rus;
 }

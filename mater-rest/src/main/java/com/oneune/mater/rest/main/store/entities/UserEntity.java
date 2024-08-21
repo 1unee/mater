@@ -2,10 +2,14 @@ package com.oneune.mater.rest.main.store.entities;
 
 import com.oneune.mater.rest.main.contracts.Identifiable;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +26,8 @@ public class UserEntity extends AbstractEntity {
 
     String username;
     String email;
+    Long telegramId;
+    Instant registeredAt;
 
     @OneToOne
     @JoinColumn(name = "personal_id")

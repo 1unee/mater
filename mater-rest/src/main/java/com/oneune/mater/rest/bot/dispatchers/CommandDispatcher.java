@@ -5,7 +5,7 @@ import com.oneune.mater.rest.main.services.BotService;
 import com.oneune.mater.rest.main.services.CarService;
 import com.oneune.mater.rest.main.services.ContactService;
 import com.oneune.mater.rest.main.services.NotificationService;
-import com.oneune.mater.rest.main.store.enums.Command;
+import com.oneune.mater.rest.main.store.enums.CommandEnum;
 import com.oneune.mater.rest.main.store.exceptions.BusinessLogicException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,10 +32,10 @@ public class CommandDispatcher implements Dispatcher {
     public void distribute(DefaultAbsSender bot, Update update) {
 
         String text = update.getMessage().getText();
-        Command command = Arrays.stream(Command.values())
+        CommandEnum command = Arrays.stream(CommandEnum.values())
                 .filter(cmd -> cmd.getValue().equals(text))
                 .findFirst()
-                .orElseThrow(() -> new BusinessLogicException("Not found command like <%s>".formatted(text)));
+                .orElseThrow(() -> new BusinessLogicException("Not found command constant like <%s>".formatted(text)));
 
         switch (command) {
             case START -> botService.execute(bot, update);

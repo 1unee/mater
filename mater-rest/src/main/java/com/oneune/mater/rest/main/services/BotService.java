@@ -21,12 +21,7 @@ public class BotService implements Command {
 
     @Override
     public void execute(DefaultAbsSender bot, Update update) {
-//        TelegramBotUtils.informAboutDeveloping(bot, update);
-        start(bot, update);
-    }
-
-    public void start(DefaultAbsSender bot, Update update) {
-        SendMessage startMessage = buttonService.buildStartMessage(update);
-        TelegramBotUtils.uncheckedExecute(bot, startMessage);
+        SendMessage startKeyboardButtons = buttonService.buildStartKeyboardButtons(update);
+        TelegramBotUtils.uncheckedExecute(bot, startKeyboardButtons);
     }
 }

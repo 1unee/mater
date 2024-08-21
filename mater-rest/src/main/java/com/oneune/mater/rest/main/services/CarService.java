@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Service
@@ -16,8 +17,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Log4j2
 public class CarService implements Command {
 
+    ButtonService buttonService;
+
     @Override
     public void execute(DefaultAbsSender bot, Update update) {
-        TelegramBotUtils.informAboutDeveloping(bot, update);
+        SendMessage sendCarsMenuKeyboardButtons = buttonService.buildCarsKeyboardButtons(update);
+        TelegramBotUtils.uncheckedExecute(bot, sendCarsMenuKeyboardButtons);
     }
 }
