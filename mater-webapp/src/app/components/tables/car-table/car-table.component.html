@@ -1,0 +1,98 @@
+<p-table #htmlCarsTable
+         styleClass="p-datatable-gridlines p-datatable-striped"
+         selectionMode="single"
+         currentPageReportTemplate="С {first} по {last} (всего {totalRecords})"
+         [paginator]="true"
+         [rows]="10"
+         [showCurrentPageReport]="true"
+         [rowsPerPageOptions]="[10, 25, 50]"
+         [value]="cars"
+         [tableStyle]="{'min-width': '50rem', 'max-width': '200rem'}"
+         [(selection)]="selectedCar"
+>
+  <ng-template pTemplate="caption">Список машин (общее количество: {{ cars?.length ?? 0 }})</ng-template>
+
+  <ng-template pTemplate="header">
+    <tr class="column-names-container" (click)="filter = !filter">
+      <th>ID <i class="pi pi-filter"></i></th>
+      <th>Бренд <i class="pi pi-filter"></i></th>
+      <th>Модель <i class="pi pi-filter"></i></th>
+      <th>Год <i class="pi pi-filter"></i></th>
+      <th>Цена <i class="pi pi-filter"></i></th>
+    </tr>
+
+    <tr *ngIf="filter">
+      <th><p-columnFilter type="int" field="id"></p-columnFilter></th>
+      <th><p-columnFilter type="string" field="brand"></p-columnFilter></th>
+      <th><p-columnFilter type="string" field="model"></p-columnFilter></th>
+      <th><p-columnFilter type="date" field="productionYear"></p-columnFilter></th>
+      <th><p-columnFilter type="int" field="price"></p-columnFilter></th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-car>
+    <tr [pSelectableRow]="car">
+      <td>{{ car.id }}</td>
+      <td>{{ car.brand }}</td>
+      <td>{{ car.model }}</td>
+      <td>{{ car.productionYear }}</td>
+      <td>{{ car.price }}</td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="summary">
+    <div class="text-center">
+      <button pButton
+              pRipple
+              class="p-button-secondary rounded-3 mx-3 margined"
+              icon="pi pi-refresh"
+              pTooltip="Reload table"
+              (click)="reloadTable()"
+      ></button>
+
+      <button pButton
+              pRipple
+              class="p-button-secondary rounded-3 mx-3 margined"
+              icon="pi pi-upload"
+              pTooltip="Add"
+              (click)="add(false)"
+      ></button>
+
+      <button pButton
+              pRipple
+              class="p-button-secondary rounded-3 mx-3 margined"
+              icon="pi pi-upload"
+              pTooltip="Add from selected"
+              [disabled]="!selectedCar"
+              (click)="add(true)"
+      ></button>
+
+      <button pButton
+              pRipple
+              class="p-button-secondary rounded-3 mx-3 margined"
+              icon="pi pi-eye"
+              pTooltip="Detail"
+              [disabled]="!selectedCar"
+              (click)="openDetail()"
+      ></button>
+
+      <button pButton
+              pRipple
+              class="p-button-secondary rounded-3 mx-3 margined"
+              icon="pi pi-arrows-h"
+              pTooltip="Edit"
+              [disabled]="!selectedCar"
+              (click)="edit()"
+      ></button>
+
+      <button pButton
+              pRipple
+              class="p-button-secondary rounded-3 mx-3 margined"
+              icon="pi pi-trash"
+              pTooltip="Delete"
+              [disabled]="!selectedCar"
+              (click)="remove()"
+      ></button>
+    </div>
+  </ng-template>
+</p-table>

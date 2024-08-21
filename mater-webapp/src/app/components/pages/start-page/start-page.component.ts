@@ -7,6 +7,7 @@ import {NgOptimizedImage} from "@angular/common";
 import {RoleEnum} from "../../../store/enums/role.enum";
 import {TelegramService} from "../../../services/telegram.service";
 import {WebAppDataEnum} from "../../../store/enums/web-app-data.enum";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-start-page',
@@ -25,13 +26,14 @@ export class StartPageComponent implements OnInit, OnDestroy {
 
   selectedRole: RoleEnum;
 
-  constructor(private telegramService: TelegramService) {
+  constructor(private telegramService: TelegramService,
+              private router: Router) {
   }
 
   readonly RoleEnum = RoleEnum;
 
   ngOnInit(): void {
-    this.telegramService.mainBtn.setText('Продолжить');
+    this.telegramService.mainBtn.setText('Сохранить роль и вернуться к боту');
     this.telegramService.mainBtn.showProgress(true);
     this.telegramService.mainBtn.onClick(() => {
       this.telegramService.sendData(WebAppDataEnum.REGISTER_USER, this.selectedRole);
@@ -51,5 +53,9 @@ export class StartPageComponent implements OnInit, OnDestroy {
   setUserRole(role: RoleEnum): void {
     this.selectedRole = role;
     this.telegramService.mainBtn.show();
+  }
+
+  openCarList(): void {
+    this.router.navigate(['/cars']).then(() => console.log('redirected to /cars'));
   }
 }

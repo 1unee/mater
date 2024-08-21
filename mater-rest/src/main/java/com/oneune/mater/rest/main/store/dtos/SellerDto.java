@@ -19,3 +19,4 @@ public class SellerDto extends AbstractDto {
     Float score;
     List<CarDto> cars;
 }
+
