@@ -11,8 +11,8 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public enum Constants {
 
-    URL("https://mater-webapp.web.app"),
+    WEB_URL("https://mater-webapp.web.app"),
     URL2("https://google.com");
 
-    String field;
+    String value;
 }

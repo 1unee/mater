@@ -4,9 +4,9 @@ import {AccordionModule} from "primeng/accordion";
 import {FieldsetModule} from "primeng/fieldset";
 import {ImageModule} from "primeng/image";
 import {NgOptimizedImage} from "@angular/common";
-import {RoleEnum} from "../../store/enums/role.enum";
-import {TelegramService} from "../../services/telegram.service";
-import {WebAppDataEnum} from "../../store/enums/web-app-data.enum";
+import {RoleEnum} from "../../../store/enums/role.enum";
+import {TelegramService} from "../../../services/telegram.service";
+import {WebAppDataEnum} from "../../../store/enums/web-app-data.enum";
 
 @Component({
   selector: 'app-start-page',

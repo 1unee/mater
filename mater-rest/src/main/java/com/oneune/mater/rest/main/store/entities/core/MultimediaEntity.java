@@ -1,4 +1,4 @@
-package com.oneune.mater.rest.main.store.entities.entities.core;
+package com.oneune.mater.rest.main.store.entities.core;
 
 import com.oneune.mater.rest.main.store.entities.AbstractEntity;
 import jakarta.persistence.Embeddable;

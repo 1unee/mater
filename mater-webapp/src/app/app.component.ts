@@ -1,11 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {StartPageComponent} from "./components/start-page/start-page.component";
+import {StartPageComponent} from "./components/pages/start-page/start-page.component";
+import {RouterOutlet} from "@angular/router";
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    StartPageComponent
+    StartPageComponent,
+    RouterOutlet
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

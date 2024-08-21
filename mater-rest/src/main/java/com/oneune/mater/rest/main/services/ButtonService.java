@@ -33,7 +33,7 @@ public class ButtonService {
                 List.of(InlineKeyboardButton.builder()
                         .text("Start!")
 //                        .url("https://oneune.duckdns.org:8081/test")
-                        .webApp(WebAppInfo.builder().url(Constants.URL.getField()).build())
+                        .webApp(WebAppInfo.builder().url(Constants.WEB_URL.getValue()).build())
                         .build())
         );
 
@@ -57,7 +57,7 @@ public class ButtonService {
         List<KeyboardButton> row1 = List.of(
                 KeyboardButton.builder()
                         .text("Начать с короткого знакомства")
-                        .webApp(WebAppInfo.builder().url(Constants.URL.getField()).build())
+                        .webApp(WebAppInfo.builder().url(Constants.WEB_URL.getValue() + "/start").build())
                         .build()
         );
         List<KeyboardRow> rows = List.of(new KeyboardRow(row1));
@@ -81,7 +81,7 @@ public class ButtonService {
         List<KeyboardButton> row1 = List.of(
                 KeyboardButton.builder()
                         .text("Список машин")
-                        .webApp(WebAppInfo.builder().url(Constants.URL.getField()).build())
+                        .webApp(WebAppInfo.builder().url(Constants.WEB_URL.getValue() + "/cars").build())
                         .build()
         );
         List<KeyboardButton> row2 = List.of(

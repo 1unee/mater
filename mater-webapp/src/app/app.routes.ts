@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
-import {StartPageComponent} from "./components/start-page/start-page.component";
+import {StartPageComponent} from "./components/pages/start-page/start-page.component";
+import {CarMenuPageComponent} from "./components/pages/car-menu-page/car-menu-page.component";
 
 export const routes: Routes = [
   {path: 'start', component: StartPageComponent},
-  {path: '', redirectTo: '/main', pathMatch: 'full'},
-  {path: '**', redirectTo: '/main'},
+  {path: 'cars', component: CarMenuPageComponent},
+  {path: '', redirectTo: '/start', pathMatch: 'full'},
+  {path: '**', redirectTo: '/start'},
 ];
