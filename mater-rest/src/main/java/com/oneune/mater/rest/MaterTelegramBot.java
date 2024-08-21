@@ -1,7 +1,6 @@
 package com.oneune.mater.rest;
 
 import com.oneune.mater.rest.configs.properties.TelegramBotProperties;
-import com.oneune.mater.rest.enums.Constants;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -15,7 +14,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 
 import java.util.List;
 
@@ -48,7 +46,8 @@ public final class MaterTelegramBot extends TelegramLongPollingBot {
         List<List<InlineKeyboardButton>> startOptionButtons = List.of(
                 List.of(InlineKeyboardButton.builder()
                         .text("Start!")
-                        .webApp(WebAppInfo.builder().url(Constants.URL.getField()).build())
+                        .url("https://oneune.duckdns.org:9033/test")
+//                        .webApp(WebAppInfo.builder().url(Constants.URL.getField()).build())
                         .build())
         );
 
