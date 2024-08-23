@@ -9,3 +9,15 @@
 <div>
   <router-outlet></router-outlet>
 </div>
+
+<div class="clear-toasts-button-container">
+  <!--  todo: добавить удаление кнопки когда все сообщения пропадают -->
+  <button *ngIf="messages.length !== 0"
+          pButton
+          pRipple
+          class="p-button-secondary rounded-3 mx-3 margined"
+          icon="pi pi-delete-left"
+          pTooltip="Удалить все всплывашки"
+          (click)="clearMessages()"
+  ></button>
+</div>

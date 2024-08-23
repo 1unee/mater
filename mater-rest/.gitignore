@@ -35,3 +35,6 @@ build/
 # ignore logs
 logs
 *.log
+
+# ignore .env
+/**/resources/*.env

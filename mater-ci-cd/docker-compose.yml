@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres-container
+    environment:
+      POSTGRES_DB: mater_db
+      POSTGRES_USER: DATASOURCE.USERNAME
+      POSTGRES_PASSWORD: DATASOURCE.PASSWORD
+    ports:
+      - "5444:5432"
+    networks:
+      - backend
+  spring-boot:
+    image: mater-rest
+    container_name: mater-rest-container
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://DATASOURCE.HOST:DATASOURCE.PORT/mater_db?currentSchema=mater
+      SPRING_DATASOURCE_USERNAME: DATASOURCE.USERNAME
+      SPRING_DATASOURCE_PASSWORD: DATASOURCE.PASSWORD
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "9033:8081"
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+  angular:
+    image: mater-web
+    container_name: mater-web-container
+    ports:
+      - "80:4200"
+    depends_on:
+      - spring-boot
+    networks:
+      - frontend
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge

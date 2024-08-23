@@ -8,6 +8,7 @@ import {RoleEnum} from "../../../store/enums/role.enum";
 import {TelegramService} from "../../../services/telegram.service";
 import {WebAppDataEnum} from "../../../store/enums/web-app-data.enum";
 import {Router} from "@angular/router";
+import {TestService} from "../../../services/test.service";
 
 @Component({
   selector: 'app-start-page',
@@ -27,7 +28,8 @@ export class StartPageComponent implements OnInit, OnDestroy {
   selectedRole: RoleEnum;
 
   constructor(private telegramService: TelegramService,
-              private router: Router) {
+              private router: Router,
+              public testService: TestService) {
   }
 
   readonly RoleEnum = RoleEnum;
