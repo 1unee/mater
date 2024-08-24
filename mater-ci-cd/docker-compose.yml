@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   postgres:
@@ -6,19 +6,19 @@ services:
     container_name: postgres-container
     environment:
       POSTGRES_DB: mater_db
-      POSTGRES_USER: DATASOURCE.USERNAME
-      POSTGRES_PASSWORD: DATASOURCE.PASSWORD
+      POSTGRES_USER: ${DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${DATASOURCE_PASSWORD}
     ports:
-      - "5444:5432"
+      - "${DATASOURCE_PORT}:5432"
     networks:
       - backend
   spring-boot:
     image: mater-rest
     container_name: mater-rest-container
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://DATASOURCE.HOST:DATASOURCE.PORT/mater_db?currentSchema=mater
-      SPRING_DATASOURCE_USERNAME: DATASOURCE.USERNAME
-      SPRING_DATASOURCE_PASSWORD: DATASOURCE.PASSWORD
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${VIRTUAL_PRIVATE_CLOUD_IP_PUBLIC}:${DATASOURCE_PORT}/mater_db # ?currentSchema=mater
+      SPRING_DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
       - "9033:8081"

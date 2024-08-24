@@ -12,7 +12,7 @@ image_name="$1"
 # Проверка существования образа
 if [ "$(docker images -q $image_name)" ]; then
     # Удаление образа
-    docker rmi "$image_name"
+    docker rmi "$image_name" -f
     echo "Image '$image_name' removed."
 else
     echo "Image '$image_name' does not exist."

@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${DATASOURCE.HOST}:${DATASOURCE.PORT}/mater_db?currentSchema=mater
+    url: jdbc:postgresql://${VIRTUAL_PRIVATE_CLOUD.IP.PUBLIC}:${DATASOURCE.PORT}/mater_db # ?currentSchema=mater
     username: ${DATASOURCE.USERNAME}
     password: ${DATASOURCE.PASSWORD}
   jpa:
@@ -13,13 +13,13 @@ spring:
     import: classpath:.env.yml
 
 server:
-  port: ${SERVICE.PORT}
+  port: 8081
   ssl:
     enabled: true
-    key-store: classpath:copied.${SERVICE.DOMAIN}.p12
+    key-store: classpath:copied.${VIRTUAL_PRIVATE_CLOUD.DOMAIN}.p12
     key-store-password: ${SSL.PASSWORD}
     key-store-type: PKCS12
-    key-alias: ${SERVICE.DOMAIN}
+    key-alias: ${VIRTUAL_PRIVATE_CLOUD.DOMAIN}
 
 telegram:
   bot:
