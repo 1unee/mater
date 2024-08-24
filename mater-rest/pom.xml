@@ -12,7 +12,7 @@
 
     <groupId>com.oneune</groupId>
     <artifactId>mater-rest</artifactId>
-    <version>0.0.1-DEV</version>
+    <version>0.0.1-DEV</version> <!-- extract to .env and parse by script (web too) -->
 
     <name>mater-rest</name>
     <description>mater-rest</description>

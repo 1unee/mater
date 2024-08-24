@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cp ./.env.yml ./../mater-rest/src/main/resources/.env.yml
+cp ./.env ./../mater-rest/src/main/resources/.env.properties

@@ -1,30 +1,30 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${VIRTUAL_PRIVATE_CLOUD.IP.PUBLIC}:${DATASOURCE.PORT}/mater_db # ?currentSchema=mater
-    username: ${DATASOURCE.USERNAME}
-    password: ${DATASOURCE.PASSWORD}
+    url: jdbc:postgresql://${VIRTUAL_PRIVATE_CLOUD_PUBLIC_IP}:${DATASOURCE_PORT}/mater_db # ?currentSchema=mater
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
   jpa:
     hibernate.ddl-auto: update
     show-sql: true
   flyway:
     enabled: true
   config:
-    import: classpath:.env.yml
+    import: classpath:.env.properties
 
 server:
   port: 8081
   ssl:
     enabled: true
-    key-store: classpath:copied.${VIRTUAL_PRIVATE_CLOUD.DOMAIN}.p12
-    key-store-password: ${SSL.PASSWORD}
+    key-store: classpath:copied.${VIRTUAL_PRIVATE_CLOUD_DOMAIN}.p12
+    key-store-password: ${SSL_PASSWORD}
     key-store-type: PKCS12
-    key-alias: ${VIRTUAL_PRIVATE_CLOUD.DOMAIN}
+    key-alias: ${VIRTUAL_PRIVATE_CLOUD_DOMAIN}
 
 telegram:
   bot:
     name: Mater
-    token: ${TELEGRAM.BOT.TOKEN}
+    token: ${TELEGRAM_BOT_TOKEN}
     command:
       start:
         description: Начать выбирать машину
