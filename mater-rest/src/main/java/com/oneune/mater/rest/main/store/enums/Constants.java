@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public enum Constants {
 
-    WEB_URL("https://mater-webapp.web.app"),
+    WEB_URL("http://oneune.duckdns.org"),
     URL2("https://google.com");
 
     String value;

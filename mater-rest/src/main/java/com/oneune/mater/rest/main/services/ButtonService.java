@@ -32,7 +32,6 @@ public class ButtonService {
         List<List<InlineKeyboardButton>> startOptionButtons = List.of(
                 List.of(InlineKeyboardButton.builder()
                         .text("Start!")
-//                        .url("https://oneune.duckdns.org:8081/test")
                         .webApp(WebAppInfo.builder().url(Constants.WEB_URL.getValue()).build())
                         .build())
         );
