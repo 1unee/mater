@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${VIRTUAL_PRIVATE_CLOUD_PUBLIC_IP}:${DATASOURCE_PORT}/mater_db # ?currentSchema=mater
+    url: jdbc:postgresql://${VIRTUAL_PRIVATE_CLOUD_PUBLIC_IP}:${DATASOURCE_PORT}/mater_db?currentSchema=mater
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
   jpa:
