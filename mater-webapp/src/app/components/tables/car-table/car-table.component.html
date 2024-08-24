@@ -2,9 +2,11 @@
          styleClass="p-datatable-gridlines p-datatable-striped"
          selectionMode="single"
          currentPageReportTemplate="С {first} по {last} (всего {totalRecords})"
-         [paginator]="true"
-         [rows]="10"
-         [showCurrentPageReport]="true"
+         [paginator]="false"
+         [rows]="pageSize"
+         [showLoader]="true"
+         [showPageLinks]="true"
+         [lazy]="true"
          [rowsPerPageOptions]="[10, 25, 50]"
          [value]="cars"
          [tableStyle]="{'min-width': '50rem', 'max-width': '200rem'}"
@@ -44,7 +46,7 @@
     <div class="text-center">
       <button pButton
               pRipple
-              class="p-button-secondary rounded-3 mx-3 margined"
+              class="p-button-secondary rounded-3 mx-1"
               icon="pi pi-refresh"
               pTooltip="Reload table"
               (click)="reloadTable()"
@@ -52,7 +54,7 @@
 
       <button pButton
               pRipple
-              class="p-button-secondary rounded-3 mx-3 margined"
+              class="p-button-secondary rounded-3 mx-1"
               icon="pi pi-upload"
               pTooltip="Add"
               (click)="add(false)"
@@ -60,7 +62,7 @@
 
       <button pButton
               pRipple
-              class="p-button-secondary rounded-3 mx-3 margined"
+              class="p-button-secondary rounded-3 mx-1"
               icon="pi pi-upload"
               pTooltip="Add from selected"
               [disabled]="!selectedCar"
@@ -69,7 +71,7 @@
 
       <button pButton
               pRipple
-              class="p-button-secondary rounded-3 mx-3 margined"
+              class="p-button-secondary rounded-3 mx-1"
               icon="pi pi-eye"
               pTooltip="Detail"
               [disabled]="!selectedCar"
@@ -78,7 +80,7 @@
 
       <button pButton
               pRipple
-              class="p-button-secondary rounded-3 mx-3 margined"
+              class="p-button-secondary rounded-3 mx-1"
               icon="pi pi-arrows-h"
               pTooltip="Edit"
               [disabled]="!selectedCar"
@@ -87,11 +89,27 @@
 
       <button pButton
               pRipple
-              class="p-button-secondary rounded-3 mx-3 margined"
+              class="p-button-secondary rounded-3"
               icon="pi pi-trash"
               pTooltip="Delete"
               [disabled]="!selectedCar"
               (click)="remove()"
+      ></button>
+
+      <button pButton
+              pRipple
+              class="p-button-secondary rounded-3"
+              icon="pi pi-angle-left"
+              pTooltip="Предыдущая страница"
+              (click)="search('left')"
+      ></button>
+
+      <button pButton
+              pRipple
+              class="p-button-secondary rounded-3"
+              icon="pi pi-angle-right"
+              pTooltip="Следующая страница"
+              (click)="search('right')"
       ></button>
     </div>
   </ng-template>

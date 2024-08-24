@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @Data
 public class CarDto extends AbstractDto {
-    SellerDto seller;
+//    SellerDto seller;
     String brand;
     String model;
     Year productionYear;

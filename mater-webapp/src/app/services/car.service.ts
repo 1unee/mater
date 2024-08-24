@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {AbstractService} from "./abstract.service";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {lastValueFrom} from "rxjs";
 import {CarDto} from "../store/dtos/car.dto";
 
@@ -15,9 +15,12 @@ export class CarService extends AbstractService {
     super(http);
   }
 
-  async search(): Promise<CarDto[]> {
+  async search(page: number, size: number): Promise<CarDto[]> {
+    const params: HttpParams = new HttpParams()
+      .append('page', page)
+      .append('size', size);
     return lastValueFrom(
-      this.http.get<CarDto[]>(`${this._REST_PATH}/search`)
+      this.http.get<CarDto[]>(`${this._REST_PATH}/search`, {params})
     );
   }
 

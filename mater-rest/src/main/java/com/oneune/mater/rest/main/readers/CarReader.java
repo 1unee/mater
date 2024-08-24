@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.oneune.mater.rest.main.contracts.Readable;
 import com.oneune.mater.rest.main.repositories.CarRepository;
 import com.oneune.mater.rest.main.store.dtos.CarDto;
+import com.oneune.mater.rest.main.store.entities.CarEntity;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,6 +12,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Type;
@@ -39,6 +42,7 @@ public class CarReader implements Readable<CarDto> {
 
     @Override
     public List<CarDto> search(int page, int size) {
-        return null;
+        Page<CarEntity> paginatedUserEntities = carRepository.findAll(PageRequest.of(page, size));
+        return modelMapper.map(paginatedUserEntities.getContent(), CAR_DTO_LIST);
     }
 }

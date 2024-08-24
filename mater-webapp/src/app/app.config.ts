@@ -22,6 +22,7 @@ export const appConfig: ApplicationConfig = {
 export const businessVariables: BusinessVariableModel[] = [
   {
     key: 'prefix-rest-path',
+    // value: 'http://localhost:8081',
     value: 'https://oneune.duckdns.org:9033',
     description: 'Prefix of common rest path.'
   }

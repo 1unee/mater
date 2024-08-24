@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {TableModule} from "primeng/table";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Table, TableModule, TablePageEvent} from "primeng/table";
 import {CarDto} from "../../../store/dtos/car.dto";
 import {NgIf} from "@angular/common";
 import {ButtonDirective} from "primeng/button";
@@ -21,27 +21,35 @@ import {OneuneMessageService} from "../../../services/oneune-message.service";
   templateUrl: './car-table.component.html',
   styleUrl: './car-table.component.scss'
 })
-export class CarTableComponent implements OnInit{
+export class CarTableComponent implements OnInit {
+
+  @ViewChild('htmlCarsTable') htmlCarsTable: Table;
+
+  filter: boolean = false;
+
+  pageNumber: number = 0;
+  pageSize: number = 1;
 
   cars: CarDto[];
   selectedCar: CarDto;
-  filter: boolean = false;
 
   constructor(private carService: CarService,
               private oneuneMessageService: OneuneMessageService) {
   }
 
   async ngOnInit(): Promise<void> {
-    await this._load();
-  }
+    await this._loadFirstPage();
 
-  private async _load(): Promise<void> {
-    this.cars = await this.carService.search();
+    // this.htmlCarsTable.
   }
 
   async reloadTable(): Promise<void> {
-    await this._load()
+    await this._loadFirstPage();
     this.oneuneMessageService.showInfoMessage('Таблица обновлена!');
+  }
+
+  protected async _loadFirstPage(): Promise<void> {
+    this.cars = await this.carService.search(this.pageNumber, this.pageSize);
   }
 
   add(from: boolean): void {
@@ -58,5 +66,11 @@ export class CarTableComponent implements OnInit{
 
   remove(): void {
     this.oneuneMessageService.showInfoMessage('В разработке...');
+  }
+
+  async search(direction: 'left' | 'right'): Promise<void> {
+    let futurePageNumber: number = direction === 'left' ? this.pageNumber - 1 : this.pageNumber + 1;
+    futurePageNumber = futurePageNumber < 0 ? 0 : futurePageNumber;
+    this.cars = await this.carService.search(futurePageNumber, this.pageSize);
   }
 }
