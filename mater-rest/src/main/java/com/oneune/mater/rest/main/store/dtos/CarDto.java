@@ -1,24 +1,31 @@
 package com.oneune.mater.rest.main.store.dtos;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.time.Year;
 import java.util.List;
 
+/**
+ * @see com.oneune.mater.rest.main.store.entities.CarEntity
+ */
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Data
 public class CarDto extends AbstractDto {
-//    SellerDto seller;
     String brand;
     String model;
-    Year productionYear;
+    Integer productionYear;
     BigDecimal price;
     BigDecimal mileage;
+    @JsonProperty("VIN")
     String VIN;
     Integer ownersAmount;
     Integer power;

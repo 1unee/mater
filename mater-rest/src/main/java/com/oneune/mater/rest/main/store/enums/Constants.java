@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public enum Constants {
 
-    WEB_URL("http://oneune.duckdns.org"),
+    WEB_URL("${telegram.bot.menu.button.url}"),
     URL2("https://google.com");
 
     String value;

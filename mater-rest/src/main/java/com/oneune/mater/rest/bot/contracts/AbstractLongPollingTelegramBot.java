@@ -1,15 +1,19 @@
 package com.oneune.mater.rest.bot.contracts;
 
-import com.oneune.mater.rest.bot.utils.TelegramBotUtils;
 import com.oneune.mater.rest.bot.configs.properties.TelegramBotProperties;
+import com.oneune.mater.rest.bot.configs.properties.TelegramBotProperties.BotMenuTypeEnum;
+import com.oneune.mater.rest.bot.utils.TelegramBotUtils;
 import jakarta.ws.rs.NotAcceptableException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.methods.menubutton.SetChatMenuButton;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
+import org.telegram.telegrambots.meta.api.objects.menubutton.MenuButtonWebApp;
+import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +27,11 @@ public abstract class AbstractLongPollingTelegramBot extends TelegramLongPolling
 
     public AbstractLongPollingTelegramBot(TelegramBotProperties telegramBotProperties) {
         this.telegramBotProperties = telegramBotProperties;
-        this.registerBotCommands();
+        if (telegramBotProperties.getMenu().getType().equals(BotMenuTypeEnum.COMMANDS)) {
+            registerBotCommands();
+        } else {
+            registerBotMenuButton();
+        }
     }
 
     @Override
@@ -45,7 +53,9 @@ public abstract class AbstractLongPollingTelegramBot extends TelegramLongPolling
      * By default, using commands from application.yml
      */
     protected void registerBotCommands() {
-        List<BotCommand> botCommandsFromApplicationYml = telegramBotProperties.getCommand().entrySet().stream()
+        List<BotCommand> botCommandsFromApplicationYml = telegramBotProperties.getMenu().getCommand()
+                .entrySet()
+                .stream()
                 .map(entry -> new BotCommand(entry.getKey(), entry.getValue().getDescription()))
                 .toList();
         registerBotCommands(botCommandsFromApplicationYml);
@@ -66,5 +76,22 @@ public abstract class AbstractLongPollingTelegramBot extends TelegramLongPolling
     private void registerBotCommands(BotCommand... botCommands) {
         List<BotCommand> botCommandList = Arrays.stream(botCommands).toList();
         registerBotCommands(botCommandList);
+    }
+
+    private void registerBotMenuButton() {
+        SetChatMenuButton setChatMenuButton = SetChatMenuButton.builder()
+                .menuButton(MenuButtonWebApp.builder()
+                        .text(telegramBotProperties.getMenu().getButton().getTitle())
+                        .webAppInfo(WebAppInfo.builder()
+                                .url(telegramBotProperties.getMenu().getButton().getUrl().toString())
+                                .build())
+                        .build())
+                .build();
+        Boolean success = TelegramBotUtils.uncheckedExecute(this, setChatMenuButton);
+        if (success) {
+            log.info("Was registered {} bot menu button", setChatMenuButton);
+        } else {
+            throw new NotAcceptableException("Not registered %s bot menu button (see logs)".formatted(setChatMenuButton));
+        }
     }
 }

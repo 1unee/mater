@@ -1,0 +1,275 @@
+<form [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+>
+  <div>
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm"
+                           (click)="clipboardService.extCopy(car.brand,'Марка скопирована')"
+        >
+          Марка
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <input formControlName="carBrand"
+                 pInputText
+                 class="p-1 w-full text-sm"
+                 type="text"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carBrand')?.invalid && form.get('carBrand')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carBrand')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm"
+                           (click)="clipboardService.extCopy(car.model,'Модель скопирована')"
+        >
+          Модель
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <input formControlName="carModel"
+                 pInputText
+                 class="p-1 w-full text-sm"
+                 type="text"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carModel')?.invalid && form.get('carModel')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carModel')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm"
+                           (click)="clipboardService.extCopy(car.productionYear,'Год выпуска скопирован')"
+        >
+          Год выпуска
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <input formControlName="carProductionYear"
+                 pInputText
+                 class="p-1 w-full text-sm"
+                 type="text"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carProductionYear')?.invalid && form.get('carProductionYear')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carProductionYear')?.errors?.['carProductionYear']">
+            Поле не может быть пустым
+          </small>
+          <small *ngIf="form.get('carProductionYear')?.errors?.['notNumber']">
+            Значение должно быть числом
+          </small>
+          <small *ngIf="form.get('carProductionYear')?.errors?.['min']">
+            Введеное значение меньше минимально допустимого значения {{ form.get('carProductionYear')?.errors?.['min']?.['min'] }}
+          </small>
+          <small *ngIf="form.get('carProductionYear')?.errors?.['max']">
+            Введеное значение больше максимально допустимого значения {{ form.get('carProductionYear')?.errors?.['max']?.['max'] }}
+          </small>
+          <small *ngIf="form.get('carProductionYear')?.errors?.['notInteger']">
+            Значение должно быть целым числом
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm"
+                           (click)="clipboardService.extCopy(car.price,'Цена скопирована')"
+        >
+          Цена (₽)
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <input formControlName="carPrice"
+                 pInputText
+                 class="p-1 w-full text-sm"
+                 type="text"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carPrice')?.invalid && form.get('carPrice')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carPrice')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+          <small *ngIf="form.get('carPrice')?.errors?.['notNumber']">
+            Значение должно быть числом
+          </small>
+          <small *ngIf="form.get('carPrice')?.errors?.['min']">
+            Введеное значение меньше минимально допустимого значения {{ form.get('carPrice')?.errors?.['min']?.['min'] }}
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm"
+                           (click)="clipboardService.extCopy(car.mileage,'Пробег скопирован')"
+        >
+          Пробег (км)
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <input formControlName="carMileage"
+                 pInputText
+                 class="p-1 w-full text-sm"
+                 type="text"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carMileage')?.invalid && form.get('carMileage')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carMileage')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+          <small *ngIf="form.get('carMileage')?.errors?.['notNumber']">
+            Значение должно быть числом
+          </small>
+          <small *ngIf="form.get('carMileage')?.errors?.['min']">
+            Введеное значение меньше минимально допустимого значения {{ form.get('carMileage')?.errors?.['min']?.['min'] }}
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm"
+                           (click)="clipboardService.extCopy(car.VIN,'ВИН скопирован')"
+        >
+          ВИН
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <input formControlName="carVIN"
+                 pInputText
+                 class="p-1 w-full text-sm"
+                 type="text"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carVIN')?.invalid && form.get('carVIN')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carVIN')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+          <small *ngIf="form.get('carVIN')?.errors?.['minlength']">
+            Длина вин-кода должна быть длиной в {{ form.get('carVIN')?.errors?.['minlength']?.['requiredLength'] }} символов
+          </small>
+          <small *ngIf="form.get('carVIN')?.errors?.['maxlength']">
+            Длина вин-кода должна быть длиной в {{ form.get('carVIN')?.errors?.['maxlength']?.['requiredLength'] }} символов
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm"
+                           (click)="clipboardService.extCopy(car.ownersAmount,'Количество владельцев скопировано')"
+        >
+          Количество владельцев
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <input formControlName="carOwnersAmount"
+                 pInputText
+                 class="p-1 w-full text-sm"
+                 type="text"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carOwnersAmount')?.invalid && form.get('carOwnersAmount')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carOwnersAmount')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+          <small *ngIf="form.get('carOwnersAmount')?.errors?.['notNumber']">
+            Значение должно быть числом
+          </small>
+          <small *ngIf="form.get('carOwnersAmount')?.errors?.['min']">
+            Введеное значение меньше минимально допустимого значения {{ form.get('carPrice')?.errors?.['min']?.['min'] }}
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm"
+                           (click)="clipboardService.extCopy(car.power,'Количество лошадиных сил скопировано')"
+        >
+          Кол-во Л.С.
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <input formControlName="carPower"
+                 pInputText
+                 class="p-1 w-full text-sm"
+                 type="text"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carPower')?.invalid && form.get('carPower')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carPower')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+          <small *ngIf="form.get('carPower')?.errors?.['notNumber']">
+            Значение должно быть числом
+          </small>
+          <small *ngIf="form.get('carPower')?.errors?.['min']">
+            Введеное значение меньше минимально допустимого значения {{ form.get('carPrice')?.errors?.['min']?.['min'] }}
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="m-2">
+      <div class="flex flex-wrap align-items-center justify-content-center">
+        <p-button styleClass='text-center p-2'
+                  label="Сохранить"
+                  icon="pi pi-check"
+                  severity="secondary"
+                  type="submit"
+                  [disabled]="form.invalid"
+        />
+      </div>
+    </div>
+  </div>
+</form>

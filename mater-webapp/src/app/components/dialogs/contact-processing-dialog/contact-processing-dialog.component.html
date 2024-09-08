@@ -1,0 +1,83 @@
+<form [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+>
+  <div>
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Способ
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <p-dropdown formControlName="contactType"
+                      styleClass="w-auto p-1 text-sm"
+                      panelStyleClass="p-1 text-sm"
+                      optionLabel="label"
+                      optionValue="value"
+                      appendTo="body"
+                      placeholder="Выбери тип"
+                      [options]="contactTypeConfig.options"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('contactType')?.invalid && form.get('contactType')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('contactType')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Ссылка
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <input formControlName="contactReference"
+                 pInputText
+                 class="p-1 w-full text-sm"
+                 type="text"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="(form.get('contactReference')?.invalid || form.invalid) && form.get('contactReference')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('contactReference')?.errors?.['required']">
+            Способ контакта не может быть пустым
+          </small>
+          <small *ngIf="form.errors?.['invalidEmail']">
+            Некорректный адрес электронной почты
+          </small>
+          <small *ngIf="form.errors?.['invalidUrl']">
+            Некорректная ссылка на социальную сеть
+          </small>
+          <small *ngIf="form.errors?.['invalidPhone']">
+            Некорректный формат номера телефона
+          </small>
+          <small *ngIf="form.errors?.['unknownType']">
+            Неизвестный тип способа
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="m-2">
+      <div class="flex flex-wrap align-items-center justify-content-center">
+        <p-button styleClass='text-center p-2'
+                  label="Сохранить"
+                  icon="pi pi-check"
+                  severity="secondary"
+                  type="submit"
+                  [disabled]="form.invalid"
+        />
+      </div>
+    </div>
+  </div>
+</form>

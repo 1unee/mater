@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class CarEntity extends AbstractEntity {
     /**
      * Год выпуска (положительное число).
      */
-    Year productionYear;
+    Integer productionYear;
 
     /**
      * Цена (от 0 до 1 000 000 000.00 в рублях).
@@ -73,22 +72,16 @@ public class CarEntity extends AbstractEntity {
     /**
      * Прикрепленные фото.
      */
-    @OneToMany(
-            mappedBy = "car",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @ToString.Exclude
     List<PhotoEntity> photos = new ArrayList<>();
 
     /**
      * Прикрепленные видео.
      */
-    @OneToMany(
-            mappedBy = "car",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @ToString.Exclude
     List<VideoEntity> videos = new ArrayList<>();
 }

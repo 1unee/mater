@@ -14,6 +14,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - backend
+
   spring-boot:
     image: mater-rest
     container_name: mater-rest-container
@@ -24,6 +25,8 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
       - "9033:8081"
+    volumes:
+      - spring-boot-logs:/logs
     depends_on:
       - postgres
     networks:
@@ -33,7 +36,8 @@ services:
     image: mater-web
     container_name: mater-web-container
     ports:
-      - "80:4200"
+      - "80:4200"   # http
+      - "443:4200"  # https
     depends_on:
       - spring-boot
     networks:
@@ -41,6 +45,7 @@ services:
 
 volumes:
   postgres-data:
+  spring-boot-logs:
 
 networks:
   backend:

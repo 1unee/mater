@@ -10,5 +10,5 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @Data
-public class PhotoDto extends BytesDto {
+public class PhotoDto extends FileDto {
 }

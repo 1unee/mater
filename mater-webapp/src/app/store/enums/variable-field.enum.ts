@@ -1,0 +1,7 @@
+export enum VariableFieldEnum {
+  EMAIL = 'EMAIL',
+  FIRST_NAME = 'FIRST_NAME',
+  LAST_NAME = 'LAST_NAME',
+  MIDDLE_NAME = 'MIDDLE_NAME',
+  BIRTH_DATE = 'BIRTH_DATE'
+}

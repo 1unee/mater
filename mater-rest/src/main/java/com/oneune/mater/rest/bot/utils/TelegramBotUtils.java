@@ -1,18 +1,24 @@
 package com.oneune.mater.rest.bot.utils;
 
 import com.oneune.mater.rest.main.store.exceptions.BusinessLogicException;
+import jakarta.annotation.Nullable;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.internal.Pair;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @UtilityClass
 @Log4j2
@@ -84,5 +90,28 @@ public class TelegramBotUtils {
                 .showAlert(true)
                 .build();
         return uncheckedExecute(bot, telegramAlert);
+    }
+
+    /**
+     * If chat ID is null or message ID is null, then nothing do.
+     */
+    public <CHAT_ID extends Long,
+            MESSAGE_ID extends Integer> Boolean deleteMessages(DefaultAbsSender bot,
+                                                               Map<CHAT_ID, List<MESSAGE_ID>> ids) {
+        return ids.entrySet().stream()
+                .flatMap(entry -> entry.getValue().stream().map(messageId -> Pair.of(entry.getKey(), messageId)))
+                .filter(pair -> Objects.nonNull(pair.getLeft()) && Objects.nonNull(pair.getRight()))
+                .map(pair -> DeleteMessage.builder().chatId(pair.getLeft().toString()).messageId(pair.getRight()).build())
+                .allMatch(deleteMessage -> uncheckedExecute(bot, deleteMessage));
+    }
+
+    /**
+     * If chat ID is null or message ID is null, then nothing do.
+     */
+    public <CHAT_ID extends Long,
+            MESSAGE_ID extends Integer> Boolean deleteMessage(DefaultAbsSender bot,
+                                                              @Nullable CHAT_ID chatId,
+                                                              @Nullable MESSAGE_ID messageId) {
+        return deleteMessages(bot, Map.of(chatId, List.of(messageId)));
     }
 }

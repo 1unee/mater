@@ -10,5 +10,5 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @Data
-public class VideoDto extends BytesDto {
+public class VideoDto extends FileDto {
 }

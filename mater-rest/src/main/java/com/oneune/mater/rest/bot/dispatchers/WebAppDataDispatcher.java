@@ -40,7 +40,7 @@ public class WebAppDataDispatcher implements Dispatcher {
                 ));
 
         switch (webAppDataConst) {
-            case REGISTER_USER -> userService.registerUser(bot, update, (String) webAppData.getData());
+            case REGISTER_USER -> userService.register(bot, update, (String) webAppData.getData());
             default -> throw new IllegalArgumentException("Unknown CommandType enum constant!");
         }
     }

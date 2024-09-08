@@ -1,14 +1,9 @@
 package com.oneune.mater.rest.main.contracts;
 
 import com.oneune.mater.rest.main.store.dtos.AbstractDto;
-import com.querydsl.core.types.Predicate;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.oneune.mater.rest.main.store.entities.AbstractEntity;
 
-public interface Readable<D extends AbstractDto> extends Searchable<D> {
-
-    /**
-     * Includes all possible joins.
-     */
-    JPAQuery<D> writeBaseQuery(Predicate ... predicates);
+public interface Readable<D extends AbstractDto,
+                          E extends AbstractEntity> extends Searchable<D> {
     D getById(Long dtoId);
 }

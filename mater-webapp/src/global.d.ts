@@ -6,8 +6,40 @@ interface Window {
   };
 }
 
+interface WebAppChat {
+  id: number;  // Уникальный идентификатор чата
+  type: 'group' | 'supergroup' | 'channel';  // Тип чата
+  title?: string;  // Название чата
+  username?: string;  // Опционально. Имя пользователя чата
+  photoUrl?: string;  // Опционально. URL фотографии чата. Возвращается только для Mini Apps, запущенных из меню вложений.
+}
+
+
+interface WebAppUser {
+  id: number;  // Уникальный идентификатор пользователя или бота
+  isBot?: boolean;  // Опционально. True, если это бот. Возвращается только в поле receiver.
+  firstName: string;  // Имя пользователя или бота
+  lastName?: string;  // Опционально. Фамилия пользователя или бота
+  username?: string;  // Опционально. Имя пользователя или бота
+  languageCode?: string;  // Опционально. Языковой код пользователя в формате IETF. Возвращается только в поле user.
+  isPremium?: boolean;  // Опционально. True, если пользователь является пользователем Telegram Premium
+  addedToAttachmentMenu?: boolean;  // Опционально. True, если пользователь добавил бота в меню вложений
+  allowsWriteToPm?: boolean;  // Опционально. True, если пользователь разрешил боту отправлять ему сообщения
+  photoUrl?: string;  // Опционально. URL профиля пользователя. Возвращается только для Mini Apps, запущенных из меню вложений.
+}
+
+
 interface WebAppInitData {
-  // Define the structure of WebAppInitData here
+  queryId?: string;  // Уникальный идентификатор сессии Mini App
+  user?: WebAppUser;  // Объект с данными о текущем пользователе
+  receiver?: WebAppUser;  // Объект с данными о собеседнике в чате
+  chat?: WebAppChat;  // Объект с данными о чате, откуда был запущен бот
+  chatType?: 'sender' | 'private' | 'group' | 'supergroup' | 'channel';  // Тип чата
+  chatInstance?: string;  // Глобальный идентификатор чата
+  startParam?: string;  // Значение параметра startattach
+  canSendAfter?: number;  // Время в секундах, после которого можно отправлять сообщение
+  authDate: number;  // Время в Unix, когда форма была открыта
+  hash: string;  // Хэш всех переданных параметров для проверки их достоверности на сервере
 }
 
 interface ThemeParams {

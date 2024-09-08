@@ -12,7 +12,7 @@
 
     <groupId>com.oneune</groupId>
     <artifactId>mater-rest</artifactId>
-    <version>0.0.1-DEV</version> <!-- extract to .env and parse by script (web too) -->
+    <version>0.0.1-DEV</version> <!-- extract from .env and parse by script (web too) -->
 
     <name>mater-rest</name>
     <description>mater-rest</description>
@@ -91,6 +91,10 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
             <version>${jaxb-impl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
     </dependencies>
 

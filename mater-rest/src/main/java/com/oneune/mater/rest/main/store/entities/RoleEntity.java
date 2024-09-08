@@ -2,12 +2,12 @@ package com.oneune.mater.rest.main.store.entities;
 
 import com.oneune.mater.rest.main.store.enums.RoleEnum;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "role")
@@ -18,6 +18,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Data
 public class RoleEntity extends AbstractEntity {
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    @Builder.Default
+    List<UserRoleLinkEntity> userRoleLinks = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     RoleEnum name;
 }

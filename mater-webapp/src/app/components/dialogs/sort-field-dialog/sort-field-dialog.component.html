@@ -1,0 +1,159 @@
+<!--<div>-->
+
+<!--  <div>-->
+<!--    <p-inputGroup>-->
+<!--      <p-inputGroupAddon styleClass="w-6rem text-sm">-->
+<!--        Марка-->
+<!--      </p-inputGroupAddon>-->
+<!--      <p-inputGroupAddon styleClass="w-12rem text-sm">-->
+<!--        <input pInputText-->
+<!--               class="p-1 w-full text-sm"-->
+<!--               type="text"-->
+<!--               [(ngModel)]="car.brand"-->
+<!--        />-->
+<!--      </p-inputGroupAddon>-->
+<!--      <p-inputGroupAddon>-->
+<!--        <i class="text-lg w-1rem"-->
+<!--           [ngClass]="user.personal.isFirstNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"-->
+<!--           (click)="messageService.showInfoMessage('Это твое настоящее имя, которое можно поменять только один раз при желании. Также можно скопировать, нажав левее.')"-->
+<!--        ></i>-->
+<!--      </p-inputGroupAddon>-->
+<!--      <p-inputGroupAddon>-->
+<!--        <i class="text-lg w-1rem"-->
+<!--           [ngClass]="user.personal.isFirstNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"-->
+<!--           (click)="messageService.showInfoMessage('Это твое настоящее имя, которое можно поменять только один раз при желании. Также можно скопировать, нажав левее.')"-->
+<!--        ></i>-->
+<!--      </p-inputGroupAddon>-->
+<!--    </p-inputGroup>-->
+<!--  </div>-->
+
+<!--  <div>-->
+<!--    <p-inputGroup>-->
+<!--      <p-inputGroupAddon styleClass="w-6rem text-sm"-->
+<!--                         (click)="clipboardService.extCopy(car.model,'Модель скопирована')"-->
+<!--      >-->
+<!--        Модель-->
+<!--      </p-inputGroupAddon>-->
+<!--      <p-inputGroupAddon styleClass="w-12rem text-sm">-->
+<!--        <input pInputText-->
+<!--               class="p-1 w-full text-sm"-->
+<!--               type="text"-->
+<!--               [(ngModel)]="car.model"-->
+<!--        />-->
+<!--      </p-inputGroupAddon>-->
+<!--    </p-inputGroup>-->
+<!--  </div>-->
+
+<!--  <div>-->
+<!--    <p-inputGroup>-->
+<!--      <p-inputGroupAddon styleClass="w-6rem text-sm"-->
+<!--                         (click)="clipboardService.extCopy(car.productionYear,'Год выпуска скопирован')"-->
+<!--      >-->
+<!--        Год выпуска-->
+<!--      </p-inputGroupAddon>-->
+<!--      <p-inputGroupAddon styleClass="w-12rem text-sm">-->
+<!--        <input pInputText-->
+<!--               class="p-1 w-full text-sm"-->
+<!--               type="text"-->
+<!--               [(ngModel)]="car.productionYear"-->
+<!--        />-->
+<!--      </p-inputGroupAddon>-->
+<!--    </p-inputGroup>-->
+<!--  </div>-->
+
+<!--  <div>-->
+<!--    <p-inputGroup>-->
+<!--      <p-inputGroupAddon styleClass="w-6rem text-sm"-->
+<!--                         (click)="clipboardService.extCopy(car.price,'Цена скопирована')"-->
+<!--      >-->
+<!--        Цена (₽)-->
+<!--      </p-inputGroupAddon>-->
+<!--      <p-inputGroupAddon styleClass="w-12rem text-sm">-->
+<!--        <input pInputText-->
+<!--               class="p-1 w-full text-sm"-->
+<!--               type="text"-->
+<!--               [(ngModel)]="car.price"-->
+<!--        />-->
+<!--      </p-inputGroupAddon>-->
+<!--    </p-inputGroup>-->
+<!--  </div>-->
+
+<!--  <div>-->
+<!--    <p-inputGroup>-->
+<!--      <p-inputGroupAddon styleClass="w-6rem text-sm"-->
+<!--                         (click)="clipboardService.extCopy(car.mileage,'Пробег скопирован')"-->
+<!--      >-->
+<!--        Пробег (км)-->
+<!--      </p-inputGroupAddon>-->
+<!--      <p-inputGroupAddon styleClass="w-12rem text-sm">-->
+<!--        <input pInputText-->
+<!--               class="p-1 w-full text-sm"-->
+<!--               type="text"-->
+<!--               [(ngModel)]="car.mileage"-->
+<!--        />-->
+<!--      </p-inputGroupAddon>-->
+<!--    </p-inputGroup>-->
+<!--  </div>-->
+
+<!--  <div>-->
+<!--    <p-inputGroup>-->
+<!--      <p-inputGroupAddon styleClass="w-6rem text-sm"-->
+<!--                         (click)="clipboardService.extCopy(car.VIN,'ВИН скопирован')"-->
+<!--      >-->
+<!--        ВИН-->
+<!--      </p-inputGroupAddon>-->
+<!--      <p-inputGroupAddon styleClass="w-12rem text-sm">-->
+<!--        <input pInputText-->
+<!--               class="p-1 w-full text-sm"-->
+<!--               type="text"-->
+<!--               [(ngModel)]="car.VIN"-->
+<!--        />-->
+<!--      </p-inputGroupAddon>-->
+<!--    </p-inputGroup>-->
+<!--  </div>-->
+
+<!--  <div>-->
+<!--    <p-inputGroup>-->
+<!--      <p-inputGroupAddon styleClass="w-6rem text-sm"-->
+<!--                         (click)="clipboardService.extCopy(car.ownersAmount,'Количество владельцев скопировано')"-->
+<!--      >-->
+<!--        Количество владельцев-->
+<!--      </p-inputGroupAddon>-->
+<!--      <p-inputGroupAddon styleClass="w-12rem text-sm">-->
+<!--        <input pInputText-->
+<!--               class="p-1 w-full text-sm"-->
+<!--               type="text"-->
+<!--               [(ngModel)]="car.ownersAmount"-->
+<!--        />-->
+<!--      </p-inputGroupAddon>-->
+<!--    </p-inputGroup>-->
+<!--  </div>-->
+
+<!--  <div>-->
+<!--    <p-inputGroup>-->
+<!--      <p-inputGroupAddon styleClass="w-6rem text-sm"-->
+<!--                         (click)="clipboardService.extCopy(car.power,'Количество лошадиных сил скопировано')"-->
+<!--      >-->
+<!--        Кол-во Л.С.-->
+<!--      </p-inputGroupAddon>-->
+<!--      <p-inputGroupAddon styleClass="w-12rem text-sm">-->
+<!--        <input pInputText-->
+<!--               class="p-1 w-full text-sm"-->
+<!--               type="text"-->
+<!--               [(ngModel)]="car.power"-->
+<!--        />-->
+<!--      </p-inputGroupAddon>-->
+<!--    </p-inputGroup>-->
+<!--  </div>-->
+
+<!--  <div class="m-2">-->
+<!--    <div class="flex flex-wrap align-items-center justify-content-center">-->
+<!--      <p-button styleClass='text-center'-->
+<!--                label="Сохранить и закрыть"-->
+<!--                icon="pi pi-check"-->
+<!--                severity="secondary"-->
+<!--                (click)="onSave()"-->
+<!--      />-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->

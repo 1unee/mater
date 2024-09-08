@@ -1,10 +1,11 @@
 package com.oneune.mater.rest.main.contracts;
 
 import com.oneune.mater.rest.main.store.dtos.AbstractDto;
-
-import java.util.List;
+import com.oneune.mater.rest.main.store.pagination.PageQuery;
+import com.oneune.mater.rest.main.store.pagination.PageResponse;
 
 @FunctionalInterface
 public interface Searchable<D extends AbstractDto> {
-    List<D> search(int page, int size);
+
+    PageResponse<D> search(PageQuery pageQuery);
 }

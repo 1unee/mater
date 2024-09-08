@@ -22,7 +22,11 @@ import java.time.LocalDate;
 @Data
 public class PersonalEntity extends AbstractEntity {
     String firstName;
+    boolean isFirstNameSet;
     String lastName;
+    boolean isLastNameSet;
     String middleName;
+    boolean isMiddleNameSet;
     LocalDate birthDate;
+    boolean isBirthDateSet;
 }

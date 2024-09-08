@@ -1,11 +1,10 @@
 package com.oneune.mater.rest.main.store.entities;
 
+import com.oneune.mater.rest.main.store.enums.ContactTypeEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-
-import java.net.URI;
 
 @Entity
 @Table(name = "contact")
@@ -22,7 +21,7 @@ public class ContactEntity extends AbstractEntity {
     @ToString.Exclude
     SellerEntity seller;
 
-    String method;
-    String phoneNumber;
-    URI socialNetworkReference;
+    @Enumerated(EnumType.STRING)
+    ContactTypeEnum type;
+    String value;
 }

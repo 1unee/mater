@@ -7,10 +7,31 @@ spring:
   jpa:
     hibernate.ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    pagination:
+      page-size: 3
   flyway:
     enabled: true
+    locations: classpath:db/migration/default
   config:
     import: classpath:.env.properties
+  mail:
+    host: smtp.${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    test-connection: true
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+    sender:
+      email: ${MAIL_USERNAME}@${MAIL_HOST}
+
 
 server:
   port: 8081
@@ -25,14 +46,11 @@ telegram:
   bot:
     name: Mater
     token: ${TELEGRAM_BOT_TOKEN}
-    command:
-      start:
-        description: Начать выбирать машину
-      cars_menu:
-        description: Главное меню с машинами
-      notifications_menu:
-        description: Меню уведомлений об изменениях
-      contact_seller:
-        description: Связаться с продавцом
-      contact_developer:
-        description: Связаться с разработчиком бота
+    menu:
+      type: button
+      command:
+        start:
+          description: Начать
+      button:
+        title: Открыть приложение
+        url: https://oneune.duckdns.org

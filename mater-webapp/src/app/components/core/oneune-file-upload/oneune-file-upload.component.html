@@ -1,0 +1,79 @@
+<div>
+  <div class="grid">
+
+    <div class="col-12 p-1">
+      <div class="flex justify-content-center flex-wrap">
+        <div class="flex align-items-center justify-content-center">
+          <p-tag severity="secondary"
+                 [value]="(getSelectedState(FileTypeEnum.PHOTO).files.length ?? 0).toString()"
+          ></p-tag>
+          <p-selectButton styleClass="p-1 text-sm secondary"
+                          optionLabel="label"
+                          optionValue="value"
+                          [options]="selectButtonConfig.states"
+                          [(ngModel)]="selectButtonConfig.selectedValue"
+          />
+          <p-tag severity="secondary"
+                 [value]="(getSelectedState(FileTypeEnum.VIDEO).files.length ?? 0).toString()"
+          ></p-tag>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 p-1">
+      <div class="flex justify-content-center flex-wrap">
+        <div class="flex align-items-center justify-content-center gap-1">
+          <input #htmlFileInput
+                 type="file"
+                 multiple
+                 [accept]="selectedState.accept"
+                 [style.display]="'none'"
+                 (change)="onChoose($event)"
+          />
+          <p-button styleClass="p-1"
+                    severity="secondary"
+                    label="Выбрать"
+                    icon="pi pi-upload"
+                    (click)="htmlFileInput.click()"
+          />
+          <p-button styleClass="p-1"
+                    severity="secondary"
+                    label="Сохранить"
+                    icon="pi pi-save"
+                    (click)="onSave()"
+          />
+          <p-button styleClass="p-1"
+                    severity="secondary"
+                    label="Очистить"
+                    icon="pi pi-trash"
+                    (click)="onClean()"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 p-1">
+      <div *ngIf="selectedState.files.length > 0">
+        <div *ngFor="let file of selectedState.files">
+          <div class="border-1 border-round-2xl border-200">
+            <div class="m-2 grid grid-nogutter">
+              <div class="col-7" (click)="clipboardService.extCopy(file.name, 'Название скопировано')">
+                {{ file.name.length > 20 ? file.name.substring(0, 17) + '...' : file.name }}
+              </div>
+              <div class="col-3">
+                {{ getFormatedSize(file.size) }}
+              </div>
+              <div class="col-2">
+                <p-button styleClass="p-1 text-sm border-round-2xl"
+                          severity="secondary"
+                          icon="pi pi-times"
+                          (click)="removeFile(file)"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="w-full">
+  <!-- Заголовок секции плеера -->
+  <h3>{{ header }}</h3>
+
+  <div class="relative mx-auto">
+    <!-- Основной контейнер для видеоплеера -->
+    <vg-player>
+      <!-- Компонент для отображения кнопки воспроизведения при наведении -->
+      <vg-overlay-play *ngIf="base64Videos.length !== 0"></vg-overlay-play>
+
+      <!-- Компонент для отображения индикатора буферизации -->
+      <vg-buffering></vg-buffering>
+
+      <!-- Компонент для полосы прокрутки и времени воспроизведения -->
+      <vg-scrub-bar>
+        <!-- Компонент для отображения текущего времени воспроизведения -->
+        <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+        <!-- Компонент для отображения времени буферизации -->
+        <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+      </vg-scrub-bar>
+
+      <!-- Компонент для управления воспроизведением и другими параметрами -->
+      <vg-controls>
+
+        <div class="flex align-content-center flex-wrap ml-2">
+          <div class="flex align-items-center justify-content-center">
+            <p-button styleClass="flex align-items-center justify-content-center p-1 w-auto mr-1"
+                      severity="contrast"
+                      icon="pi pi-angle-left"
+                      [disabled]="currentVideoIndex === 0"
+                      (click)="prev()"
+            ></p-button>
+          </div>
+          <div class="flex align-items-center justify-content-center">
+            <p-button styleClass="flex align-items-center justify-content-center p-1 w-auto"
+                      severity="contrast"
+                      icon="pi pi-angle-right"
+                      [disabled]="currentVideoIndex === base64Videos.length - 1"
+                      (click)="next()"
+            ></p-button>
+          </div>
+        </div>
+        <!-- Компонент для кнопки воспроизведения/паузы -->
+        <vg-play-pause *ngIf="false"></vg-play-pause>
+        <!-- Кнопка для воспроизведения на следующей дорожке или видео -->
+        <vg-playback-button></vg-playback-button>
+        <!-- Компонент для отображения текущего времени в формате mm:ss -->
+        <vg-time-display vgProperty="current" vgFormat="mm:ss"></vg-time-display>
+        <!-- Полоса прокрутки, но с отключенным обработчиком событий для отображения (чтобы не перекрывала управляющие кнопки) -->
+        <vg-scrub-bar *ngIf="false" style="pointer-events: none;"></vg-scrub-bar>
+        <!-- Компонент для отображения оставшегося времени -->
+        <vg-time-display *ngIf="false" vgProperty="left" vgFormat="mm:ss"></vg-time-display>
+        <!-- Компонент для отображения общего времени видео -->
+        <vg-time-display *ngIf="false" vgProperty="total" vgFormat="mm:ss"></vg-time-display>
+        <!-- Компонент для управления звуком (вкл/выкл звук) -->
+        <vg-mute></vg-mute>
+        <!-- Компонент для управления громкостью -->
+        <vg-volume *ngIf="false"></vg-volume>
+        <!-- Компонент для включения/выключения полноэкранного режима -->
+        <vg-fullscreen></vg-fullscreen>
+      </vg-controls>
+
+      <video #htmlVideo
+             id="singleVideo"
+             preload="auto"
+             crossorigin
+             [vgMedia]="$any(htmlVideo)"
+             [width]="width"
+             [height]="height"
+      >
+        <source #htmlSource [src]="base64CurrentVideo" type="video/mp4">
+      </video>
+    </vg-player>
+    <p-tag class="absolute"
+           styleClass="border-round-3xl"
+           severity="secondary"
+           [value]="(currentVideoIndex + 1).toString() + '/' + base64Videos.length"
+           [ngStyle]="{ 'left.px': 5, 'top.px': 5 }"
+    />
+</div>

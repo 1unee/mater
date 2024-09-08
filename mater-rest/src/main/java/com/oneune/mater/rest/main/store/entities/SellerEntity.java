@@ -1,10 +1,7 @@
 package com.oneune.mater.rest.main.store.entities;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
@@ -21,25 +18,15 @@ import java.util.List;
 @Data
 public class SellerEntity extends AbstractEntity {
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    UserEntity user;
-
     Float score;
 
-    @OneToMany(
-            mappedBy = "seller",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @Builder.Default
     List<ContactEntity> contacts = new ArrayList<>();
 
-    @OneToMany(
-            mappedBy = "seller",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @Builder.Default
     List<CarEntity> cars = new ArrayList<>();
 }

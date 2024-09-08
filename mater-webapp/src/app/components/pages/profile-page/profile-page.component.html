@@ -1,0 +1,161 @@
+<div class="p-grid p-dir-col" style="row-gap: 1rem;">
+
+  <div class="col">
+    <p-accordion>
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <span class="flex align-items-center gap-2 w-full">
+            <i class="pi pi-user text-lg"></i>
+            <span class="font-bold white-space-nowrap">
+                Личная информация
+            </span>
+            <i class="pi pi-info-circle text-2xl ml-auto"
+               (click)="$event.stopPropagation(); showUserDescriptionSupportSidebar = true;"
+            ></i>
+          </span>
+        </ng-template>
+        <app-user-description></app-user-description>
+      </p-accordionTab>
+
+      <p-accordionTab *ngIf="false">
+        <ng-template pTemplate="header">
+          <span class="flex align-items-center gap-2 w-full">
+            <i class="pi pi-star text-lg"></i>
+            <span class="font-bold white-space-nowrap">
+              {{ 'Рейтинг ' + '(' + user.seller.score + ')' }}
+            </span>
+            <i class="pi pi-info-circle text-2xl ml-auto"
+               (click)="$event.stopPropagation()"
+            ></i>
+          </span>
+        </ng-template>
+        <app-user-rating [score]="user.seller?.score ?? 0"></app-user-rating>
+      </p-accordionTab>
+
+      <p-accordionTab *ngIf="false">
+        <ng-template pTemplate="header">
+          <span class="flex align-items-center gap-2 w-full">
+            <i class="pi pi-car text-lg"></i>
+            <span class="font-bold white-space-nowrap">
+              {{ 'Выложенные машины ' + '(' + (user.seller?.cars?.length ?? 0) + ')' }}
+            </span>
+            <i class="pi pi-info-circle text-2xl ml-auto"
+               (click)="$event.stopPropagation()"
+            ></i>
+          </span>
+        </ng-template>
+      </p-accordionTab>
+
+      <p-accordionTab *ngIf="false">
+        <ng-template pTemplate="header">
+          <span class="flex align-items-center gap-2 w-full">
+            <i class="pi pi-history text-lg"></i>
+            <span class="font-bold white-space-nowrap">
+              {{ 'История поиска ' + '(' + 0 + ')' }}
+            </span>
+            <i class="pi pi-info-circle text-2xl ml-auto"
+               (click)="$event.stopPropagation()"
+            ></i>
+          </span>
+        </ng-template>
+        <app-user-search-history [searchHistory]="searchHistory ?? []"></app-user-search-history>
+      </p-accordionTab>
+
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <span class="flex align-items-center gap-2 w-full">
+            <i class="pi pi-link text-lg"></i>
+            <span class="font-bold white-space-nowrap">
+              Контакты
+            </span>
+            <i class="pi pi-info-circle text-2xl ml-auto"
+               (click)="$event.stopPropagation(); showContactsSupportSidebar = true;"
+            ></i>
+          </span>
+        </ng-template>
+        <app-user-contacts></app-user-contacts>
+      </p-accordionTab>
+    </p-accordion>
+  </div>
+</div>
+
+
+<p-sidebar styleClass="w-18rem" [(visible)]="showUserDescriptionSupportSidebar">
+  <ng-template pTemplate="header">
+    <div class="flex align-items-center gap-2">
+      <i class="pi pi-user text-lg"></i>
+      <span class="font-bold">
+        Профиль
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <hr>
+    <p>
+      Этот раздел содержит основную информацию о тебе.
+    </p>
+    <p>
+      Часть данных, которые находятся в открытом доступе,
+      берутся из телеграмма в момент первого открытия приложения.
+    </p>
+    <p>
+      К таким данным относятся: ник, имя и фамилия (если они у тебя есть).
+      Остальные данные ты можешь ввести по желанию, они не являтся обязательными для заполнения.
+    </p>
+    <p>
+      Данные, которые доступны для редактирования, <b>можно изменить только один раз</b>!!!
+    </p>
+    <p>
+      При нажатии на конкретное поле, его можно скопировать в буфер обмена.
+      По каждому полю также представлена дополнительная информация (кнопка замочка справа).
+    </p>
+    <hr>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex flex-wrap align-items-center justify-content-center m-2">
+      <div class="text-center">
+        <button pButton
+                pRipple
+                class="p-button-secondary rounded-3 mx-1"
+                label="Обратная связь"
+                (click)="openFeedbackForm()"
+        ></button>
+      </div>
+    </div>
+  </ng-template>
+</p-sidebar>
+
+
+<p-sidebar styleClass="w-18rem" [(visible)]="showContactsSupportSidebar">
+  <ng-template pTemplate="header">
+    <div class="flex align-items-center gap-2">
+      <i class="pi pi-user text-lg"></i>
+      <span class="font-bold">
+        Контакты
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <hr>
+    <p>
+      Этот раздел содержит информацию о способах связи с тобой.
+    </p>
+    <p>
+      Контакты можно спокойно удалять, добавлять, редактировать при желании.
+      Только учти, что удаленные контакты восстановлению не подлежат.
+    </p>
+    <hr>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex flex-wrap align-items-center justify-content-center m-2">
+      <div class="text-center">
+        <button pButton
+                pRipple
+                class="p-button-secondary rounded-3 mx-1"
+                label="Обратная связь"
+                (click)="openFeedbackForm()"
+        ></button>
+      </div>
+    </div>
+  </ng-template>
+</p-sidebar>

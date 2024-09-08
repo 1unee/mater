@@ -1,4 +1,4 @@
-import {BytesDto} from "./bytes.dto";
+import {FileDto} from "./file.dto";
 
-export class VideoDto extends BytesDto {
+export class VideoDto extends FileDto {
 }

@@ -55,6 +55,7 @@
               "node_modules/primeng/resources/primeng.css",
               "node_modules/primeflex/primeflex.scss",
               "node_modules/primeicons/primeicons.css",
+              "node_modules/@videogular/ngx-videogular/fonts/videogular.css",
               {
                 "input": "src/theme-dark.css",
                 "bundleName": "theme-dark",

@@ -1,0 +1,75 @@
+<div>
+  <div class="grid m-2">
+    <div class="col-12 p-1">
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-5rem text-sm">
+          Тема
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-17rem text-sm">
+          <p-selectButton optionLabel="label"
+                          optionValue="value"
+                          [options]="themeSelectButtonConfig.states"
+                          [(ngModel)]="themeSelectButtonConfig.selectedValue"
+                          (onChange)="onThemeChange($event)"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-5rem text-sm">
+          Показывать кнопку сортировки и фильтрации
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-17rem text-sm">
+          <p-selectButton optionLabel="label"
+                          optionValue="value"
+                          [options]="sortFilterSelectButtonConfig.states"
+                          [(ngModel)]="sortFilterSelectButtonConfig.selectedValue"
+                          (onChange)="onSortFilterStateChange($event)"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-5rem text-sm">
+          Показывать кнопку добавленя машин
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-17rem text-sm">
+          <p-selectButton optionLabel="label"
+                          optionValue="value"
+                          [options]="createCarSelectButtonConfig.states"
+                          [(ngModel)]="createCarSelectButtonConfig.selectedValue"
+                          (onChange)="onCarAddingStateChange($event)"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-5rem text-sm">
+          Показывать сообщение о тестовом режиме системы фильтрации и сортировки
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-17rem text-sm">
+          <p-selectButton optionLabel="label"
+                          optionValue="value"
+                          [options]="warnMessageAboutTestStagePageQueryingConfig.states"
+                          [(ngModel)]="warnMessageAboutTestStagePageQueryingConfig.selectedValue"
+                          (onChange)="onWarnPageQueryingStateChange($event)"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-5rem text-sm">
+          Автоматическая смена фото
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-17rem text-sm">
+          <p-selectButton optionLabel="label"
+                          optionValue="value"
+                          [options]="autoPlayImages.states"
+                          [(ngModel)]="autoPlayImages.selectedValue"
+                          (onChange)="onAutoPlayImagesChange($event)"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+    </div>
+  </div>
+</div>

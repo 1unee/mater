@@ -6,18 +6,26 @@
 <p-toast position="bottom-right" key="br"></p-toast>
 <p-toast styleClass="custom-toast" key="custom"></p-toast>
 
+<app-loader></app-loader>
+
 <div>
+  <app-general-toolbar pStyleClass="w-full"></app-general-toolbar>
   <router-outlet></router-outlet>
 </div>
 
 <div class="clear-toasts-button-container">
-  <!--  todo: добавить удаление кнопки когда все сообщения пропадают -->
   <button *ngIf="messages.length !== 0"
           pButton
           pRipple
-          class="p-button-secondary rounded-3 mx-3 margined"
+          class="p-button-secondary rounded-3"
           icon="pi pi-delete-left"
           pTooltip="Удалить все всплывашки"
           (click)="clearMessages()"
   ></button>
 </div>
+
+<p-confirmDialog acceptButtonStyleClass="p-2 p-button-secondary"
+                 rejectButtonStyleClass="p-2 p-button-secondary"
+                 [style]="{width: '80vw'}"
+                 [closable]="false"
+></p-confirmDialog>

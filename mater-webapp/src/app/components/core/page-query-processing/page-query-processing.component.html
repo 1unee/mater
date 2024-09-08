@@ -1,0 +1,85 @@
+<div class="border-1 border-round-2xl border-200">
+  <div class="m-2">
+    <div class="grid">
+      <div class="col-12 pb-0">
+        <div class="flex flex-wrap">
+          <div class="col-12 p-1">
+            <p-iconField iconPosition="left">
+              <p-inputIcon styleClass="pi pi-search"/>
+              <input class="w-full"
+                     type="text"
+                     pInputText
+                     placeholder="Общий поиск"
+                     [(ngModel)]="elasticSearchValue"
+                     (focusin)="messageService.informAboutDeveloping()"
+              />
+            </p-iconField>
+          </div>
+          <div class="col-12 p-1">
+            <p-dropdown styleClass="w-full"
+                        panelStyleClass="p-1 text-sm"
+                        appendTo="body"
+                        placeholder="Характеристика"
+                        [options]="pageQueryProcessingConfig.fields"
+                        [(ngModel)]="pageQueryProcessingConfig.selectedField"
+                        (ngModelChange)="onFieldChange($event)"
+            ></p-dropdown>
+          </div>
+          <div class="col-12 p-1">
+            <p-dropdown styleClass="w-full"
+                        panelStyleClass="p-1 text-sm"
+                        appendTo="body"
+                        placeholder="Тип фильтрации"
+                        [options]="pageQueryProcessingConfig.filters"
+                        [(ngModel)]="pageQueryProcessingConfig.selectedFilter"
+                        (ngModelChange)="onFilterChange($event)"
+            ></p-dropdown>
+          </div>
+          <div class="col-12 p-1">
+            <input class="p-2 w-full"
+                   pInputText
+                   type="text"
+                   placeholder="Значение фильтрации"
+                   [(ngModel)]="pageQueryProcessingConfig.filterValue"
+                   (ngModelChange)="onFilterValueChange($event)"
+            />
+          </div>
+          <div class="col-12 p-1">
+            <p-dropdown styleClass="w-full"
+                        panelStyleClass="p-1 text-sm"
+                        appendTo="body"
+                        placeholder="Тип сортировки"
+                        [options]="pageQueryProcessingConfig.sorts"
+                        [(ngModel)]="pageQueryProcessingConfig.selectedSort"
+                        (ngModelChange)="onSortChange($event)"
+            ></p-dropdown>
+          </div>
+          <div class="col-12 p-0 pt-2">
+            <div class="flex justify-content-center flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <div class="grid w-auto">
+                  <div class="col-6 p-1">
+                    <p-button label="Применить"
+                              styleClass="p-2 w-10rem"
+                              icon="pi pi-check"
+                              severity="secondary"
+                              (click)="apply()"
+                    ></p-button>
+                  </div>
+                  <div class="col-6 p-1">
+                    <p-button label="Убрать"
+                              styleClass="p-2 w-10rem"
+                              icon="pi pi-times"
+                              severity="secondary"
+                              (click)="clear()"
+                    ></p-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

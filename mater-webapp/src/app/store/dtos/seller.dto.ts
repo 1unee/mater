@@ -1,9 +1,9 @@
 import {AbstractDto} from "./abstract.dto";
 import {CarDto} from "./car.dto";
-import {UserDto} from "./user.dto";
+import {ContactDto} from "./contact.dto";
 
 export class SellerDto extends AbstractDto {
-  user: UserDto;
   score: number;
+  contacts: ContactDto[];
   cars: CarDto[];
 }

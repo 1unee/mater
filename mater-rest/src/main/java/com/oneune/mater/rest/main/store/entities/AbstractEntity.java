@@ -1,7 +1,10 @@
 package com.oneune.mater.rest.main.store.entities;
 
 import com.oneune.mater.rest.main.contracts.Identifiable;
-import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;

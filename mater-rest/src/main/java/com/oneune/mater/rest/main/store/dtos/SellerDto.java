@@ -1,9 +1,6 @@
 package com.oneune.mater.rest.main.store.dtos;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
@@ -15,8 +12,10 @@ import java.util.List;
 @SuperBuilder
 @Data
 public class SellerDto extends AbstractDto {
-    UserDto user;
     Float score;
+    @ToString.Exclude
+    List<ContactDto> contacts;
+    @ToString.Exclude
     List<CarDto> cars;
 }
 

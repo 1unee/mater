@@ -38,3 +38,4 @@ logs
 
 # ignore .env
 /**/resources/*.env
+/**/resources/*.env.properties

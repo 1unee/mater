@@ -18,4 +18,10 @@ public class SerializationConfig {
                 .setFieldAccessLevel(AccessLevel.PRIVATE);
         return modelMapper;
     }
+
+//    @Bean
+//    public ObjectMapper objectMapper() {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        return objectMapper;
+//    }
 }

@@ -1,0 +1,381 @@
+<p-dataView emptyMessage="Машины еще не добавлены"
+            [value]="paginationConfig.pageResponse.content"
+            [paginator]="false"
+            [rows]="paginationConfig.pageSize"
+>
+  <ng-template pTemplate="header">
+    <div class="col-12 p-1">
+      <div class="flex justify-content-between flex-wrap">
+        <div class="flex align-items-center justify-content-center">
+          {{ carListHeader }}
+        </div>
+        <div class="flex align-items-center justify-content-center">
+          <!-- center content -->
+        </div>
+        <div class="flex align-items-center justify-content-center gap-1">
+          <p-button *ngIf="globalConfig.settings.showCreateCarButton"
+                    styleClass="text-center text-sm p-2 w-12"
+                    icon="pi pi-plus"
+                    severity="secondary"
+                    (click)="onCarProcessing(null)"
+          ></p-button>
+          <p-button styleClass="text-center text-sm p-2 w-12"
+                    icon="pi pi-refresh"
+                    severity="secondary"
+                    (click)="onPageReload()"
+          ></p-button>
+          <p-button *ngIf="globalConfig.settings.showSortFilterButton"
+                    styleClass="text-center text-sm p-2 w-12"
+                    icon="pi pi-list-check"
+                    severity="secondary"
+                    (click)="onTogglePageQuerying()"
+          ></p-button>
+          <p-selectButton styleClass="text-sm"
+                          optionLabel="label"
+                          optionValue="value"
+                          [options]="selectButtonStatesConfig.states"
+                          [(ngModel)]="selectButtonStatesConfig.selectedValue"
+                          (ngModelChange)="onChange()"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="paginationConfig.processing" class="col-12 p-1">
+      <div class="flex justify-content-between flex-wrap">
+        <div class="flex align-items-center justify-content-center">
+
+        </div>
+        <div class="flex align-items-center justify-content-center">
+          <app-page-query-processing (onApply)="applyPageQuery($event)"></app-page-query-processing>
+        </div>
+        <div class="flex align-items-center justify-content-center gap-1">
+
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="list" let-cars>
+    <div class="grid">
+      <div *ngFor="let _car of cars"
+           class="col-12"
+      >
+        <div class="m-1 border-1 border-round-2xl border-200">
+          <div class="grid">
+
+            <!-- car item header -->
+            <div class="col-12 pb-0">
+              <div class="flex justify-content-between flex-wrap">
+                <div class="flex align-items-center justify-content-center ml-2 mt-2">
+                  <p-tag styleClass="border-round-2xl text-base"
+                         severity="secondary"
+                         [value]="_car.brand + ' ' + _car.model + ' (' + _car.productionYear + ')'"
+                         (click)="clipboardService.extCopy(_car.brand + ' ' + _car.model + ' (' + _car.productionYear + ')', 'Модель машины скопирована!')"
+                  />
+                </div>
+                <div class="flex align-items-center justify-content-center ml-2 mt-2 mr-2">
+                  <!-- header's center content if necessary-->
+                </div>
+                <div class="flex align-items-center justify-content-center mt-2 mr-3">
+                  <i class="text-lg w-1rem"
+                     [ngClass]="starIconFlag ? 'pi pi-star-fill' : 'pi pi-star'"
+                     (click)="messageService.informAboutDeveloping(); starIconFlag = !starIconFlag"
+                  ></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- car item body -->
+            <div class="col-12 pb-0">
+              <div class="grid">
+
+                <!-- car item photos (left side of body) -->
+                <div class="col-6 pb-0">
+                  <div class="flex align-items-center flex-wrap">
+                    <div class="flex align-items-center justify-content-center">
+
+                      <p-carousel #carPhotoCarousel
+                                  contentClass="h-auto"
+                                  *ngIf="!!_car.photos?.length; else onNotFoundCarPhotosBlock"
+                                  [value]="_car.photos"
+                                  [numVisible]="1"
+                                  [numScroll]="1"
+                                  [showIndicators]="false"
+                                  [autoplayInterval]="globalConfig.settings.autoPlayImages ? 5e3 : 1e9"
+                                  [circular]="true"
+                      >
+                        <ng-template pTemplate="item" let-photo>
+                          <div class="flex align-content-center flex-wrap" style="min-height: 200px">
+                            <div class="flex align-items-center justify-content-center">
+                              <div class="relative mx-auto">
+                                <p-image styleClass="w-full"
+                                         imageClass="border-round-2xl w-full h-full"
+                                         alt="Car Photo"
+                                         width="125"
+                                         height="125"
+                                         [src]="'data:image/png;base64,' + photo.base64"
+                                ></p-image>
+                                <p-tag class="absolute"
+                                       styleClass="border-round-3xl"
+                                       severity="secondary"
+                                       [value]="(carPhotoCarousel._page + 1).toString() + '/' + _car.photos.length"
+                                       [ngStyle]="{ 'left.px': 5, 'top.px': 5 }"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </ng-template>
+                      </p-carousel>
+
+                      <ng-template #onNotFoundCarPhotosBlock>
+                        <p-image styleClass="w-full ml-2"
+                                 imageClass="border-round-2xl w-full h-full"
+                                 [imageStyle]="{height: '140px', width: '140px'}"
+                                 src="../../../../assets/car_logo_mater.jpg"
+                                 alt="Car Photo"
+                                 width="125"
+                                 height="125"
+                        ></p-image>
+                      </ng-template>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!-- car item description properties (right side of body) -->
+                <div class="col-6 pb-0">
+                  <div class="flex flex-column justify-content-between flex-1 gap-4">
+                    <div class="flex flex-row justify-content-between align-cars-start gap-2">
+                      <div>
+                        <div class="m-1 text-sm text-600">
+                          <span class="mr-1">Пробег:</span>
+                          <p-tag severity="secondary" [value]="_car.mileage"/>
+                        </div>
+                        <div class="m-1 text-sm text-600">
+                          <span class="mr-1">ВИН:</span>
+                          <p-tag severity="secondary" [value]="_car.VIN ?? 'не определен'"/>
+                        </div>
+                        <div class="m-1 text-sm text-600">
+                          <span class="mr-1">Владельцы:</span>
+                          <p-tag severity="secondary" [value]="_car.ownersAmount"/>
+                        </div>
+                        <div class="m-1 text-sm text-600">
+                          <span class="mr-1">Кол-во Л.С.:</span>
+                          <p-tag severity="secondary" [value]="_car.power"/>
+                        </div>
+                        <div class="m-1 text-sm text-600">
+                          <span class="mr-1">Стоимость:</span>
+                          <p-tag severity="secondary" [value]="_car.price + ' ₽'"/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- car item footer -->
+            <div class="col-12 pb-0">
+              <div class="flex flex-wrap align-items-center justify-content-center">
+                <p-button styleClass="text-center text-sm p-2 m-1"
+                          icon="pi pi-envelope"
+                          severity="secondary"
+                          label="Контакты"
+                          (onClick)="onOpenContacts($event, _car.id)"
+                ></p-button>
+
+                <div *ngIf="contactsOverlayPanel && contactsOverlayPanel.overlayVisible"
+                     class="overlay-backdrop"
+                ></div>
+                <p-overlayPanel #contactsOverlayPanel
+                                styleClass="w-18rem p-1"
+                                (onShow)="toggleOverlayPanelState('show')"
+                                (onHide)="toggleOverlayPanelState('hide')"
+                >
+                  <div class="flex justify-content-start flex-wrap">
+                    <div class="flex align-items-center justify-content-center">
+                      <div class="grid">
+                        <div class="col-12 p-1">
+                          <span class="font-medium text-900 block mb-2">Доступные контакты</span>
+                        </div>
+                        <div class="col-12 p-1">
+                          <div class="grid">
+                            <div *ngFor="let contact of seller?.contacts" class="col-12">
+                              <div class="flex align-items-center">
+                                <div class="col-5 p-1">
+                                  <p-tag severity="secondary"
+                                         styleClass="w-6rem text-sm"
+                                         [value]="ContactTypeTitle[contact.type]"
+                                  ></p-tag>
+                                </div>
+                                <div class="col-7 p-1">
+                                  <div class="flex justify-content-center flex-wrap">
+                                    <div class="flex align-items-center justify-content-center">
+                                      <p-button styleClass="p-1 w-8rem text-sm"
+                                                icon="pi pi-clipboard"
+                                                label="Скопировать"
+                                                (click)="clipboardService.extCopy(contact.value, 'Скопировано!')"
+                                      ></p-button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </p-overlayPanel>
+
+                <p-button styleClass="text-center p-2 m-1"
+                          icon="pi pi-instagram"
+                          severity="secondary"
+                          [label]="_car.photos?.length ?? 0"
+                          [outlined]="true"
+                          [disabled]="_car.photos?.length === 0"
+                          (click)="imagesOverlayPanel.toggle($event)"
+                ></p-button>
+
+                <p-overlayPanel #imagesOverlayPanel
+                                styleClass="w-25rem p-1"
+                                (onShow)="toggleOverlayPanelState('show')"
+                                (onHide)="toggleOverlayPanelState('hide')"
+                >
+                  <div class="flex justify-content-start flex-wrap">
+                    <div class="flex align-items-center justify-content-center">
+                      <div class="grid">
+                        <div class="col-12 p-1">
+                          <p-galleria containerClass="w-full"
+                                      [value]="_car.photos"
+                                      [numVisible]="3"
+                                      [autoPlay]="globalConfig.settings.autoPlayImages"
+                                      [circular]="true"
+                                      [showItemNavigators]="false"
+                                      [showThumbnailNavigators]="false"
+                          >
+                            <ng-template pTemplate="item" let-photo>
+                              <p-image styleClass="w-full"
+                                       imageClass="border-round-2xl w-full h-full"
+                                       alt="Car Photo"
+                                       [src]="'data:image/png;base64,' + photo.base64"
+                              ></p-image>
+                            </ng-template>
+                            <ng-template pTemplate="thumbnail" let-photo>
+                              <div class="grid grid-nogutter justify-content-center">
+                                <p-image styleClass="w-full block"
+                                         imageClass="border-round-xl w-full h-full"
+                                         alt="Car Photo"
+                                         [src]="'data:image/png;base64,' + photo.base64"
+                                ></p-image>
+                              </div>
+                            </ng-template>
+                          </p-galleria>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </p-overlayPanel>
+
+                <p-button styleClass="text-center p-2 m-1"
+                          icon="pi pi-video"
+                          severity="secondary"
+                          [label]="_car.videos?.length ?? 0"
+                          [outlined]="true"
+                          [disabled]="!_car.videos?.length"
+                          (click)="videosOverlayPanel.toggle($event)"
+                ></p-button>
+
+                <div *ngIf="videosOverlayPanel && videosOverlayPanel.overlayVisible"
+                     class="overlay-backdrop"
+                ></div>
+                <p-overlayPanel #videosOverlayPanel
+                                styleClass="w-auto"
+                                (onShow)="toggleOverlayPanelState('show')"
+                                (onHide)="toggleOverlayPanelState('hide')"
+                >
+                  <app-video-player [header]="'Прикрепленные видео (' + (_car.videos?.length ?? 0) + ')'"
+                                    [videos]="_car.videos"
+                  ></app-video-player>
+                </p-overlayPanel>
+              </div>
+            </div>
+
+            <!-- edit buttons -->
+            <!-- *ngIf="storageService.user?.seller?.id === _car.seller?.id" -->
+            <div *ngIf="selectButtonStatesConfig.selectedValue === CarCategorySortEnum.MINE"
+                 class="col-12 pb-0 mb-1">
+              <div class="flex flex-wrap align-items-center justify-content-center gap-1">
+                <p-button styleClass="text-center text-xs p-2 ml-1"
+                          icon="pi pi-wrench"
+                          severity="secondary"
+                          label="Изменить"
+                          (click)="onCarProcessing(_car)"
+                ></p-button>
+
+                <p-button styleClass="text-center text-xs p-2"
+                          icon="pi pi-upload"
+                          severity="secondary"
+                          label="Файлы"
+                          [disabled]="loadingReference.value.getValue()"
+                          (click)="onUpload(_car)"
+                ></p-button>
+
+                <p-button styleClass="text-center text-xs p-2 mr-1"
+                          icon="pi pi-trash"
+                          severity="secondary"
+                          label="Удалить"
+                          (click)="onRemove(_car.id)"
+                ></p-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex flex-wrap align-items-center justify-content-center">
+      <button pButton
+              pRipple
+              severity="secondary"
+              class="text-center rounded-3 mr-1 p-1"
+              icon="pi pi-angle-double-left"
+              [disabled]="paginationConfig.pageNumber === 0"
+              (click)="loadFirstPage()"
+      ></button>
+      <button pButton
+              pRipple
+              severity="secondary"
+              class="text-center rounded-3 mr-1 p-1"
+              icon="pi pi-angle-left"
+              [disabled]="paginationConfig.pageNumber === 0"
+              (click)="search(PaginationDirection.PREV)"
+      ></button>
+      <button pButton
+              pRipple
+              severity="secondary"
+              class="text-center rounded-3 p-1"
+              [label]="(paginationConfig.pageNumber + 1).toString()"
+      ></button>
+      <button pButton
+              pRipple
+              severity="secondary"
+              class="text-center rounded-3 ml-1 p-1"
+              icon="pi pi-angle-right"
+              [disabled]="paginationConfig.pageResponse.totalPages === 0 || paginationConfig.pageNumber + 1 === paginationConfig.pageResponse.totalPages"
+              (click)="search(PaginationDirection.NEXT)"
+      ></button>
+      <button pButton
+              pRipple
+              severity="secondary"
+              class="text-center rounded-3 ml-1 p-1"
+              icon="pi pi-angle-double-right"
+              [disabled]="paginationConfig.pageResponse.totalPages === 0 || paginationConfig.pageNumber + 1 === paginationConfig.pageResponse.totalPages"
+              (click)="loadLastPage()"
+      ></button>
+    </div>
+  </ng-template>
+</p-dataView>
