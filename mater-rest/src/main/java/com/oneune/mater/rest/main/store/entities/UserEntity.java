@@ -20,10 +20,8 @@ import java.util.List;
 public class UserEntity extends AbstractEntity {
 
     String username;
-
     String email;
-    boolean isEmailSet;
-
+    boolean emailSet;
     Long telegramId;
     Instant registeredAt;
 

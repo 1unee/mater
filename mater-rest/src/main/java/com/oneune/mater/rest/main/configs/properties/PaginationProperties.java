@@ -15,6 +15,7 @@ import org.springframework.context.annotation.PropertySource;
 public class PaginationProperties {
     /**
      * Page size.
+     * In priority value from client.
      */
     Integer pageSize = 50;
 }

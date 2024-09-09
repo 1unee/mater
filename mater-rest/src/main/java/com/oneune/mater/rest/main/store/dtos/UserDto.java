@@ -1,6 +1,5 @@
 package com.oneune.mater.rest.main.store.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,8 +21,7 @@ import java.util.List;
 public class UserDto extends AbstractDto {
     String username;
     String email;
-    @JsonProperty("isEmailSet")
-    boolean isEmailSet;
+    boolean emailSet;
     PersonalDto personal;
     SellerDto seller;
     Long telegramId;

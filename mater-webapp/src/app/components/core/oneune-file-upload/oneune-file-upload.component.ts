@@ -36,8 +36,8 @@ export class OneuneFileUploadComponent implements OnInit {
 
   readonly FileTypeEnum = FileTypeEnum;
   readonly FILE_SIZE_PRECISION: number = 1;
-  readonly PHOTO_MAX_SIZE: number = 5 * 1024 * 1024; // in bytes (5 mb)
-  readonly VIDEO_MAX_SIZE: number = (environment.production ? 100 : 500) * 1024 * 1024; // in bytes (100 or 500 mb)
+  readonly PHOTO_MAX_SIZE: number = 5 * 1024 * 1024; // in bytes
+  readonly VIDEO_MAX_SIZE: number = (environment.production ? 35 : 500) * 1024 * 1024; // in bytes
 
   @ViewChild('htmlFileInput') htmlFileInput: HTMLInputElement;
 
@@ -45,8 +45,8 @@ export class OneuneFileUploadComponent implements OnInit {
 
   selectButtonConfig: {states: SelectButtonState[], selectedValue: FileTypeEnum} = {
     states: [
-      { label: FileTypeTitle.PHOTO, value: FileTypeEnum.PHOTO, styleClass: "p-1 p-button-secondary", accept: 'image/*', files: []},
-      { label: FileTypeTitle.VIDEO, value: FileTypeEnum.VIDEO, styleClass: "p-1 p-button-secondary", accept: 'video/*', files: []}
+      { label: FileTypeTitle.PHOTO, value: FileTypeEnum.PHOTO, styleClass: "p-1 p-button-secondary", accept: 'image/*', files: [], disabled: false},
+      { label: FileTypeTitle.VIDEO, value: FileTypeEnum.VIDEO, styleClass: "p-1 p-button-secondary", accept: 'video/*', files: [], disabled: environment.production}
     ],
     selectedValue: FileTypeEnum.PHOTO
   }
@@ -64,6 +64,9 @@ export class OneuneFileUploadComponent implements OnInit {
       .map(photo => new File([base64StringToBlob(photo.base64)], photo.name, {type: photo.type}));
     this.getSelectedState(FileTypeEnum.VIDEO).files = this.car.videos
       .map(video => new File([base64StringToBlob(video.base64)], video.name, {type: video.type}));
+    if (environment.production) {
+      this.messageService.showInfo('Работа с видеофайлами в разработке!');
+    }
   }
 
   get selectedState(): SelectButtonState {

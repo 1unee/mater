@@ -3,7 +3,7 @@ package com.oneune.mater.rest.main.readers;
 import com.google.gson.reflect.TypeToken;
 import com.oneune.mater.rest.main.contracts.BaseQueryable;
 import com.oneune.mater.rest.main.contracts.Readable;
-import com.oneune.mater.rest.main.mappers.QueryMappers;
+import com.oneune.mater.rest.main.mappers.custom_query_dsl.ExtJPAQueryFactory;
 import com.oneune.mater.rest.main.store.dtos.UserDto;
 import com.oneune.mater.rest.main.store.entities.QUserEntity;
 import com.oneune.mater.rest.main.store.entities.QUserRoleLinkEntity;
@@ -14,6 +14,7 @@ import com.oneune.mater.rest.main.store.pagination.PaginationService;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -42,6 +43,8 @@ public class UserReader implements Readable<UserDto, UserEntity>, BaseQueryable<
 
     ModelMapper modelMapper;
     JPAQueryFactory queryFactory;
+    EntityManager entityManager;
+    ExtJPAQueryFactory extQueryFactory;
     PaginationService<UserDto, UserEntity> paginationService;
 
     @Override
@@ -80,11 +83,17 @@ public class UserReader implements Readable<UserDto, UserEntity>, BaseQueryable<
     }
 
     public Optional<UserDto> getByUsername(String username) {
-        List<UserEntity> userEntities = writeLightQuery(qUser.username.eq(username)).fetch();
-        List<UserDto> userDtos = QueryMappers.mapUsers(
-                userEntities, true, true, true,
-                false, false, false, false
-        );
+//        List<UserEntity> userEntities = writeLightQuery(qUser.username.eq(username)).fetch();
+//        List<UserDto> userDtos = QueryMappers.mapUsers(
+//                userEntities, true, true, true,
+//                false, false, false, false
+//        );
+
+        JPAQuery<UserDto> userDtoJPAQuery = extQueryFactory.fromSelectDto(qUser).selectDto(UserDto.class);
+        List<UserDto> userDtos = userDtoJPAQuery
+                .join(qPersonal).on(qPersonal.id.eq(qUser.personal.id))
+                .where(qUser.username.eq(username))
+                .fetch();
         return userDtos.isEmpty() ? Optional.empty() : Optional.ofNullable(userDtos.get(0));
     }
 }

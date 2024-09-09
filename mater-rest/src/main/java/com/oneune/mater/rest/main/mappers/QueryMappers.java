@@ -21,7 +21,7 @@ public class QueryMappers {
                 .id(userEntity.getId())
                 .username(userEntity.getUsername())
                 .email(userEntity.getEmail())
-                .isEmailSet(userEntity.isEmailSet())
+                .emailSet(userEntity.isEmailSet())
                 .registeredAt(userEntity.getRegisteredAt())
                 .personal(joinPersonal ? mapPersonal(userEntity.getPersonal()) : null)
                 .seller(joinSeller ? mapSeller(userEntity.getSeller(), joinContacts, joinCars, joinPhotos, joinVideos) : null)
@@ -59,12 +59,12 @@ public class QueryMappers {
         return PersonalDto.builder()
                 .id(personalEntity.getId())
                 .birthDate(personalEntity.getBirthDate())
-                .isBirthDateSet(personalEntity.isBirthDateSet())
+                .birthDateSet(personalEntity.isBirthDateSet())
                 .firstName(personalEntity.getFirstName())
-                .isFirstNameSet(personalEntity.isFirstNameSet())
+                .firstNameSet(personalEntity.isFirstNameSet())
                 .middleName(personalEntity.getMiddleName())
                 .lastName(personalEntity.getLastName())
-                .isLastNameSet(personalEntity.isLastNameSet())
+                .lastNameSet(personalEntity.isLastNameSet())
                 .build();
     }
 

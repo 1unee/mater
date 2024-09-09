@@ -75,13 +75,13 @@ DROP TABLE IF EXISTS personal;
 CREATE TABLE personal (
     id int8 NOT NULL DEFAULT nextval('personal_id_seq'),
     first_name varchar(255),
-    is_first_name_set boolean DEFAULT FALSE,
+    first_name_set boolean DEFAULT FALSE,
     last_name varchar(255),
-    is_last_name_set boolean DEFAULT FALSE,
+    last_name_set boolean DEFAULT FALSE,
     middle_name varchar(255),
-    is_middle_name_set boolean DEFAULT FALSE,
+    middle_name_set boolean DEFAULT FALSE,
     birth_date date,
-    is_birth_date_set boolean DEFAULT FALSE,
+    birth_date_set boolean DEFAULT FALSE,
     PRIMARY KEY (id)
 );
 
@@ -153,7 +153,7 @@ DROP TABLE IF EXISTS "user";
 CREATE TABLE "user" (
     id int8 NOT NULL DEFAULT nextval('user_id_seq'),
     email varchar(255),
-    is_email_set boolean DEFAULT FALSE,
+    email_set boolean DEFAULT FALSE,
     username varchar(255),
     personal_id int8,
     seller_id int8,

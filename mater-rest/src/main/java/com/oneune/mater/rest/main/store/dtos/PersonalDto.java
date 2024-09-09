@@ -1,6 +1,5 @@
 package com.oneune.mater.rest.main.store.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,24 +18,12 @@ import java.time.LocalDate;
 @SuperBuilder
 @Data
 public class PersonalDto extends AbstractDto {
-
     String firstName;
-
-    @JsonProperty("isFirstNameSet")
-    boolean isFirstNameSet;
-
+    boolean firstNameSet;
     String lastName;
-
-    @JsonProperty("isLastNameSet")
-    boolean isLastNameSet;
-
+    boolean lastNameSet;
     String middleName;
-
-    @JsonProperty("isMiddleNameSet")
-    boolean isMiddleNameSet;
-
+    boolean middleNameSet;
     LocalDate birthDate;
-
-    @JsonProperty("isBirthDateSet")
-    boolean isBirthDateSet;
+    boolean birthDateSet;
 }

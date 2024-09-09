@@ -30,7 +30,7 @@ export const GLOBAL_CONFIG: InjectionToken<GlobalConfig> = new InjectionToken('G
   providedIn: 'root',
   factory: (): GlobalConfig => ({
     configs: {
-      largeFileOffset: 1e6,
+      largeFileOffset: 3e6,
       messageLifeDuration: 5e3 // in ms
     },
     settings: {

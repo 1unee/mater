@@ -2,6 +2,7 @@ package com.oneune.mater.rest.main.configs;
 
 import com.oneune.mater.rest.common.aop.annotations.ConfigurationBeansInfo;
 import com.oneune.mater.rest.main.configs.properties.PaginationProperties;
+import com.oneune.mater.rest.main.mappers.custom_query_dsl.ExtJPAQueryFactory;
 import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -31,5 +32,10 @@ public class DataConfig {
     @Bean
     public JPAQueryFactory queryFactory() {
         return new JPAQueryFactory(JPQLTemplates.DEFAULT, entityManager);
+    }
+
+    @Bean
+    public ExtJPAQueryFactory extJPAQueryFactory() {
+        return new ExtJPAQueryFactory(entityManager);
     }
 }

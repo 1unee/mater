@@ -34,7 +34,7 @@ import static org.hibernate.query.SortDirection.ASCENDING;
 @Log4j2
 public class PaginationService<D extends AbstractDto, E extends AbstractEntity> {
 
-    private final static String ID = "id";
+    private final static String ID_FIELD_PATH = "id";
 
     PaginationProperties paginationProperties;
     JPAQueryFactory queryFactory;
@@ -68,7 +68,7 @@ public class PaginationService<D extends AbstractDto, E extends AbstractEntity> 
                                             String entityTableName) {
 
         PathBuilder<E> qEntity = new PathBuilder<>(query.getType(), entityTableName);
-        NumberPath<Long> idPath = qEntity.getNumber(ID, Long.class);
+        NumberPath<Long> idPath = qEntity.getNumber(ID_FIELD_PATH, Long.class);
 
         JPAQuery<E> copiedQueryWithoutOrdering = query.clone();
         copiedQueryWithoutOrdering.getMetadata().clearOrderBy();

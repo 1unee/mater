@@ -2,11 +2,11 @@ import {AbstractDto} from "./abstract.dto";
 
 export class PersonalDto extends AbstractDto {
   firstName: string;
-  isFirstNameSet: boolean;
+  firstNameSet: boolean;
   lastName: string;
-  isLastNameSet: boolean;
+  lastNameSet: boolean;
   middleName: string;
-  isMiddleNameSet: boolean;
+  middleNameSet: boolean;
   birthDate: Date;
-  isBirthDateSet: boolean;
+  birthDateSet: boolean;
 }

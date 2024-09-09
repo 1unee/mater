@@ -19,13 +19,13 @@ DO $$
         -- Insert data into "personal"
         FOR i IN 1..rows_amount LOOP
                 INSERT INTO mater.personal (first_name,
-                                            is_first_name_set,
+                                            first_name_set,
                                             last_name,
-                                            is_last_name_set,
+                                            last_name_set,
                                             middle_name,
-                                            is_middle_name_set,
+                                            middle_name_set,
                                             birth_date,
-                                            is_birth_date_set)
+                                            birth_date_set)
                 VALUES (
                            'FirstName ' || i,
                            true,
@@ -102,7 +102,7 @@ DO $$
 
         -- Insert data into "user"
         FOR i IN 1..rows_amount LOOP
-                INSERT INTO mater.user (email, is_email_set, username, personal_id, seller_id, registered_at, telegram_id)
+                INSERT INTO mater.user (email, email_set, username, personal_id, seller_id, registered_at, telegram_id)
                 VALUES (
                            'user' || i || '@example.com',
                            true,

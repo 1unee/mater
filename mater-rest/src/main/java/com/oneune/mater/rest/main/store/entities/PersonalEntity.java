@@ -12,6 +12,9 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
+/**
+ * @see com.oneune.mater.rest.main.store.dtos.PersonalDto
+ */
 @Entity
 @Table(name = "personal")
 @SequenceGenerator(sequenceName = "personal_id_seq", name = "id_seq", allocationSize = 1)
@@ -22,11 +25,11 @@ import java.time.LocalDate;
 @Data
 public class PersonalEntity extends AbstractEntity {
     String firstName;
-    boolean isFirstNameSet;
+    boolean firstNameSet;
     String lastName;
-    boolean isLastNameSet;
+    boolean lastNameSet;
     String middleName;
-    boolean isMiddleNameSet;
+    boolean middleNameSet;
     LocalDate birthDate;
-    boolean isBirthDateSet;
+    boolean birthDateSet;
 }

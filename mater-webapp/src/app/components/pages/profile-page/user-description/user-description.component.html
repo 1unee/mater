@@ -23,7 +23,7 @@
       <p-inputGroupAddon styleClass="w-6rem text-sm">
         Почта
       </p-inputGroupAddon>
-      <p-inputGroupAddon *ngIf="user.isEmailSet; else emailNotSetBlock"
+      <p-inputGroupAddon *ngIf="user.emailSet; else emailNotSetBlock"
                          styleClass="w-8rem text-sm"
                          (click)="clipboardService.extCopy(user.email, 'Почта скопирована!')"
       >
@@ -41,7 +41,7 @@
       </ng-template>
       <p-inputGroupAddon>
         <i class="text-lg w-1rem"
-           [ngClass]="user.isEmailSet ? 'pi pi-lock' : 'pi pi-lock-open'"
+           [ngClass]="user.emailSet ? 'pi pi-lock' : 'pi pi-lock-open'"
            (click)="messageService.showInfo('Почту можно поменять только один раз. При нажатии левее ее можно скопировать в буфер обмена.')"
         ></i>
       </p-inputGroupAddon>
@@ -70,7 +70,7 @@
     <p-inputGroupAddon styleClass="w-6rem text-sm">
       Имя
     </p-inputGroupAddon>
-    <p-inputGroupAddon *ngIf="user.personal.isFirstNameSet; else firstNameNotSetBlock"
+    <p-inputGroupAddon *ngIf="user.personal.firstNameSet; else firstNameNotSetBlock"
                        styleClass="w-8rem text-sm"
                        (click)="clipboardService.extCopy(user.personal.firstName, 'Имя скопировано!')"
     >
@@ -88,7 +88,7 @@
     </ng-template>
     <p-inputGroupAddon>
       <i class="text-lg w-1rem"
-         [ngClass]="user.personal.isFirstNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
+         [ngClass]="user.personal.firstNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
          (click)="messageService.showInfo('Это твое настоящее имя, которое можно поменять только один раз при желании. Также можно скопировать, нажав левее.')"
       ></i>
     </p-inputGroupAddon>
@@ -99,7 +99,7 @@
     <p-inputGroupAddon styleClass="w-6rem text-sm">
       Фамилия
     </p-inputGroupAddon>
-    <p-inputGroupAddon *ngIf="user.personal.isLastNameSet; else lastNameNotSetBlock"
+    <p-inputGroupAddon *ngIf="user.personal.lastNameSet; else lastNameNotSetBlock"
                        styleClass="w-8rem text-sm"
                        (click)="clipboardService.extCopy(user.personal.lastName, 'Фамилия скопирована!')"
     >
@@ -117,7 +117,7 @@
     </ng-template>
     <p-inputGroupAddon>
       <i class="text-lg w-1rem"
-         [ngClass]="user.personal.isLastNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
+         [ngClass]="user.personal.lastNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
          (click)="messageService.showInfo('Твоя фамилия, которую можно только лишь один раз поменять.')"
       ></i>
     </p-inputGroupAddon>
@@ -128,7 +128,7 @@
     <p-inputGroupAddon styleClass="w-6rem text-sm">
       Отчество
     </p-inputGroupAddon>
-    <p-inputGroupAddon *ngIf="user.personal.isMiddleNameSet; else middleNameNotSetBlock"
+    <p-inputGroupAddon *ngIf="user.personal.middleNameSet; else middleNameNotSetBlock"
                        styleClass="w-8rem text-sm"
                        (click)="clipboardService.extCopy(user.personal.middleName, 'Отчество скопировано!')"
     >
@@ -146,7 +146,7 @@
     </ng-template>
     <p-inputGroupAddon>
       <i class="text-lg w-1rem"
-         [ngClass]="user.personal.isMiddleNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
+         [ngClass]="user.personal.middleNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
          (click)="messageService.showInfo('Отчество, если есть!')"
       ></i>
     </p-inputGroupAddon>
@@ -158,7 +158,7 @@
       Дата рождения
     </p-inputGroupAddon>
 
-    <p-inputGroupAddon *ngIf="user.personal.isBirthDateSet; else birthDateNotSetBlock"
+    <p-inputGroupAddon *ngIf="user.personal.birthDateSet; else birthDateNotSetBlock"
                        styleClass="w-8rem text-sm"
                        (click)="clipboardService.extCopy(user.personal.birthDate.toLocaleDateString(), 'Дата рождения скопирована!')"
     >
@@ -177,7 +177,7 @@
 
     <p-inputGroupAddon>
       <i class="text-lg w-1rem"
-         [ngClass]="user.personal.isBirthDateSet ? 'pi pi-lock' : 'pi pi-lock-open'"
+         [ngClass]="user.personal.birthDateSet ? 'pi pi-lock' : 'pi pi-lock-open'"
          (click)="messageService.showInfo('Твой день рождения. Убедись, что выбрал правильную дату, потому что обманывать нехорошо!')"
       ></i>
     </p-inputGroupAddon>

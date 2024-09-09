@@ -6,4 +6,5 @@ export interface SelectButtonState {
   styleClass: string;
   accept: string;
   files: File[];
+  disabled: boolean
 }
