@@ -9,7 +9,6 @@ import {VideoPartDto} from "../../store/dtos/video-part.dto";
 import {LargeFileService} from "../utils/large-file.service";
 import {PageResponse} from "../../store/pagination/page.response.pagination";
 import {PageQuery} from "../../store/pagination/page-query.pagination";
-import {CarCategorySortEnum} from "../../store/enums/car-category-sort.enum";
 
 @Injectable({
   providedIn: 'root'

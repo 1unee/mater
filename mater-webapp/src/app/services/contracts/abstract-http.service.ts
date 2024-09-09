@@ -1,17 +1,13 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {businessVariables} from "../../app.config";
-import {BusinessVariable} from "../../store/interfaces/business-variable.interface";
-import {BusinessVariableKeyEnum} from "../../store/enums/business-variable-key.enum";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AbstractHttpService {
 
-  private readonly _COMMON_REST_PATH: string = businessVariables
-    .find((variable: BusinessVariable): boolean => variable.key === BusinessVariableKeyEnum.PREFIX_REST_PATH)
-    ?.value;
+  private readonly _COMMON_REST_PATH: string = environment.apiUrl;
 
   constructor(private _http: HttpClient) { }
 

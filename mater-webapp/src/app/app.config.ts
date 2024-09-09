@@ -9,8 +9,6 @@ import {serverResponseInterceptor} from "./services/interceptors/server-response
 import {ThemeEnum} from "./store/enums/theme.enum";
 import {GlobalConfig} from "./store/interfaces/global-config.interface";
 import {LoadingReference} from "./store/interfaces/loading-reference.interface";
-import {BusinessVariable} from "./store/interfaces/business-variable.interface";
-import {BusinessVariableKeyEnum} from "./store/enums/business-variable-key.enum";
 import {BehaviorSubject} from "rxjs";
 
 export const appConfig: ApplicationConfig = {
@@ -32,8 +30,8 @@ export const GLOBAL_CONFIG: InjectionToken<GlobalConfig> = new InjectionToken('G
   providedIn: 'root',
   factory: (): GlobalConfig => ({
     configs: {
-      largeFileOffset: 19.5e6,
-      messageLifeDuration: 5000 // in ms
+      largeFileOffset: 1e6,
+      messageLifeDuration: 5e3 // in ms
     },
     settings: {
       theme: ThemeEnum.SYSTEM,
@@ -62,12 +60,3 @@ export const LOADING: InjectionToken<LoadingReference> = new InjectionToken<Load
     value: new BehaviorSubject<boolean>(false)
   })
 });
-
-export const businessVariables: BusinessVariable[] = [
-  {
-    key: BusinessVariableKeyEnum.PREFIX_REST_PATH,
-    // value: 'http://localhost:8081',
-    value: 'https://oneune.duckdns.org:9033',
-    description: 'Prefix of common rest path.'
-  }
-];

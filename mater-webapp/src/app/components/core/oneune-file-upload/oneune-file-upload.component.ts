@@ -16,7 +16,7 @@ import {LOADING} from "../../../app.config";
 import {SelectButtonState} from "../../../store/interfaces/select-button-state.interface";
 import {FileDto} from "../../../store/dtos/file.dto";
 import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
-import {LogService} from "../../../services/https/log.service";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-oneune-file-upload',
@@ -36,8 +36,8 @@ export class OneuneFileUploadComponent implements OnInit {
 
   readonly FileTypeEnum = FileTypeEnum;
   readonly FILE_SIZE_PRECISION: number = 1;
-  readonly PHOTO_MAX_SIZE: number = 5 * 1024 * 1024; // in bytes (10 mb)
-  readonly VIDEO_MAX_SIZE: number = 100 * 1024 * 1024; // in bytes (500 mb)
+  readonly PHOTO_MAX_SIZE: number = 5 * 1024 * 1024; // in bytes (5 mb)
+  readonly VIDEO_MAX_SIZE: number = (environment.production ? 100 : 500) * 1024 * 1024; // in bytes (100 or 500 mb)
 
   @ViewChild('htmlFileInput') htmlFileInput: HTMLInputElement;
 
@@ -114,7 +114,7 @@ export class OneuneFileUploadComponent implements OnInit {
         }
       }
       this.messageService.showSuccess('Файлы успешно отправлены на сервер. ' +
-        'Если ты загрузил слишком большие файлы, то придется немного подождать, пока сервер их обработает.');
+        'Если ты загрузил слишком большие файлы, то придется немного подождать (примерно пару минут), пока сервер их обработает.');
     } catch (e) {
       this.messageService.showError('Произошла ошибка при сохранении файлов...');
     } finally {

@@ -54,3 +54,15 @@ body {
   padding: 0 15px 15px;
 }
 
+/* чтобы уведы были поменьше */
+.p-toast-message-content {
+  padding: 8px;
+}
+.p-toast-message-text {
+  margin: 0;
+  padding-left: 8px;
+}
+.p-toast-detail {
+  font-size: 0.9rem;
+}
+

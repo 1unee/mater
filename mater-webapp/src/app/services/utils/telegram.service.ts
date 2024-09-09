@@ -9,6 +9,7 @@ import {LOADING} from "../../app.config";
 import {ThemeEnum} from "../../store/enums/theme.enum";
 import {LoadingReference} from "../../store/interfaces/loading-reference.interface";
 import {LogService} from "../https/log.service";
+import {environment} from "../../../environments/environment";
 
 /**
  * Auto-tunes on injecting in a start component;
@@ -71,8 +72,11 @@ export class TelegramService {
   }
 
   get user(): WebAppUser | undefined {
-    return this._tgWebApp.initDataUnsafe.user;
-    // return this._getMockUserForDeveloping(1);
+    if (environment.featureFlags.mockTelegramUser) {
+      return this._getMockUserForDeveloping(0);
+    } else {
+      return this._tgWebApp.initDataUnsafe.user;
+    }
   }
 
   get loadedUser(): boolean {

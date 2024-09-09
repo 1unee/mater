@@ -68,6 +68,10 @@ public class ButtonBuilderService {
                       
                       1) слева снизу есть кнопка %s - нажать на нее
                       2) готово - вы прекрасны
+                      
+                      Учти, что первое открытие может длиться дольше обычного,
+                      потому что происходит первичная загрузка приложения, что
+                      требует обычно больше времени и ресурсов.
                       """.formatted(TextWrapperUtils.wrapHtml(buttonTitle).bold().underlined().complete()))
                 .build();
     }

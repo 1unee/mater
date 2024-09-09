@@ -14,6 +14,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - backend
+    restart: always
 
   spring-boot:
     image: mater-rest
@@ -31,6 +32,7 @@ services:
       - postgres
     networks:
       - backend
+    restart: always
 
   angular:
     image: mater-web
@@ -42,6 +44,7 @@ services:
       - spring-boot
     networks:
       - frontend
+    restart: always
 
 volumes:
   postgres-data:

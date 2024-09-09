@@ -12,4 +12,4 @@ WORKDIR /app
 
 COPY target/${APP_NAME}-${APP_VERSION}.jar /app/${APP_NAME}.jar
 
-ENTRYPOINT ["sh", "-c", "java -jar /app/${APP_NAME}.jar"]
+ENTRYPOINT ["sh", "-c", "java -Xms128m -Xmx512m -jar /app/${APP_NAME}.jar"]

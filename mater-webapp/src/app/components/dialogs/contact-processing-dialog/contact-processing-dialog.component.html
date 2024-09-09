@@ -34,7 +34,7 @@
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm">
-          Ссылка
+          {{ !!contactType ? ContactTypeTitle[contactType] : 'Ссылка' }}
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
           <input formControlName="contactReference"

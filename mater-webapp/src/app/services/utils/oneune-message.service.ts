@@ -103,7 +103,7 @@ export class OneuneMessageService {
     } else if (code.startsWith('5')) {
       this.showError('Ошибка на сервере...');
     } else {
-      this.showWarning('Непонятный результат...');
+      this.showWarning('Извини, сейчас серверу плохо. Попробуй чуть позже...');
     }
   }
 

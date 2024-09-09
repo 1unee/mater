@@ -10,7 +10,7 @@ import {ClipboardService} from "../../../services/utils/clipboard.service";
 import {ContactDto} from "../../../store/dtos/contact.dto";
 import {StorageService} from "../../../services/utils/storage.service";
 import {SellerService} from "../../../services/https/seller.service";
-import {ContactTypeEnum} from "../../../store/enums/contact-type.enum";
+import {ContactTypeEnum, ContactTypeTitle} from "../../../store/enums/contact-type.enum";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AbstractFormComponent} from "../../core/abstract-form/abstract-form.component";
 import {contactReferenceValue} from "../../../services/utils/validators";
@@ -32,6 +32,8 @@ import {NgIf} from "@angular/common";
   styleUrl: './contact-processing-dialog.component.scss'
 })
 export class ContactProcessingDialogComponent extends AbstractFormComponent<ContactDto> implements OnInit {
+
+  readonly ContactTypeTitle = ContactTypeTitle;
 
   contact: ContactDto;
   contactTypeConfig: { options: { label: string, value: ContactTypeEnum, styleClass: string }[] } = {
@@ -57,6 +59,10 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
   ngOnInit(): void {
     this._initializeContact();
     this._initializeForm();
+  }
+
+  get contactType(): ContactTypeEnum {
+    return this.form.value.contactType;
   }
 
   private _initializeContact(): void {
