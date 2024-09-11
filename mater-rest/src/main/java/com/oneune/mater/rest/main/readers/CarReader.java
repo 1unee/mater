@@ -34,9 +34,10 @@ public class CarReader implements Readable<CarDto, CarEntity>, BaseQueryable<Car
     public final static Type CAR_DTO_LIST = TypeToken.getParameterized(List.class, CarDto.class).getType();
     public final static QCarEntity qCar = new QCarEntity("car");
 
-    ModelMapper modelMapper;
     JPAQueryFactory queryFactory;
     PaginationService<CarDto, CarEntity> paginationService;
+
+    ModelMapper modelMapper;
 
     @Override
     public JPAQuery<CarEntity> writeBaseQuery(Predicate... predicates) {
@@ -71,6 +72,6 @@ public class CarReader implements Readable<CarDto, CarEntity>, BaseQueryable<Car
 
     @Override
     public PageResponse<CarDto> search(PageQuery pageQuery) {
-        return paginationService.process(pageQuery, CarDto.class, writeHeavyQuery(), "car");
+        return paginationService.process(pageQuery, CarDto.class, writeLightQuery(), "car");
     }
 }

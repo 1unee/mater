@@ -4,16 +4,15 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
+import java.time.Instant;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 @Data
-public class SellerDto extends AbstractDto {
-    Float score;
-    List<ContactDto> contacts;
-    List<CarDto> cars;
+public class UserRoleLinkDto extends AbstractDto {
+    UserDto user;
+    RoleDto role;
+    Instant createdAt;
 }
-

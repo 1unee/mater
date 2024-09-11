@@ -3,7 +3,7 @@ package com.oneune.mater.rest.main.readers;
 import com.google.gson.reflect.TypeToken;
 import com.oneune.mater.rest.main.contracts.BaseQueryable;
 import com.oneune.mater.rest.main.contracts.Readable;
-import com.oneune.mater.rest.main.mappers.QueryMappers;
+import com.oneune.mater.rest.main.mappers.oneune.QueryDslModelMapperFactory;
 import com.oneune.mater.rest.main.store.dtos.UserDto;
 import com.oneune.mater.rest.main.store.entities.QUserEntity;
 import com.oneune.mater.rest.main.store.entities.QUserRoleLinkEntity;
@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.oneune.mater.rest.main.readers.CarReader.qCar;
+import static com.oneune.mater.rest.main.readers.ContactReader.qContact;
 import static com.oneune.mater.rest.main.readers.PersonalReader.qPersonal;
 import static com.oneune.mater.rest.main.readers.PhotoReader.qPhoto;
 import static com.oneune.mater.rest.main.readers.RoleReader.qRole;
@@ -40,9 +41,11 @@ public class UserReader implements Readable<UserDto, UserEntity>, BaseQueryable<
     public final static QUserEntity qUser = new QUserEntity("user");
     public final static QUserRoleLinkEntity qUserRoleLink = new QUserRoleLinkEntity("user_role_link");
 
-    ModelMapper modelMapper;
     JPAQueryFactory queryFactory;
     PaginationService<UserDto, UserEntity> paginationService;
+
+    QueryDslModelMapperFactory queryDslModelMapperFactory;
+    ModelMapper modelMapper;
 
     @Override
     public JPAQuery<UserEntity> writeBaseQuery(Predicate... predicates) {
@@ -54,14 +57,15 @@ public class UserReader implements Readable<UserDto, UserEntity>, BaseQueryable<
                 .join(qUserRoleLink).on(qUserRoleLink.user.id.eq(qUser.id)).fetchJoin()
                 .join(qRole).on(qRole.id.eq(qUserRoleLink.role.id)).fetchJoin()
                 .join(qPersonal).on(qUser.personal.id.eq(qPersonal.id)).fetchJoin()
-                .join(qSeller).on(qUser.seller.id.eq(qSeller.id)).fetchJoin();
+                .join(qSeller).on(qUser.seller.id.eq(qSeller.id)).fetchJoin()
+                .leftJoin(qContact).on(qContact.seller.id.eq(qUser.seller.id)).fetchJoin();
     }
 
     public JPAQuery<UserEntity> writeHeavyQuery(Predicate... predicates) {
         return writeLightQuery(predicates)
-                .join(qCar).on(qCar.seller.id.eq(qSeller.id)).fetchJoin()
-                .join(qPhoto).on(qPhoto.car.id.eq(qCar.id)).fetchJoin()
-                .join(qVideo).on(qVideo.car.id.eq(qCar.id)).fetchJoin();
+                .leftJoin(qCar).on(qCar.seller.id.eq(qSeller.id)).fetchJoin()
+                .leftJoin(qPhoto).on(qPhoto.car.id.eq(qCar.id)).fetchJoin()
+                .leftJoin(qVideo).on(qVideo.car.id.eq(qCar.id)).fetchJoin();
     }
 
     public UserEntity getEntityById(Long userId) {
@@ -80,11 +84,9 @@ public class UserReader implements Readable<UserDto, UserEntity>, BaseQueryable<
     }
 
     public Optional<UserDto> getByUsername(String username) {
-        List<UserEntity> userEntities = writeLightQuery(qUser.username.eq(username)).fetch();
-        List<UserDto> userDtos = QueryMappers.mapUsers(
-                userEntities, true, true, true,
-                false, false, false, false
-        );
+        JPAQuery<UserEntity> query = writeLightQuery(qUser.username.eq(username));
+        ModelMapper queryDslModelMapper = queryDslModelMapperFactory.from(query);
+        List<UserDto> userDtos = queryDslModelMapper.map(query.fetch(), USER_LIST_TYPE);
         return userDtos.isEmpty() ? Optional.empty() : Optional.ofNullable(userDtos.get(0));
     }
 }

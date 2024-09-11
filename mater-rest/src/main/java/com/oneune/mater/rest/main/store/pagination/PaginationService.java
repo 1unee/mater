@@ -3,18 +3,17 @@ package com.oneune.mater.rest.main.store.pagination;
 import com.google.common.base.Function;
 import com.google.gson.reflect.TypeToken;
 import com.oneune.mater.rest.main.configs.properties.PaginationProperties;
+import com.oneune.mater.rest.main.mappers.oneune.QueryDslModelMapperFactory;
 import com.oneune.mater.rest.main.store.dtos.AbstractDto;
 import com.oneune.mater.rest.main.store.entities.AbstractEntity;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -37,8 +36,7 @@ public class PaginationService<D extends AbstractDto, E extends AbstractEntity> 
     private final static String ID = "id";
 
     PaginationProperties paginationProperties;
-    JPAQueryFactory queryFactory;
-    ModelMapper modelMapper;
+    QueryDslModelMapperFactory queryDslModelMapperFactory;
 
     public  PageResponse<D> process(PageQuery pageQuery,
                                     Class<D> dtoClass,
@@ -91,7 +89,9 @@ public class PaginationService<D extends AbstractDto, E extends AbstractEntity> 
                 .totalElements(totalElements)
                 .totalPages(totalPages)
                 // modelMapper маппит все поля (разработать универсальный метод маппинга с использованием Query DSL)
-                .content(modelMapper.map(content, TypeToken.getParameterized(List.class, dtoClass).getType()))
+                .content(queryDslModelMapperFactory.from(query).map(
+                        content, TypeToken.getParameterized(List.class, dtoClass).getType()
+                ))
                 .build();
     }
 

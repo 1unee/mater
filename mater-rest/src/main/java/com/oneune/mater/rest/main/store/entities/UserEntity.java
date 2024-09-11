@@ -9,6 +9,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @see com.oneune.mater.rest.main.store.dtos.UserDto
+ */
 @Entity
 @Table(name = "\"user\"")
 @SequenceGenerator(sequenceName = "user_id_seq", name = "id_seq", allocationSize = 1)

@@ -19,12 +19,10 @@ public class UserRoleLinkEntity extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @ToString.Exclude
     UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
-    @ToString.Exclude
     RoleEntity role;
 
     @Builder.Default

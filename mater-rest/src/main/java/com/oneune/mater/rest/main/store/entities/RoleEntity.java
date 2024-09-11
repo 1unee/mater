@@ -21,6 +21,7 @@ public class RoleEntity extends AbstractEntity {
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     @Builder.Default
+    @ToString.Exclude
     List<UserRoleLinkEntity> userRoleLinks = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

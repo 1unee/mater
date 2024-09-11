@@ -18,7 +18,6 @@ public class ContactEntity extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "seller_id")
-    @ToString.Exclude
     SellerEntity seller;
 
     @Enumerated(EnumType.STRING)

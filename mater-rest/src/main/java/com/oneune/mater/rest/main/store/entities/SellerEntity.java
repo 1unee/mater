@@ -21,12 +21,12 @@ public class SellerEntity extends AbstractEntity {
     Float score;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    @ToString.Exclude
     @Builder.Default
+    @ToString.Exclude
     List<ContactEntity> contacts = new ArrayList<>();
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    @ToString.Exclude
     @Builder.Default
+    @ToString.Exclude
     List<CarEntity> cars = new ArrayList<>();
 }

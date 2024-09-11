@@ -24,7 +24,6 @@ public class CarEntity extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "seller_id")
-    @ToString.Exclude
     SellerEntity seller;
 
     /**
