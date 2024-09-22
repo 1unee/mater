@@ -99,6 +99,7 @@ public class PaginationService<D extends AbstractDto, E extends AbstractEntity> 
                       EntityPathBase<E> qEntity,
                       ColumnQuery column) {
         // todo: expression depends column value type
+        // todo: fix not string path
         ComparableExpressionBase<String> field = Expressions.stringPath(qEntity, column.getName());
         boolean isMissedSortDirection = Objects.isNull(column.getSortDirection());
         if (!isMissedSortDirection) {
@@ -158,6 +159,7 @@ public class PaginationService<D extends AbstractDto, E extends AbstractEntity> 
                               ColumnQuery column,
                               Number columnFilterValue) {
         if (columnFilterValue instanceof Integer) {
+            // todo: поправить при сортировке
             NumberPath<Integer> integerNumberPath = entityPath.getNumber(column.getName(), Integer.class);
             Function<Integer, BooleanExpression> integerFilteringMethod = getNumberFilteringMethod(
                     column.getFilterType(), integerNumberPath

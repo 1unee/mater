@@ -66,7 +66,7 @@ public class CarController implements CRUDable<CarDto, CarEntity> {
 
     @PutMapping("{id}/files")
     public CompletableFuture<List<FileDto>> putFiles(@PathVariable(name = "id") Long carId,
-                                                     @RequestParam(required = false) List<MultipartFile> files) {
+                                                     @RequestParam(name = "files", required = false) List<MultipartFile> files) {
         return carService.putFiles(carId, files);
     }
 }

@@ -76,10 +76,10 @@ public class SellerService implements CRUDable<SellerDto, SellerEntity> {
                                           ContactDto contactDto) {
         SellerEntity sellerEntity = sellerReader.getEntityById(sellerId);
         ContactEntity contactEntity = contactService.getEntityById(contactService.post(contactDto).getId());
-        contactService.flush();
         sellerEntity.getContacts().add(contactEntity);
         contactEntity.setSeller(sellerEntity);
         sellerRepository.saveAndFlush(sellerEntity);
-        return contactService.getById(sellerEntity.getId());
+        contactService.flush();
+        return modelMapper.map(contactEntity, ContactDto.class);
     }
 }

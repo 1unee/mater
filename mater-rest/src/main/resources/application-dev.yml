@@ -13,9 +13,7 @@ server:
 
 telegram:
   bot:
-    menu:
-      button:
-        url: https://icy-trees-yell.loca.lt/support
+    token: ${TELEGRAM_BOT_DEV_TOKEN}
 
 selectel:
   s3:

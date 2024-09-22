@@ -41,7 +41,7 @@
       </div>
     </div>
 
-    <div *ngIf="paginationConfig.processing" class="col-12 p-1">
+    <div *ngIf="!environment.production && paginationConfig.processing" class="col-12 p-1">
       <div class="flex justify-content-between flex-wrap">
         <div class="flex align-items-center justify-content-center">
 
@@ -251,7 +251,7 @@
                           <p-galleria containerClass="w-full"
                                       [value]="getCarImages(_car)"
                                       [numVisible]="3"
-                                      [autoPlay]="globalConfig.settings.autoPlayImages"
+                                      [autoPlay]="false"
                                       [circular]="true"
                                       [showItemNavigators]="false"
                                       [showThumbnailNavigators]="false"

@@ -20,7 +20,7 @@ export function contactReferenceValue(form: FormGroup): ValidationErrors | null 
     case ContactTypeEnum.TELEGRAM:
     case ContactTypeEnum.INSTAGRAM:
     case ContactTypeEnum.WHATSAPP:
-      const urlPattern: RegExp = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,8}\/?$/;
+      const urlPattern: RegExp = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,8}(\/\S*)?$/;
       return urlPattern.test(contactReference) ? null : { 'invalidUrl': true };
     case ContactTypeEnum.PHONE:
       const phonePattern: RegExp = /^\+?[1-9]\d{10}$/;

@@ -77,6 +77,7 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
     @Transactional
     @Override
     public CarDto put(Long carId, CarDto carDto) {
+        // fix error on put
         CarEntity carEntity = carReader.getExcludeFiles(carId);
         modelMapper.map(carDto, carEntity);
         carRepository.saveAndFlush(carEntity);
@@ -111,6 +112,7 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
     @LogExecutionDuration(logStartMessage = true)
     public CompletableFuture<List<FileDto>> putFiles(Long carId, List<MultipartFile> files) {
 
+        // todo: сжимать фотки пропорционально
         files = Objects.isNull(files) ? new ArrayList<>() : files;
         CarEntity carEntity = getEntityById(carId);
         carEntity.getFiles().clear();

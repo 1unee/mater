@@ -41,6 +41,7 @@ import {CarCategorySortEnum, CarCategorySortTitle} from "../../../store/enums/ca
 import {PageQueryProcessingComponent} from "../../core/page-query-processing/page-query-processing.component";
 import {GalleriaModule} from "primeng/galleria";
 import {FileDto} from "../../../store/dtos/file.dto";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-car-list',
@@ -81,7 +82,7 @@ export class CarListComponent implements OnInit {
   readonly CarCategorySortEnum = CarCategorySortEnum;
   readonly ContactTypeTitle = ContactTypeTitle;
   readonly PaginationDirection = PaginationDirection;
-  readonly console = console;
+  readonly environment = environment;
 
   @ViewChild('contactsOverlayPanel') contactsOverlayPanel: OverlayPanel;
 

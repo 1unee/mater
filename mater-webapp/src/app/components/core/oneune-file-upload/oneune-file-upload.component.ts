@@ -55,11 +55,7 @@ export class OneuneFileUploadComponent implements OnInit {
   private initialize(): void {
     this.car = this.dynamicDialogConfig.data.car;
     this.files = this.car.files.map((file: FileDto): File => {
-      return {
-        name: file.name,
-        size: file.size,
-        type: file.type
-      } as File;
+      return new File([new Uint8Array(file.size)], file.name, { type: file.type });
     });
   }
 
@@ -93,9 +89,9 @@ export class OneuneFileUploadComponent implements OnInit {
   async onSave(): Promise<void> {
     try {
       this.loading.value.next(true);
-      this.carService.putFiles(this.car.id, this._getMultipartFiles()).then(() => this.messageService.showInfo('Файлы успешно сохранены на сервер!'));
-      this.messageService.showSuccess('Файлы успешно отправлены на сервер. ' +
-        'Если ты загрузил слишком большие файлы, то придется немного подождать (примерно пару минут), пока сервер их обработает.');
+      this.carService.putFiles(this.car.id, this._getMultipartFiles())
+        .then(() => this.messageService.showInfo('Файлы успешно сохранены на сервер! Перезагрузи список, чтобы увидеть.'));
+      this.messageService.showSuccess('При загрузке больших файлов придется немного подождать (до пару минут).');
     } catch (e) {
       this.messageService.showError('Произошла ошибка при сохранении файлов...');
     } finally {
