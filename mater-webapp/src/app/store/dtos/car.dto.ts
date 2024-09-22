@@ -1,6 +1,5 @@
 import {AbstractDto} from "./abstract.dto";
-import {PhotoDto} from "./photo.dto";
-import {VideoDto} from "./video.dto";
+import {FileDto} from "./file.dto";
 
 export class CarDto extends AbstractDto {
   brand: string;
@@ -11,6 +10,5 @@ export class CarDto extends AbstractDto {
   VIN: string;
   ownersAmount: number;
   power: number;
-  photos: PhotoDto[];
-  videos: VideoDto[];
+  files: FileDto[];
 }

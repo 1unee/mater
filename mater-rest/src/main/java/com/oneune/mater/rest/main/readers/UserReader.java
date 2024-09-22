@@ -27,10 +27,8 @@ import java.util.Optional;
 import static com.oneune.mater.rest.main.readers.CarReader.qCar;
 import static com.oneune.mater.rest.main.readers.ContactReader.qContact;
 import static com.oneune.mater.rest.main.readers.PersonalReader.qPersonal;
-import static com.oneune.mater.rest.main.readers.PhotoReader.qPhoto;
 import static com.oneune.mater.rest.main.readers.RoleReader.qRole;
 import static com.oneune.mater.rest.main.readers.SellerReader.qSeller;
-import static com.oneune.mater.rest.main.readers.VideoReader.qVideo;
 
 @Repository
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -63,9 +61,7 @@ public class UserReader implements Readable<UserDto, UserEntity>, BaseQueryable<
 
     public JPAQuery<UserEntity> writeHeavyQuery(Predicate... predicates) {
         return writeLightQuery(predicates)
-                .leftJoin(qCar).on(qCar.seller.id.eq(qSeller.id)).fetchJoin()
-                .leftJoin(qPhoto).on(qPhoto.car.id.eq(qCar.id)).fetchJoin()
-                .leftJoin(qVideo).on(qVideo.car.id.eq(qCar.id)).fetchJoin();
+                .leftJoin(qCar).on(qCar.seller.id.eq(qSeller.id)).fetchJoin();
     }
 
     public UserEntity getEntityById(Long userId) {

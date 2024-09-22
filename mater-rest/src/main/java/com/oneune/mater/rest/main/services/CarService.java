@@ -1,37 +1,39 @@
 package com.oneune.mater.rest.main.services;
 
-import com.google.gson.reflect.TypeToken;
 import com.oneune.mater.rest.bot.contracts.Command;
 import com.oneune.mater.rest.bot.utils.TelegramBotUtils;
+import com.oneune.mater.rest.common.aop.annotations.LogExecutionDuration;
 import com.oneune.mater.rest.main.contracts.CRUDable;
 import com.oneune.mater.rest.main.readers.CarReader;
+import com.oneune.mater.rest.main.readers.FileReader;
+import com.oneune.mater.rest.main.repositories.CarFileRepository;
 import com.oneune.mater.rest.main.repositories.CarRepository;
 import com.oneune.mater.rest.main.store.dtos.CarDto;
+import com.oneune.mater.rest.main.store.dtos.FileDto;
+import com.oneune.mater.rest.main.store.entities.CarEntity;
+import com.oneune.mater.rest.main.store.entities.CarFileEntity;
+import com.oneune.mater.rest.main.store.entities.SellerEntity;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
-import com.oneune.mater.rest.main.store.dtos.PhotoDto;
-import com.oneune.mater.rest.main.store.dtos.VideoPartDto;
-import com.oneune.mater.rest.main.store.entities.CarEntity;
-import com.oneune.mater.rest.main.store.entities.PhotoEntity;
-import com.oneune.mater.rest.main.store.entities.SellerEntity;
-import com.oneune.mater.rest.main.store.entities.VideoEntity;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -44,6 +46,8 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
     CarReader carReader;
     ButtonBuilderService buttonBuilderService;
     SellerService sellerService;
+    SelectelS3Service selectelS3Service;
+    CarFileRepository carFileRepository;
 
     @Override
     public void execute(DefaultAbsSender bot, Update update) {
@@ -102,80 +106,34 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
         return carReader.search(pageQuery);
     }
 
+    @Async
     @Transactional
-    public void putPhotos(Long carId, List<PhotoDto> photos) {
-        CarEntity carEntity = carReader.getEntityById(carId);
-        carEntity.getPhotos().clear();
-        List<PhotoEntity> photoEntities = modelMapper.map(photos, TypeToken.getParameterized(List.class, PhotoEntity.class).getType());
-        photoEntities.forEach(photoEntity -> photoEntity.setCar(carEntity));
-        carEntity.getPhotos().addAll(photoEntities);
+    @LogExecutionDuration(logStartMessage = true)
+    public CompletableFuture<List<FileDto>> putFiles(Long carId, List<MultipartFile> files) {
+
+        files = Objects.isNull(files) ? new ArrayList<>() : files;
+        CarEntity carEntity = getEntityById(carId);
+        carEntity.getFiles().clear();
+
+        selectelS3Service.uploadFiles(files);
+        Map<String, String> fileUrls = selectelS3Service.getFileUrls(
+                files.stream().map(MultipartFile::getOriginalFilename).toList()
+        ); // Получаем URL файлов
+
+        List<CarFileEntity> carFileEntities = files.stream()
+                .map(file -> CarFileEntity.builder()
+                        .car(carEntity)
+                        .name(file.getOriginalFilename())
+                        .type(file.getContentType())
+                        .size(file.getSize())
+                        .url(fileUrls.get(file.getOriginalFilename()))
+                        .build())
+                .collect(Collectors.toList());
+
+        carEntity.getFiles().addAll(carFileEntities);
         carRepository.saveAndFlush(carEntity);
-    }
+        carFileRepository.flush();
 
-    @Transactional
-    public void deleteVideos(Long carId) {
-        CarEntity carEntity = carReader.getEntityById(carId);
-        carEntity.getVideos().clear();
-        carRepository.saveAndFlush(carEntity);
-    }
-
-    @SneakyThrows
-    @Transactional
-    public void putVideos(Long carId, VideoPartDto videoPart) {
-
-        Path tempDirectoryPath = Path.of("temp", videoPart.getName());
-
-        if (!Files.exists(tempDirectoryPath)) { Files.createDirectories(tempDirectoryPath); }
-
-        Path tempFile = tempDirectoryPath.resolve("%s.part".formatted(videoPart.getIndex())); // Создаем временный файл для хранения чанков
-
-        // Сохраняем чанк в файл
-        Files.writeString(tempFile, videoPart.getBase64());
-
-        // Проверяем, все ли части присутствуют
-        List<Path> partVideoPaths = Files.list(tempDirectoryPath)
-                .filter(Files::isRegularFile)
-                .toList();
-        boolean isAllPartShared = partVideoPaths.size() == (long) videoPart.getAmount();
-
-        // Проверяем, все ли части присутствуют
-        if (isAllPartShared) {
-
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for (Path partFile : partVideoPaths) {
-                String base64Part = Files.readString(partFile);
-                stringBuilder.append(base64Part);
-            }
-
-            CarEntity carEntity = carReader.getEntityById(carId);
-            VideoEntity videoEntity = VideoEntity.builder()
-                    .car(carEntity)
-                    .name(videoPart.getName())
-                    .type(videoPart.getType())
-                    .base64(stringBuilder.toString())
-                    .build();
-            carEntity.getVideos().add(videoEntity);
-            videoEntity.setCar(carEntity);
-            carRepository.saveAndFlush(carEntity);
-
-            Files.walk(tempDirectoryPath)
-                    .sorted(Comparator.reverseOrder()) // Сначала удаляем файлы, потом папки
-                    .forEach(filePath -> {
-                        try {
-                            Files.delete(filePath);
-                        } catch (IOException e) {
-                            log.error(e);
-                        }
-                    });
-
-        } else {
-            log.info(
-                    "{}/{} part for video with name = {}",
-                    partVideoPaths.size(),
-                    videoPart.getAmount(),
-                    videoPart.getName()
-            );
-        }
+        return CompletableFuture.completedFuture(modelMapper.map(carFileEntities, FileReader.FILE_DTO_LIST));
     }
 }

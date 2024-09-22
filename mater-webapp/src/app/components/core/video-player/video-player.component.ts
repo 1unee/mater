@@ -6,10 +6,10 @@ import {VgOverlayPlayModule} from "@videogular/ngx-videogular/overlay-play";
 import {VgBufferingModule} from "@videogular/ngx-videogular/buffering";
 import {VgControlsModule} from "@videogular/ngx-videogular/controls";
 import {StyleClassModule} from "primeng/styleclass";
-import {VideoDto} from "../../../store/dtos/video.dto";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
 import {ImageModule} from "primeng/image";
 import {TagModule} from "primeng/tag";
+import {FileDto} from "../../../store/dtos/file.dto";
 
 @Component({
   selector: 'app-video-player',
@@ -37,12 +37,12 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
   @ViewChild('htmlSource') htmlSource: ElementRef<HTMLSourceElement>;
 
   @Input() header: string = 'VideoPlayer';
-  @Input() videos: VideoDto[] = [];
+  @Input() videos: FileDto[] = [];
   @Input() height: number = 480;
   @Input() width: number = 720;
 
-  base64Videos: string[] = [];
-  base64CurrentVideo: string;
+  urls: string[] = [];
+  currentUrl: string;
 
   constructor(public messageService: OneuneMessageService) {
   }
@@ -59,32 +59,32 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
 
   private _initializeVideos(): void {
     if (this.videos.length > 0) {
-      this.base64Videos = this.videos.map((video: VideoDto): string => `data:video/mp4;base64,${video.base64}`);
-      this.base64CurrentVideo = this.base64Videos[0];
+      this.urls = this.videos.map((video: FileDto): string => video.url);
+      this.currentUrl = this.urls[0];
     }
   }
 
   private _initializeVideoSource(): void {
-    this.htmlSource.nativeElement.src = this.base64CurrentVideo;
+    this.htmlSource.nativeElement.src = this.currentUrl;
     this.htmlVideo.nativeElement.load();
   }
 
   get currentVideoIndex(): number  {
-    return this.base64Videos.findIndex(base64Video => base64Video === this.base64CurrentVideo);
+    return this.urls.findIndex(url => url === this.currentUrl);
   }
 
   prev(): void {
     if (this.currentVideoIndex !== 0) {
       this.htmlVideo.nativeElement.pause();
-      this.base64CurrentVideo = this.base64Videos[this.currentVideoIndex - 1];
+      this.currentUrl = this.urls[this.currentVideoIndex - 1];
       this._initializeVideoSource();
     }
   }
 
   next(): void {
-    if (this.currentVideoIndex !== this.base64Videos.length - 1) {
+    if (this.currentVideoIndex !== this.urls.length - 1) {
       this.htmlVideo.nativeElement.pause();
-      this.base64CurrentVideo = this.base64Videos[this.currentVideoIndex + 1];
+      this.currentUrl = this.urls[this.currentVideoIndex + 1];
       this._initializeVideoSource();
     }
   }

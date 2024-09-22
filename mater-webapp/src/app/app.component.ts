@@ -15,7 +15,6 @@ import {StyleClassModule} from "primeng/styleclass";
 import {LoadingReference} from "./store/interfaces/loading-reference.interface";
 import {GlobalConfig} from "./store/interfaces/global-config.interface";
 import {LoaderComponent} from "./components/core/loader/loader.component";
-import {TelegramService} from "./services/utils/telegram.service";
 import {ThemeService} from "./services/utils/theme.service";
 
 @Component({

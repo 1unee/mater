@@ -1,7 +1,8 @@
 import {AbstractDto} from "./abstract.dto";
 
-export class FileDto extends AbstractDto {
+export class FileDto extends AbstractDto{
   name: string;
   type: string;
-  base64: string;
+  size: number;
+  url: string;
 }

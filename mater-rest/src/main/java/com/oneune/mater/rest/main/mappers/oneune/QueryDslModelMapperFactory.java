@@ -1,6 +1,6 @@
 package com.oneune.mater.rest.main.mappers.oneune;
 
-import com.oneune.mater.rest.main.store.entities.AbstractEntity;
+import com.oneune.mater.rest.main.store.entities.core.AbstractEntity;
 import com.querydsl.core.JoinExpression;
 import com.querydsl.core.QueryMetadata;
 import com.querydsl.jpa.JPAQueryMixin;

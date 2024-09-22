@@ -8,15 +8,12 @@ import {OneuneMessageService} from "../../../services/utils/oneune-message.servi
 import {CarService} from "../../../services/https/car.service";
 import {SelectButtonModule} from "primeng/selectbutton";
 import {FormsModule} from "@angular/forms";
-import {FileTypeEnum, FileTypeTitle} from "../../../store/enums/file-type.enum";
+import {getFileTypeTitle} from "../../../store/enums/file-type.enum";
 import {TagModule} from "primeng/tag";
 import {ConfirmationService} from "primeng/api";
-import {base64StringToBlob, blobToBase64String} from "blob-util";
 import {LOADING} from "../../../app.config";
-import {SelectButtonState} from "../../../store/interfaces/select-button-state.interface";
-import {FileDto} from "../../../store/dtos/file.dto";
 import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
-import {environment} from "../../../../environments/environment";
+import {FileDto} from "../../../store/dtos/file.dto";
 
 @Component({
   selector: 'app-oneune-file-upload',
@@ -34,85 +31,69 @@ import {environment} from "../../../../environments/environment";
 })
 export class OneuneFileUploadComponent implements OnInit {
 
-  readonly FileTypeEnum = FileTypeEnum;
-  readonly FILE_SIZE_PRECISION: number = 1;
-  readonly PHOTO_MAX_SIZE: number = 5 * 1024 * 1024; // in bytes (5 mb)
-  readonly VIDEO_MAX_SIZE: number = (environment.production ? 100 : 500) * 1024 * 1024; // in bytes (100 or 500 mb)
+  readonly FILE_SIZE_PRECISION: number = 0;
+  readonly FILE_MAX_SIZE: number = 500 * 1024 * 1024; // in bytes (100 mb)
+  readonly getFileTypeTitle = getFileTypeTitle;
 
   @ViewChild('htmlFileInput') htmlFileInput: HTMLInputElement;
 
   car: CarDto;
-
-  selectButtonConfig: {states: SelectButtonState[], selectedValue: FileTypeEnum} = {
-    states: [
-      { label: FileTypeTitle.PHOTO, value: FileTypeEnum.PHOTO, styleClass: "p-1 p-button-secondary", accept: 'image/*', files: []},
-      { label: FileTypeTitle.VIDEO, value: FileTypeEnum.VIDEO, styleClass: "p-1 p-button-secondary", accept: 'video/*', files: []}
-    ],
-    selectedValue: FileTypeEnum.PHOTO
-  }
+  files: File[] = [];
 
   constructor(private dynamicDialogConfig: DynamicDialogConfig,
               public clipboardService: ClipboardService,
               public messageService: OneuneMessageService,
-              private carService: CarService,
               private confirmationService: ConfirmationService,
-              @Inject(LOADING) public loading: LoadingReference) {}
+              @Inject(LOADING) public loading: LoadingReference,
+              private carService: CarService) {
+  }
 
   ngOnInit(): void {
+    this.initialize();
+  }
+
+  private initialize(): void {
     this.car = this.dynamicDialogConfig.data.car;
-    this.getSelectedState(FileTypeEnum.PHOTO).files = this.car.photos
-      .map(photo => new File([base64StringToBlob(photo.base64)], photo.name, {type: photo.type}));
-    this.getSelectedState(FileTypeEnum.VIDEO).files = this.car.videos
-      .map(video => new File([base64StringToBlob(video.base64)], video.name, {type: video.type}));
+    this.files = this.car.files.map((file: FileDto): File => {
+      return {
+        name: file.name,
+        size: file.size,
+        type: file.type
+      } as File;
+    });
   }
 
-  get selectedState(): SelectButtonState {
-    return this.selectButtonConfig.states.find(state => state.value === this.selectButtonConfig.selectedValue)!;
-  }
-
-  getSelectedState(fileType: FileTypeEnum): SelectButtonState {
-    return this.selectButtonConfig.states.find(state => state.value === fileType)!;
-  }
-
-  isFilesEqual(leftFile: File, rightFile: File): boolean {
+  private _isFilesEqual(leftFile: File, rightFile: File): boolean {
     return leftFile.name === rightFile.name
       && leftFile.size === rightFile.size
       && leftFile.type === rightFile.type;
   }
 
-  onChoose(event: any) {
-    const selectedState: SelectButtonState = this.selectedState;
+  onChoose(event: any): void {
     for (const checkingFile of event.target.files) {
-      const isFileUploaded = selectedState.files.some(uploadedFile => this.isFilesEqual(checkingFile, uploadedFile));
+      const isFileUploaded = this.files.some(uploadedFile => this._isFilesEqual(checkingFile, uploadedFile));
       if (!isFileUploaded) {
-        if ((selectedState.value === FileTypeEnum.PHOTO && checkingFile.size <= this.PHOTO_MAX_SIZE)
-          || (selectedState.value === FileTypeEnum.VIDEO && checkingFile.size <= this.VIDEO_MAX_SIZE)) {
-          selectedState.files.push(checkingFile);
+        if (checkingFile.size <= this.FILE_MAX_SIZE) {
+          this.files.push(checkingFile);
         } else {
-          this.messageService.showInfo(`К сожалению, размер файла «${checkingFile.name}»
-          превышает допустимую норму ${selectedState.value === FileTypeEnum.PHOTO ? this.getFormatedSize(this.PHOTO_MAX_SIZE) : this.getFormatedSize(this.VIDEO_MAX_SIZE)}`);
+          this.messageService.showInfo(
+            `К сожалению, размер файла «${checkingFile.name}» превышает допустимую норму ${this.FILE_MAX_SIZE}`
+          );
         }
       }
     }
   }
 
+  private _getMultipartFiles(): FormData {
+    const formData: FormData = new FormData();
+    this.files.forEach((file: File): void => { formData.append('files', file); });
+    return formData;
+  }
+
   async onSave(): Promise<void> {
     try {
       this.loading.value.next(true);
-      this.messageService.showInfo('Сохранение файлов или их изменение на сервере началось, подожди чуть-чуть...');
-      switch (this.selectButtonConfig.selectedValue) {
-        case FileTypeEnum.PHOTO: {
-          this.car.photos = await this._getMultimediaFiles();
-          this.car.photos = await this.carService.putPhotos(this.car.id, this.car.photos);
-          break;
-        }
-        case FileTypeEnum.VIDEO: {
-          this.car.videos = await this._getMultimediaFiles();
-          console.log(this.car.videos);
-          await this.carService.putVideos(this.car.id, this.car.videos);
-          break;
-        }
-      }
+      this.carService.putFiles(this.car.id, this._getMultipartFiles()).then(() => this.messageService.showInfo('Файлы успешно сохранены на сервер!'));
       this.messageService.showSuccess('Файлы успешно отправлены на сервер. ' +
         'Если ты загрузил слишком большие файлы, то придется немного подождать (примерно пару минут), пока сервер их обработает.');
     } catch (e) {
@@ -127,29 +108,16 @@ export class OneuneFileUploadComponent implements OnInit {
   }
 
   removeFile(removingFile: any): void {
-    const selectedState: SelectButtonState = this.selectedState;
-    selectedState.files = selectedState.files.filter(uploadedFile => !this.isFilesEqual(removingFile, uploadedFile));
+    this.files = this.files.filter(uploadedFile => !this._isFilesEqual(removingFile, uploadedFile));
   }
 
   getFormatedSize(sizeInBytes: number): string {
-    if (sizeInBytes === 0) return '0 Байт';
+    if (sizeInBytes === 0) return '0 Б';
     const k: number = 1024;
     const sizes = ['Байт', 'КБ', 'МБ', 'ГБ', 'ТБ'];
     const i = Math.floor(Math.log(sizeInBytes) / Math.log(k));
     const formatedSize: number = sizeInBytes / Math.pow(k, i);
     return `${parseFloat(formatedSize.toFixed(this.FILE_SIZE_PRECISION))} ${sizes[i]}`;
-  }
-
-  private async _getMultimediaFiles(): Promise<FileDto[]> {
-    const fileDtos: FileDto[] = [];
-    for (const file of this.selectedState.files) {
-      const fileDto: FileDto = new FileDto();
-      fileDto.name = file.name;
-      fileDto.type = file.type;
-      fileDto.base64 = await blobToBase64String(new Blob([file], { type: file.type }));
-      fileDtos.push(fileDto);
-    }
-    return fileDtos;
   }
 
   private _confirmCleaning(): void {
@@ -158,7 +126,7 @@ export class OneuneFileUploadComponent implements OnInit {
       header: 'Подтверждение',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Да',
-      accept: () => this.selectedState.files = [],
+      accept: () => this.files = [],
       rejectLabel: 'Нет',
       reject: () => {}
     });

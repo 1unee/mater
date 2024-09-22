@@ -103,8 +103,6 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
     try {
       this.loadingReference.value.next(true);
       if (!!this.car.id) {
-        this.car.photos = []; // чтобы не перегружать сеть
-        this.car.videos = [];
         this.car = await this.carService.put(this.car);
         this.messageService.showSuccess('Данные о машине успешно изменены!');
       } else {

@@ -97,8 +97,8 @@
 
                       <p-carousel #carPhotoCarousel
                                   contentClass="h-auto"
-                                  *ngIf="!!_car.photos?.length; else onNotFoundCarPhotosBlock"
-                                  [value]="_car.photos"
+                                  *ngIf="!!getCarImages(_car).length; else onNotFoundCarPhotosBlock"
+                                  [value]="getCarImages(_car)"
                                   [numVisible]="1"
                                   [numScroll]="1"
                                   [showIndicators]="false"
@@ -114,12 +114,12 @@
                                          alt="Car Photo"
                                          width="125"
                                          height="125"
-                                         [src]="'data:image/png;base64,' + photo.base64"
+                                         [src]="photo.url"
                                 ></p-image>
                                 <p-tag class="absolute"
                                        styleClass="border-round-3xl"
                                        severity="secondary"
-                                       [value]="(carPhotoCarousel._page + 1).toString() + '/' + _car.photos.length"
+                                       [value]="(carPhotoCarousel._page + 1).toString() + '/' + getCarImages(_car).length"
                                        [ngStyle]="{ 'left.px': 5, 'top.px': 5 }"
                                 />
                               </div>
@@ -233,9 +233,9 @@
                 <p-button styleClass="text-center p-2 m-1"
                           icon="pi pi-instagram"
                           severity="secondary"
-                          [label]="_car.photos?.length ?? 0"
+                          [label]="getCarImages(_car).length.toString() ?? 0"
                           [outlined]="true"
-                          [disabled]="_car.photos?.length === 0"
+                          [disabled]="getCarImages(_car).length === 0"
                           (click)="imagesOverlayPanel.toggle($event)"
                 ></p-button>
 
@@ -249,7 +249,7 @@
                       <div class="grid">
                         <div class="col-12 p-1">
                           <p-galleria containerClass="w-full"
-                                      [value]="_car.photos"
+                                      [value]="getCarImages(_car)"
                                       [numVisible]="3"
                                       [autoPlay]="globalConfig.settings.autoPlayImages"
                                       [circular]="true"
@@ -260,7 +260,7 @@
                               <p-image styleClass="w-full"
                                        imageClass="border-round-2xl w-full h-full"
                                        alt="Car Photo"
-                                       [src]="'data:image/png;base64,' + photo.base64"
+                                       [src]="photo.url"
                               ></p-image>
                             </ng-template>
                             <ng-template pTemplate="thumbnail" let-photo>
@@ -268,7 +268,7 @@
                                 <p-image styleClass="w-full block"
                                          imageClass="border-round-xl w-full h-full"
                                          alt="Car Photo"
-                                         [src]="'data:image/png;base64,' + photo.base64"
+                                         [src]="photo.url"
                                 ></p-image>
                               </div>
                             </ng-template>
@@ -282,9 +282,9 @@
                 <p-button styleClass="text-center p-2 m-1"
                           icon="pi pi-video"
                           severity="secondary"
-                          [label]="_car.videos?.length ?? 0"
+                          [label]="getCarVideos(_car).length.toString() ?? 0"
                           [outlined]="true"
-                          [disabled]="!_car.videos?.length"
+                          [disabled]="!getCarVideos(_car).length"
                           (click)="videosOverlayPanel.toggle($event)"
                 ></p-button>
 
@@ -296,8 +296,8 @@
                                 (onShow)="toggleOverlayPanelState('show')"
                                 (onHide)="toggleOverlayPanelState('hide')"
                 >
-                  <app-video-player [header]="'Прикрепленные видео (' + (_car.videos?.length ?? 0) + ')'"
-                                    [videos]="_car.videos"
+                  <app-video-player [header]="'Прикрепленные видео (' + (getCarVideos(_car).length ?? 0) + ')'"
+                                    [videos]="getCarVideos(_car)"
                   ></app-video-player>
                 </p-overlayPanel>
               </div>

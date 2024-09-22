@@ -1,5 +1,6 @@
 package com.oneune.mater.rest.main.store.entities;
 
+import com.oneune.mater.rest.main.store.entities.core.AbstractEntity;
 import com.oneune.mater.rest.main.store.enums.ContactTypeEnum;
 import jakarta.persistence.*;
 import lombok.*;

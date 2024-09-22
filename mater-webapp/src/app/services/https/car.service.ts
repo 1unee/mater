@@ -3,12 +3,9 @@ import {AbstractHttpService} from "../contracts/abstract-http.service";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {lastValueFrom} from "rxjs";
 import {CarDto} from "../../store/dtos/car.dto";
-import {PhotoDto} from "../../store/dtos/photo.dto";
-import {VideoDto} from "../../store/dtos/video.dto";
-import {VideoPartDto} from "../../store/dtos/video-part.dto";
-import {LargeFileService} from "../utils/large-file.service";
 import {PageResponse} from "../../store/pagination/page.response.pagination";
 import {PageQuery} from "../../store/pagination/page-query.pagination";
+import {FileDto} from "../../store/dtos/file.dto";
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +14,7 @@ export class CarService extends AbstractHttpService {
 
   private readonly _REST_PATH: string = this.getExtendedRestPath('cars');
 
-  constructor(private http: HttpClient,
-              private largeFileService: LargeFileService) {
+  constructor(private http: HttpClient) {
     super(http);
   }
 
@@ -47,25 +43,9 @@ export class CarService extends AbstractHttpService {
     );
   }
 
-  async putPhotos(carId: number, photos: PhotoDto[]): Promise<PhotoDto[]> {
+  async putFiles(carId: number, formData: FormData): Promise<FileDto[]> {
     return lastValueFrom(
-      this.http.put<PhotoDto[]>(`${this._REST_PATH}/${carId}/photos`, photos)
+      this.http.put<FileDto[]>(`${this._REST_PATH}/${carId}/files`, formData)
     );
-  }
-
-  async deleteVideos(carId: number): Promise<void> {
-    return lastValueFrom(
-      this.http.delete<void>(`${this._REST_PATH}/${carId}/videos`)
-    );
-  }
-
-  async putVideos(carId: number, videos: VideoDto[]): Promise<void> {
-    await this.deleteVideos(carId);
-    const videoParts: VideoPartDto[] = this.largeFileService.cutVideos(videos);
-    for (const videoPart of videoParts) {
-      await lastValueFrom(
-        this.http.put<void>(`${this._REST_PATH}/${carId}/videos`, videoPart)
-      );
-    }
   }
 }

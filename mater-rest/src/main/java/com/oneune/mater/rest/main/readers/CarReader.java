@@ -22,9 +22,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import static com.oneune.mater.rest.main.readers.ContactReader.qContact;
-import static com.oneune.mater.rest.main.readers.PhotoReader.qPhoto;
+import static com.oneune.mater.rest.main.readers.FileReader.qCarFile;
 import static com.oneune.mater.rest.main.readers.SellerReader.qSeller;
-import static com.oneune.mater.rest.main.readers.VideoReader.qVideo;
 
 @Repository
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -47,13 +46,12 @@ public class CarReader implements Readable<CarDto, CarEntity>, BaseQueryable<Car
     public JPAQuery<CarEntity> writeLightQuery(Predicate... predicates) {
         return writeBaseQuery(predicates)
                 .join(qSeller).on(qCar.seller.id.eq(qSeller.id)).fetchJoin()
-                .join(qContact).on(qContact.seller.id.eq(qContact.id)).fetchJoin();
+                .join(qContact).on(qContact.seller.id.eq(qContact.id)).fetchJoin()
+                .leftJoin(qCarFile).on(qCarFile.car.id.eq(qCar.id)).fetchJoin();
     }
 
     public JPAQuery<CarEntity> writeHeavyQuery(Predicate... predicates) {
-        return writeLightQuery(predicates)
-                .leftJoin(qPhoto).on(qPhoto.car.id.eq(qCar.id)).fetchJoin()
-                .leftJoin(qVideo).on(qVideo.car.id.eq(qCar.id)).fetchJoin();
+        return writeLightQuery(predicates);
     }
 
     public CarEntity getEntityById(Long carId) {

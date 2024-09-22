@@ -1,7 +1,7 @@
 package com.oneune.mater.rest.main.contracts;
 
 import com.oneune.mater.rest.main.store.dtos.AbstractDto;
-import com.oneune.mater.rest.main.store.entities.AbstractEntity;
+import com.oneune.mater.rest.main.store.entities.core.AbstractEntity;
 
 /**
  * Common CRUD contract

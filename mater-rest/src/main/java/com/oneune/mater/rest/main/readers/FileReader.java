@@ -3,12 +3,13 @@ package com.oneune.mater.rest.main.readers;
 import com.google.gson.reflect.TypeToken;
 import com.oneune.mater.rest.main.contracts.BaseQueryable;
 import com.oneune.mater.rest.main.contracts.Readable;
-import com.oneune.mater.rest.main.repositories.VideoRepository;
+import com.oneune.mater.rest.main.repositories.CarFileRepository;
+import com.oneune.mater.rest.main.store.dtos.FileDto;
+import com.oneune.mater.rest.main.store.entities.CarFileEntity;
+import com.oneune.mater.rest.main.store.entities.QCarFileEntity;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
-import com.oneune.mater.rest.main.store.dtos.VideoDto;
-import com.oneune.mater.rest.main.store.entities.QVideoEntity;
-import com.oneune.mater.rest.main.store.entities.VideoEntity;
+import com.oneune.mater.rest.main.store.dtos.PhotoDto;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,31 +25,31 @@ import java.util.List;
 @Repository
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-public class VideoReader implements Readable<VideoDto, VideoEntity>, BaseQueryable<VideoEntity> {
+public class FileReader implements Readable<FileDto, CarFileEntity>, BaseQueryable<CarFileEntity> {
 
-    public final static Type VIDEO_DTO_LIST = TypeToken.getParameterized(List.class, VideoDto.class).getType();
-    public final static QVideoEntity qVideo = new QVideoEntity("video");
+    public final static Type FILE_DTO_LIST = TypeToken.getParameterized(List.class, FileDto.class).getType();
+    public final static QCarFileEntity qCarFile = new QCarFileEntity("file");
 
     ModelMapper modelMapper;
     JPAQueryFactory queryFactory;
-    VideoRepository videoRepository;
+    CarFileRepository carFileRepository;
 
     @Override
-    public JPAQuery<VideoEntity> writeBaseQuery(Predicate... predicates) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public JPAQuery<CarFileEntity> writeBaseQuery(Predicate... predicates) {
+        return queryFactory.selectFrom(qCarFile).where(predicates);
     }
 
-    public VideoEntity getEntityById(Long videoId) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public VideoDto getById(Long videoId) {
+    public CarFileEntity getEntityById(Long fileId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public PageResponse<VideoDto> search(PageQuery pageQuery) {
+    public PhotoDto getById(Long fileId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public PageResponse<FileDto> search(PageQuery pageQuery) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

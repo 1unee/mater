@@ -1,5 +1,6 @@
 package com.oneune.mater.rest.main.store.entities;
 
+import com.oneune.mater.rest.main.store.entities.core.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -69,18 +70,10 @@ public class CarEntity extends AbstractEntity {
     Integer power;
 
     /**
-     * Прикрепленные фото.
+     * Прикрепленные файлы.
      */
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude
-    List<PhotoEntity> photos = new ArrayList<>();
-
-    /**
-     * Прикрепленные видео.
-     */
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    @ToString.Exclude
-    List<VideoEntity> videos = new ArrayList<>();
+    List<CarFileEntity> files = new ArrayList<>();
 }

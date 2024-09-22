@@ -1,5 +1,6 @@
 package com.oneune.mater.rest.main.store.entities;
 
+import com.oneune.mater.rest.main.store.entities.core.AbstractEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;

@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.oneune.mater.rest.main.configs.properties.PaginationProperties;
 import com.oneune.mater.rest.main.mappers.oneune.QueryDslModelMapperFactory;
 import com.oneune.mater.rest.main.store.dtos.AbstractDto;
-import com.oneune.mater.rest.main.store.entities.AbstractEntity;
+import com.oneune.mater.rest.main.store.entities.core.AbstractEntity;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.*;

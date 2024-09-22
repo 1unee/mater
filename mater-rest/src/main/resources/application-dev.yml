@@ -8,7 +8,6 @@ spring:
     locations: classpath:db/migration/dev
 
 server:
-  port: 8081
   ssl:
     enabled: false
 
@@ -17,3 +16,9 @@ telegram:
     menu:
       button:
         url: https://icy-trees-yell.loca.lt/support
+
+selectel:
+  s3:
+    bucket-properties:
+      name: mater-bucket-dev
+      domain: https://02b36204-068b-415a-a708-f62f49cb838e.selstorage.ru

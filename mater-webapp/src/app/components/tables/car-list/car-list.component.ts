@@ -31,17 +31,16 @@ import {AutoFocus} from "primeng/autofocus";
 import {RouterLink} from "@angular/router";
 import {PageResponse} from "../../../store/pagination/page.response.pagination";
 import {GlobalConfig} from "../../../store/interfaces/global-config.interface";
-import {ContactDto} from "../../../store/dtos/contact.dto";
-import {ContactTypeEnum, ContactTypeTitle} from "../../../store/enums/contact-type.enum";
+import {ContactTypeTitle} from "../../../store/enums/contact-type.enum";
 import {GLOBAL_CONFIG, LOADING} from "../../../app.config";
 import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
 import {FilterType} from "../../../store/pagination/filter-type.pagination";
 import {ColumnQuery} from "../../../store/pagination/column-query.pagination";
 import {PaginationDirection} from "../../../store/pagination/pagination-direction.enum";
 import {CarCategorySortEnum, CarCategorySortTitle} from "../../../store/enums/car-category-sort.enum";
-import {LogService} from "../../../services/https/log.service";
 import {PageQueryProcessingComponent} from "../../core/page-query-processing/page-query-processing.component";
 import {GalleriaModule} from "primeng/galleria";
+import {FileDto} from "../../../store/dtos/file.dto";
 
 @Component({
   selector: 'app-car-list',
@@ -136,6 +135,14 @@ export class CarListComponent implements OnInit {
     } else {
       return `Машины (${totalElements > 1000 ? Math.floor(totalElements / 1000) + 1 + ' тыс.' : totalElements})`;
     }
+  }
+
+  getCarImages(car: CarDto): FileDto[] {
+    return car.files.filter(file => file.type.startsWith('image'));
+  }
+
+  getCarVideos(car: CarDto): FileDto[] {
+    return car.files.filter(file => file.type.startsWith('video'));
   }
 
   protected async _paginateCars(): Promise<void> {

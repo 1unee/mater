@@ -252,3 +252,26 @@ CREATE TABLE action (
         FOREIGN KEY (user_id)
             REFERENCES "user" (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
+
+-- Таблица и последовательность для car_file
+DROP SEQUENCE IF EXISTS car_file_id_seq;
+CREATE SEQUENCE car_file_id_seq
+    INCREMENT 1
+    MINVALUE  1
+    MAXVALUE 9223372036854775807
+    START 1
+    CACHE 1;
+
+DROP TABLE IF EXISTS car_file;
+CREATE TABLE car_file (
+    id int8 NOT NULL DEFAULT nextval('car_file_id_seq'),
+    car_id int8,
+    name VARCHAR(2048),
+    type VARCHAR(1024),
+    size int8,
+    url TEXT,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_from_car_file_to_car_id
+        FOREIGN KEY (car_id)
+            REFERENCES "car" (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);

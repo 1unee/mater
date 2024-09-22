@@ -31,6 +31,14 @@ spring:
             enable: true
     sender:
       email: ${MAIL_USERNAME}@${MAIL_HOST}
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 500MB
+      max-request-size: 500GB
+  mvc:
+    async:
+      request-timeout: 10m
 
 
 server:
@@ -54,3 +62,16 @@ telegram:
       button:
         title: Открыть приложение
         url: https://oneune.duckdns.org
+
+selectel:
+  s3:
+    credentials:
+      access-key: ${SELECTEL_S3_ACCESS_KEY}
+      secret-key: ${SELECTEL_S3_SECRET_KEY}
+      url: https://s3.storage.selcloud.ru
+      region: ru-1
+    bucket-properties:
+      name: mater-bucket
+      domain: https://45f0afff-375b-4b48-8919-b87164d4e9bc.selstorage.ru
+    object-properties:
+      url-expiration: 1d

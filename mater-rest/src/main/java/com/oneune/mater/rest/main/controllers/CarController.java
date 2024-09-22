@@ -4,8 +4,7 @@ import com.oneune.mater.rest.main.contracts.CRUDable;
 import com.oneune.mater.rest.main.readers.CarReader;
 import com.oneune.mater.rest.main.services.CarService;
 import com.oneune.mater.rest.main.store.dtos.CarDto;
-import com.oneune.mater.rest.main.store.dtos.PhotoDto;
-import com.oneune.mater.rest.main.store.dtos.VideoPartDto;
+import com.oneune.mater.rest.main.store.dtos.FileDto;
 import com.oneune.mater.rest.main.store.entities.CarEntity;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
@@ -13,8 +12,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("cars")
@@ -63,20 +64,9 @@ public class CarController implements CRUDable<CarDto, CarEntity> {
         return carService.getById(carId);
     }
 
-    @PutMapping("{id}/photos")
-    public void putPhotos(@PathVariable(name = "id") Long carId,
-                          @RequestBody List<PhotoDto> photos) {
-        carService.putPhotos(carId, photos);
-    }
-
-    @DeleteMapping("{id}/videos")
-    public void deleteVideos(@PathVariable(name = "id") Long carId) {
-        carService.deleteVideos(carId);
-    }
-
-    @PutMapping("{id}/videos")
-    public void putVideos(@PathVariable(name = "id") Long carId,
-                          @RequestBody VideoPartDto videoPart) {
-        carService.putVideos(carId, videoPart);
+    @PutMapping("{id}/files")
+    public CompletableFuture<List<FileDto>> putFiles(@PathVariable(name = "id") Long carId,
+                                                     @RequestParam(required = false) List<MultipartFile> files) {
+        return carService.putFiles(carId, files);
     }
 }

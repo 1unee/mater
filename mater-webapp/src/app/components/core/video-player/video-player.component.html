@@ -6,7 +6,7 @@
     <!-- Основной контейнер для видеоплеера -->
     <vg-player>
       <!-- Компонент для отображения кнопки воспроизведения при наведении -->
-      <vg-overlay-play *ngIf="base64Videos.length !== 0"></vg-overlay-play>
+      <vg-overlay-play *ngIf="urls.length !== 0"></vg-overlay-play>
 
       <!-- Компонент для отображения индикатора буферизации -->
       <vg-buffering></vg-buffering>
@@ -21,8 +21,10 @@
 
       <!-- Компонент для управления воспроизведением и другими параметрами -->
       <vg-controls>
+        <!-- Компонент для кнопки воспроизведения/паузы -->
+        <vg-play-pause *ngIf="true"></vg-play-pause>
 
-        <div class="flex align-content-center flex-wrap ml-2">
+        <div class="flex align-content-center flex-wrap ml-1 mr-1">
           <div class="flex align-items-center justify-content-center">
             <p-button styleClass="flex align-items-center justify-content-center p-1 w-auto mr-1"
                       severity="contrast"
@@ -35,13 +37,11 @@
             <p-button styleClass="flex align-items-center justify-content-center p-1 w-auto"
                       severity="contrast"
                       icon="pi pi-angle-right"
-                      [disabled]="currentVideoIndex === base64Videos.length - 1"
+                      [disabled]="currentVideoIndex === urls.length - 1"
                       (click)="next()"
             ></p-button>
           </div>
         </div>
-        <!-- Компонент для кнопки воспроизведения/паузы -->
-        <vg-play-pause *ngIf="false"></vg-play-pause>
         <!-- Кнопка для воспроизведения на следующей дорожке или видео -->
         <vg-playback-button></vg-playback-button>
         <!-- Компонент для отображения текущего времени в формате mm:ss -->
@@ -68,13 +68,13 @@
              [width]="width"
              [height]="height"
       >
-        <source #htmlSource [src]="base64CurrentVideo" type="video/mp4">
+        <source #htmlSource [src]="currentUrl" type="video/mp4">
       </video>
     </vg-player>
     <p-tag class="absolute"
            styleClass="border-round-3xl"
            severity="secondary"
-           [value]="(currentVideoIndex + 1).toString() + '/' + base64Videos.length"
+           [value]="(currentVideoIndex + 1).toString() + '/' + urls.length"
            [ngStyle]="{ 'left.px': 5, 'top.px': 5 }"
     />
 </div>

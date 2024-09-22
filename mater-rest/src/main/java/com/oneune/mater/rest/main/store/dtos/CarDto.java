@@ -29,6 +29,5 @@ public class CarDto extends AbstractDto {
     String VIN;
     Integer ownersAmount;
     Integer power;
-    List<PhotoDto> photos;
-    List<VideoDto> videos;
+    List<FileDto> files;
 }
