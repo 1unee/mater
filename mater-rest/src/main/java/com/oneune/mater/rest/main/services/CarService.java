@@ -15,6 +15,7 @@ import com.oneune.mater.rest.main.store.entities.CarFileEntity;
 import com.oneune.mater.rest.main.store.entities.SellerEntity;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
+import com.oneune.mater.rest.main.utils.ImageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -117,7 +118,7 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
         CarEntity carEntity = getEntityById(carId);
         carEntity.getFiles().clear();
 
-        selectelS3Service.uploadFiles(files);
+        selectelS3Service.uploadFiles(files,true);
         Map<String, String> fileUrls = selectelS3Service.getFileUrls(
                 files.stream().map(MultipartFile::getOriginalFilename).toList()
         ); // Получаем URL файлов
@@ -127,7 +128,9 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
                         .car(carEntity)
                         .name(file.getOriginalFilename())
                         .type(file.getContentType())
-                        .size(file.getSize())
+                        .size((long) ImageUtils.compressImage(
+                                file, ImageUtils.DEFAULT_QUALITY, ImageUtils.DEFAULT_COMPRESS_MULTIPLIER
+                        ).length)
                         .url(fileUrls.get(file.getOriginalFilename()))
                         .build())
                 .collect(Collectors.toList());

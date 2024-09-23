@@ -4,6 +4,7 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.oneune.mater.rest.main.configs.properties.SelectelS3Properties;
+import com.oneune.mater.rest.main.utils.ImageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -12,6 +13,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,11 +37,14 @@ public class SelectelS3Service {
         return s3Client.doesObjectExist(selectelS3Properties.getBucketProperties().getName(), fileName);
     }
 
-    public Pair<String, String> uploadFile(MultipartFile file) {
+    public Pair<String, String> uploadFile(MultipartFile file, boolean compress) {
         ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(file.getSize());
+        byte[] compressedImageBytes = ImageUtils.compressImage(
+                file, compress ? ImageUtils.DEFAULT_QUALITY : 1, compress ? ImageUtils.DEFAULT_COMPRESS_MULTIPLIER : 1
+        );
+        metadata.setContentLength(compressedImageBytes.length);
         metadata.setContentType(file.getContentType());
-        try (InputStream inputStream = file.getInputStream()) {
+        try (InputStream inputStream = new ByteArrayInputStream(compressedImageBytes)) {
             s3Client.putObject(new PutObjectRequest(
                     selectelS3Properties.getBucketProperties().getName(),
                     file.getOriginalFilename(),
@@ -58,10 +63,10 @@ public class SelectelS3Service {
     /**
      * Does not create duplicates.
      */
-    public Map<String, String> uploadFiles(List<MultipartFile> files) {
+    public Map<String, String> uploadFiles(List<MultipartFile> files, boolean compress) {
         return files.stream()
                 .filter(file -> !isFileExist(file.getOriginalFilename()))
-                .map(this::uploadFile)
+                .map(file -> uploadFile(file, compress))
                 .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond, (l, r) -> l));
     }
 

@@ -75,3 +75,13 @@ selectel:
       domain: https://45f0afff-375b-4b48-8919-b87164d4e9bc.selstorage.ru
     object-properties:
       url-expiration: 1d
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
