@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
-import {DynamicDialogConfig} from "primeng/dynamicdialog";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {CarDto} from "../../../store/dtos/car.dto";
 import {InputGroupModule} from "primeng/inputgroup";
 import {InputGroupAddonModule} from "primeng/inputgroupaddon";
@@ -36,6 +36,7 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
   car: CarDto;
 
   constructor(private dynamicDialogConfig: DynamicDialogConfig,
+              private dynamicDialogRef: DynamicDialogRef,
               public messageService: OneuneMessageService,
               public clipboardService: ClipboardService,
               private carService: CarService,
@@ -111,6 +112,7 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
       }
       this.car = new CarDto();
       this.form.reset();
+      this.dynamicDialogRef.close();
     } catch (e) {
       this.messageService.showDefaultError();
     } finally {

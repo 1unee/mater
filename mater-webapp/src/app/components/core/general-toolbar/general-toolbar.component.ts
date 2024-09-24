@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
 import {ActionService} from "../../../services/https/action.service";
 import {BlockUI} from "primeng/blockui";
+import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
 
 @Component({
   selector: 'app-general-toolbar',
@@ -19,11 +20,8 @@ export class GeneralToolbarComponent implements OnInit {
 
   items: MenuItem[];
 
-  constructor(private router: Router,
-              private activatedRoute: ActivatedRoute,
-              private messageService: OneuneMessageService,
-              private actionService: ActionService,
-              private elementRef: ElementRef) {
+  constructor(private messageService: OneuneMessageService,
+              private routerService: OneuneRouterService) {
   }
 
   ngOnInit(): void {
@@ -68,30 +66,23 @@ export class GeneralToolbarComponent implements OnInit {
     ]
   }
 
-  private _wrapRouting(futureRoute: string): void {
-    const pastUrl: string = this.router.url;
-    this.router.navigate([futureRoute]).then(async (): Promise<void> => {
-      await this.actionService.track(`${pastUrl} -> ${futureRoute}`);
-    });
-  }
-
   private _openProfilePage(): void {
-    this._wrapRouting('/profile')
+    this.routerService.wrapRouting('/profile')
   }
 
   private _openCarsMarketPage(): void {
-    this._wrapRouting('/cars/market');
+    this.routerService.wrapRouting('/cars/market');
   }
 
   private _openActionsPage(): void {
-    this._wrapRouting('/actions');
+    this.routerService.wrapRouting('/actions');
   }
 
   private _openSettingsPage(): void {
-    this._wrapRouting('/settings');
+    this.routerService.wrapRouting('/settings');
   }
 
   private _openSupportPage(): void {
-    this._wrapRouting('/support');
+    this.routerService.wrapRouting('/support');
   }
 }

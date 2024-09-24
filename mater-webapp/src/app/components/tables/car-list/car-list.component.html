@@ -24,7 +24,7 @@
                     severity="secondary"
                     (click)="onPageReload()"
           ></p-button>
-          <p-button *ngIf="globalConfig.settings.showSortFilterButton"
+          <p-button *ngIf="!environment.production && globalConfig.settings.showSortFilterButton"
                     styleClass="text-center text-sm p-2 w-12"
                     icon="pi pi-list-check"
                     severity="secondary"
@@ -41,7 +41,7 @@
       </div>
     </div>
 
-    <div *ngIf="!environment.production && paginationConfig.processing" class="col-12 p-1">
+    <div *ngIf="paginationConfig.processing" class="col-12 p-1">
       <div class="flex justify-content-between flex-wrap">
         <div class="flex align-items-center justify-content-center">
 
@@ -150,7 +150,7 @@
                       <div>
                         <div class="m-1 text-sm text-600">
                           <span class="mr-1">Пробег:</span>
-                          <p-tag severity="secondary" [value]="_car.mileage"/>
+                          <p-tag severity="secondary" [value]="_car.mileage + ' км'"/>
                         </div>
                         <div class="m-1 text-sm text-600">
                           <span class="mr-1">ВИН:</span>
@@ -316,6 +316,13 @@
                 ></p-button>
 
                 <p-button styleClass="text-center text-xs p-2"
+                          icon="pi pi-copy"
+                          severity="secondary"
+                          label="Создать из"
+                          (click)="onCarCreatingFromExisting(_car)"
+                ></p-button>
+
+                <p-button styleClass="text-center text-xs p-2"
                           icon="pi pi-upload"
                           severity="secondary"
                           label="Файлы"
@@ -326,7 +333,6 @@
                 <p-button styleClass="text-center text-xs p-2 mr-1"
                           icon="pi pi-trash"
                           severity="secondary"
-                          label="Удалить"
                           (click)="onRemove(_car.id)"
                 ></p-button>
               </div>

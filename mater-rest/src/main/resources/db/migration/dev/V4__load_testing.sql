@@ -8,14 +8,6 @@ DO $$
         photo_base_64_length int4 := 10000;
         video_base_64_length int4 := 300000;
     BEGIN
-        -- Insert data into "role"
-        INSERT INTO role (name)
-        VALUES
-            ('USER'),
-            ('SELLER'),
-            ('SUPPORT'),
-            ('ADMIN');
-
         -- Insert data into "personal"
         FOR i IN 1..rows_amount LOOP
                 INSERT INTO mater.personal (first_name,

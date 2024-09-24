@@ -166,7 +166,7 @@
         <p-inputGroupAddon styleClass="w-6rem text-sm"
                            (click)="clipboardService.extCopy(car.VIN,'ВИН скопирован')"
         >
-          ВИН
+          ВИН {{ form.get('carVIN')?.invalid && !!form.value['carVIN'] ? ('(' + form.value['carVIN'].length + '/17)') : '' }}
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
           <input formControlName="carVIN"

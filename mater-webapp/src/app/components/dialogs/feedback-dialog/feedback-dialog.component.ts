@@ -16,6 +16,7 @@ import {areOnlyWhitespaces} from "../../../services/utils/validators";
 import {AbstractFormComponent} from "../../core/abstract-form/abstract-form.component";
 import {LOADING} from "../../../app.config";
 import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
+import {DynamicDialogRef} from "primeng/dynamicdialog";
 
 @Component({
   selector: 'app-feedback-dialog',
@@ -39,7 +40,8 @@ export class FeedbackDialogComponent extends AbstractFormComponent<string> imple
 
   messageBody: string;
 
-  constructor(private notificationService: NotificationService,
+  constructor(private dynamicDialogRef: DynamicDialogRef,
+              private notificationService: NotificationService,
               public messageService: OneuneMessageService,
               private storageService: StorageService,
               private formBuilder: FormBuilder,
@@ -70,6 +72,7 @@ export class FeedbackDialogComponent extends AbstractFormComponent<string> imple
       this.messageBody = '';
       this.messageService.showSuccess('Обращение успешно отправлено разработчику!');
       this.form.reset();
+      this.dynamicDialogRef.close();
     } catch (e) {
       this.messageService.showDefaultError();
     } finally {
