@@ -1,5 +1,10 @@
 import {AbstractDto} from "./abstract.dto";
 import {FileDto} from "./file.dto";
+import {GearboxEnum} from "../enums/gearbox.enum";
+import {CarStateEnum} from "../enums/car-state.enum";
+import {EngineOilTypeEnum} from "../enums/engine-oil-type.enum";
+import {TransmissionEnum} from "../enums/transmission.enum";
+import {SteeringWheelEnum} from "../enums/steering-wheel.enum";
 
 export class CarDto extends AbstractDto {
   brand: string;
@@ -11,4 +16,10 @@ export class CarDto extends AbstractDto {
   ownersAmount: number;
   power: number;
   files: FileDto[];
+  documentsColor: string;
+  gearbox: GearboxEnum;
+  state: CarStateEnum;
+  engineOilType: EngineOilTypeEnum;
+  transmission: TransmissionEnum;
+  steeringWheel: SteeringWheelEnum;
 }

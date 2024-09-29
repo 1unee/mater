@@ -35,8 +35,7 @@ public class SellerReader implements Readable<SellerDto, SellerEntity>, BaseQuer
 
     @Override
     public JPAQuery<SellerEntity> writeBaseQuery(Predicate... predicates) {
-        return queryFactory.selectFrom(qSeller)
-                .where(predicates);
+        return queryFactory.selectFrom(qSeller).where(predicates).orderBy(qSeller.id.asc());
     }
 
     public SellerEntity getEntityById(Long sellerId) {

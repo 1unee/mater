@@ -138,4 +138,8 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
 
         return CompletableFuture.completedFuture(modelMapper.map(carFileEntities, FileReader.FILE_DTO_LIST));
     }
+
+    public List<CarDto> getAll() {
+        return carReader.getAll();
+    }
 }

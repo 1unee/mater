@@ -1,30 +1,26 @@
 -- Таблица и последовательность для seller
-DROP SEQUENCE IF EXISTS seller_id_seq;
-CREATE SEQUENCE seller_id_seq
+CREATE SEQUENCE IF NOT EXISTS seller_id_seq
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
 
-DROP TABLE IF EXISTS seller;
-CREATE TABLE seller (
+CREATE TABLE IF NOT EXISTS seller (
     id int8 NOT NULL DEFAULT nextval('seller_id_seq'),
     score float4,
     PRIMARY KEY (id)
 );
 
 -- Таблица и последовательность для car
-DROP SEQUENCE IF EXISTS car_id_seq;
-CREATE SEQUENCE car_id_seq
+CREATE SEQUENCE IF NOT EXISTS car_id_seq
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
 
-DROP TABLE IF EXISTS car;
-CREATE TABLE car (
+CREATE TABLE IF NOT EXISTS car (
     id int8 NOT NULL DEFAULT nextval('car_id_seq'),
     vehicle_identification_number varchar(255),
     brand varchar(255),
@@ -35,6 +31,12 @@ CREATE TABLE car (
     price numeric(38,2),
     production_year int4,
     seller_id int8,
+    documents_color varchar(255), -- Цвет по документам
+    gearbox varchar(255), -- Тип коробки передач
+    state varchar(255), -- Состояние целостности
+    engine_oil_type varchar(255), -- Тип топлива для двигателя
+    transmission varchar(255), -- Привод
+    steering_wheel varchar(255), -- Руль
     PRIMARY KEY (id),
     CONSTRAINT fk_from_car_to_seller_id
         FOREIGN KEY (seller_id)
@@ -42,16 +44,14 @@ CREATE TABLE car (
 );
 
 -- Таблица и последовательность для contact
-DROP SEQUENCE IF EXISTS contact_id_seq;
-CREATE SEQUENCE contact_id_seq
+CREATE SEQUENCE IF NOT EXISTS contact_id_seq
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
 
-DROP TABLE IF EXISTS contact;
-CREATE TABLE contact (
+CREATE TABLE IF NOT EXISTS contact (
     id int8 NOT NULL DEFAULT nextval('contact_id_seq'),
     type varchar(255),
     value varchar(1024),
@@ -63,16 +63,14 @@ CREATE TABLE contact (
 );
 
 -- Таблица и последовательность для personal
-DROP SEQUENCE IF EXISTS personal_id_seq;
-CREATE SEQUENCE personal_id_seq
+CREATE SEQUENCE IF NOT EXISTS personal_id_seq
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
 
-DROP TABLE IF EXISTS personal;
-CREATE TABLE personal (
+CREATE TABLE IF NOT EXISTS personal (
     id int8 NOT NULL DEFAULT nextval('personal_id_seq'),
     first_name varchar(255),
     is_first_name_set boolean DEFAULT FALSE,
@@ -85,39 +83,15 @@ CREATE TABLE personal (
     PRIMARY KEY (id)
 );
 
--- Таблица и последовательность для photo
-DROP SEQUENCE IF EXISTS photo_id_seq;
-CREATE SEQUENCE photo_id_seq
-    INCREMENT 1
-    MINVALUE  1
-    MAXVALUE 9223372036854775807
-    START 1
-    CACHE 1;
-
-DROP TABLE IF EXISTS photo;
-CREATE TABLE photo (
-    id int8 NOT NULL DEFAULT nextval('photo_id_seq'),
-    name varchar(1024),
-    type varchar(128),
-    base64 text,
-    car_id int8,
-    PRIMARY KEY (id),
-    CONSTRAINT fk_from_photo_to_car_id
-        FOREIGN KEY (car_id)
-            REFERENCES car (id) ON DELETE NO ACTION ON UPDATE NO ACTION
-);
-
 -- Таблица и последовательность для role
-DROP SEQUENCE IF EXISTS role_id_seq;
-CREATE SEQUENCE role_id_seq
+CREATE SEQUENCE IF NOT EXISTS role_id_seq
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
 
-DROP TABLE IF EXISTS role;
-CREATE TABLE role (
+CREATE TABLE IF NOT EXISTS role (
     id int8 NOT NULL DEFAULT nextval('role_id_seq'),
     name varchar(255),
     PRIMARY KEY (id),
@@ -125,32 +99,28 @@ CREATE TABLE role (
 );
 
 -- Таблица и последовательность для update
-DROP SEQUENCE IF EXISTS update_id_seq;
-CREATE SEQUENCE update_id_seq
+CREATE SEQUENCE IF NOT EXISTS update_id_seq
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
 
-DROP TABLE IF EXISTS update;
-CREATE TABLE update (
+CREATE TABLE IF NOT EXISTS update (
     id int8 NOT NULL DEFAULT nextval('update_id_seq'),
     value jsonb,
     PRIMARY KEY (id)
 );
 
 -- Таблица и последовательность для user
-DROP SEQUENCE IF EXISTS user_id_seq;
-CREATE SEQUENCE user_id_seq
+CREATE SEQUENCE IF NOT EXISTS user_id_seq
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
 
-DROP TABLE IF EXISTS "user";
-CREATE TABLE "user" (
+CREATE TABLE IF NOT EXISTS "user" (
     id int8 NOT NULL DEFAULT nextval('user_id_seq'),
     email varchar(255),
     is_email_set boolean DEFAULT FALSE,
@@ -168,8 +138,7 @@ CREATE TABLE "user" (
             REFERENCES seller (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
-DROP SEQUENCE IF EXISTS user_role_link_id_seq;
-CREATE SEQUENCE user_role_link_id_seq
+CREATE SEQUENCE IF NOT EXISTS user_role_link_id_seq
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 9223372036854775807
@@ -177,8 +146,7 @@ CREATE SEQUENCE user_role_link_id_seq
     CACHE 1;
 
 -- Таблица для связи user и role
-DROP TABLE IF EXISTS user_role_link;
-CREATE TABLE user_role_link (
+CREATE TABLE IF NOT EXISTS user_role_link (
     id int8 NOT NULL DEFAULT nextval('user_role_link_id_seq'),
     user_id int8 NOT NULL,
     role_id int8 NOT NULL,
@@ -190,41 +158,18 @@ CREATE TABLE user_role_link (
     CONSTRAINT fk_from_user_role_link_to_role_id
         FOREIGN KEY (role_id)
             REFERENCES role (id) ON DELETE NO ACTION ON UPDATE NO ACTION
-);
-
--- Таблица и последовательность для video
-DROP SEQUENCE IF EXISTS video_id_seq;
-CREATE SEQUENCE video_id_seq
-    INCREMENT 1
-    MINVALUE  1
-    MAXVALUE 9223372036854775807
-    START 1
-    CACHE 1;
-
-DROP TABLE IF EXISTS video;
-CREATE TABLE video (
-    id int8 NOT NULL DEFAULT nextval('video_id_seq'),
-    name varchar(1024),
-    type varchar(128),
-    base64 text,
-    car_id int8,
-    PRIMARY KEY (id),
-    CONSTRAINT fk_from_video_to_video_id
-        FOREIGN KEY (car_id)
-            REFERENCES car (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+--     CONSTRAINT unique_user_role_link UNIQUE (user_id, role_id)
 );
 
 -- Таблица и последовательность для log
-DROP SEQUENCE IF EXISTS log_id_seq;
-CREATE SEQUENCE log_id_seq
+CREATE SEQUENCE IF NOT EXISTS log_id_seq
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
 
-DROP TABLE IF EXISTS "log";
-CREATE TABLE "log" (
+CREATE TABLE IF NOT EXISTS "log" (
    id int8 NOT NULL DEFAULT nextval('log_id_seq'),
    body text,
    threw_at timestamptz(6),
@@ -232,16 +177,14 @@ CREATE TABLE "log" (
 );
 
 -- Таблица и последовательность для action
-DROP SEQUENCE IF EXISTS action_id_seq;
-CREATE SEQUENCE action_id_seq
+CREATE SEQUENCE IF NOT EXISTS action_id_seq
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
 
-DROP TABLE IF EXISTS action;
-CREATE TABLE action (
+CREATE TABLE IF NOT EXISTS action (
     id int8 NOT NULL DEFAULT nextval('action_id_seq'),
     user_id int8,
     body text,
@@ -254,16 +197,14 @@ CREATE TABLE action (
 );
 
 -- Таблица и последовательность для car_file
-DROP SEQUENCE IF EXISTS car_file_id_seq;
-CREATE SEQUENCE car_file_id_seq
+CREATE SEQUENCE IF NOT EXISTS car_file_id_seq
     INCREMENT 1
     MINVALUE  1
     MAXVALUE 9223372036854775807
     START 1
     CACHE 1;
 
-DROP TABLE IF EXISTS car_file;
-CREATE TABLE car_file (
+CREATE TABLE IF NOT EXISTS car_file (
     id int8 NOT NULL DEFAULT nextval('car_file_id_seq'),
     car_id int8,
     name VARCHAR(2048),
@@ -274,4 +215,25 @@ CREATE TABLE car_file (
     CONSTRAINT fk_from_car_file_to_car_id
         FOREIGN KEY (car_id)
             REFERENCES "car" (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Таблица и последовательность для exception
+CREATE SEQUENCE IF NOT EXISTS exception_id_seq
+    INCREMENT 1
+    MINVALUE  1
+    MAXVALUE 9223372036854775807
+    START 1
+    CACHE 1;
+
+CREATE TABLE IF NOT EXISTS exception (
+     id INT8 DEFAULT nextval('exception_id_seq'),
+     exception_type VARCHAR(255) NOT NULL,
+     message TEXT,
+     root_cause TEXT,
+     class_name VARCHAR(255),
+     method_name VARCHAR(255),
+     stack_trace TEXT,
+     timestamp TIMESTAMP NOT NULL,
+     request_url VARCHAR(500),
+     PRIMARY KEY (id)
 );

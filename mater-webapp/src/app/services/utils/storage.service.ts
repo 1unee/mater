@@ -2,6 +2,8 @@ import {Inject, Injectable} from '@angular/core';
 import {UserDto} from "../../store/dtos/user.dto";
 import {OneuneMessageService} from "./oneune-message.service";
 import {LOCAL_STORAGE} from "../../app.config";
+import {RoleDto} from "../../store/dtos/role.dto";
+import {RoleEnum} from "../../store/enums/role.enum";
 
 @Injectable({
   providedIn: 'root'
@@ -38,5 +40,9 @@ export class StorageService {
 
   updateUser(user: UserDto): void {
     this.localStorage.setItem(StorageService.USER_KEY, JSON.stringify(user));
+  }
+
+  userHasRole(role: RoleEnum): boolean {
+    return this.user.roles.map((role: RoleDto): RoleEnum => role.name).includes(role);
   }
 }

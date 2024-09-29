@@ -9,6 +9,9 @@ import {ThemeService} from "../../../services/utils/theme.service";
 import {ThemeEnum, ThemeTitle} from "../../../store/enums/theme.enum";
 import {GLOBAL_CONFIG} from "../../../app.config";
 import {GlobalConfig} from "../../../store/interfaces/global-config.interface";
+import {DropdownModule} from "primeng/dropdown";
+import {DoubleOptionEnum} from "../../../store/enums/double-option.enum";
+import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
 
 @Component({
   selector: 'app-settings-page',
@@ -20,87 +23,89 @@ import {GlobalConfig} from "../../../store/interfaces/global-config.interface";
     InputTextModule,
     ReactiveFormsModule,
     SelectButtonModule,
-    FormsModule
+    FormsModule,
+    DropdownModule
   ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.scss'
 })
 export class SettingsPageComponent implements OnInit {
 
-  themeSelectButtonConfig: any = {
+  themeConfig: any = {
     states: [
       { label: ThemeTitle.light, value: ThemeEnum.LIGHT, styleClass: "p-1 p-button-secondary"},
       { label: ThemeTitle.system, value: ThemeEnum.SYSTEM, styleClass: "p-1 p-button-secondary"},
       { label: ThemeTitle.dark, value: ThemeEnum.DARK, styleClass: "p-1 p-button-secondary"}
     ],
-    selectedValue: undefined
+    selectedValue: ThemeTitle.system
   };
 
-  sortFilterSelectButtonConfig: any = {
+  sortFilterConfig: any = {
     states: [
-      { label: 'Да', value: true, styleClass: "p-1 p-button-secondary"},
-      { label: 'Нет', value: false, styleClass: "p-1 p-button-secondary"}
+      { label: DoubleOptionEnum.YES, value: true, styleClass: "p-1 p-button-secondary"},
+      { label: DoubleOptionEnum.NO, value: false, styleClass: "p-1 p-button-secondary"}
     ],
-    selectedValue: undefined
+    selectedValue: true
   };
 
-  createCarSelectButtonConfig: any = {
+  createCarConfig: any = {
     states: [
-      { label: 'Да', value: true, styleClass: "p-1 p-button-secondary"},
-      { label: 'Нет', value: false, styleClass: "p-1 p-button-secondary"}
+      { label: DoubleOptionEnum.YES, value: true, styleClass: "p-1 p-button-secondary"},
+      { label: DoubleOptionEnum.NO, value: false, styleClass: "p-1 p-button-secondary"}
     ],
-    selectedValue: undefined
+    selectedValue: true
   };
 
   warnMessageAboutTestStagePageQueryingConfig: any = {
     states: [
-      { label: 'Да', value: true, styleClass: "p-1 p-button-secondary"},
-      { label: 'Нет', value: false, styleClass: "p-1 p-button-secondary"}
+      { label: DoubleOptionEnum.YES, value: true, styleClass: "p-1 p-button-secondary"},
+      { label: DoubleOptionEnum.NO, value: false, styleClass: "p-1 p-button-secondary"}
     ],
-    selectedValue: undefined
+    selectedValue: true
   }
 
-  autoPlayImages: any = {
+  autoPlayImagesConfig: any = {
     states: [
-      { label: 'Да', value: true, styleClass: "p-1 p-button-secondary"},
-      { label: 'Нет', value: false, styleClass: "p-1 p-button-secondary"}
+      { label: DoubleOptionEnum.YES, value: true, styleClass: "p-1 p-button-secondary"},
+      { label: DoubleOptionEnum.NO, value: false, styleClass: "p-1 p-button-secondary"}
     ],
-    selectedValue: undefined
+    selectedValue: true
   };
 
   constructor(@Inject(GLOBAL_CONFIG) private globalConfig: GlobalConfig,
-              private themeService: ThemeService) {
+              private themeService: ThemeService,
+              public messageService: OneuneMessageService) {
   }
 
   ngOnInit(): void {
-    this.themeSelectButtonConfig.selectedValue = this.globalConfig.settings.theme;
-    this.sortFilterSelectButtonConfig.selectedValue = this.globalConfig.settings.showSortFilterButton;
-    this.createCarSelectButtonConfig.selectedValue = this.globalConfig.settings.showCreateCarButton;
+    this.themeConfig.selectedValue = this.globalConfig.settings.theme;
+    this.sortFilterConfig.selectedValue = this.globalConfig.settings.showSortFilterButton;
+    this.createCarConfig.selectedValue = this.globalConfig.settings.showCreateCarButton;
     this.warnMessageAboutTestStagePageQueryingConfig.selectedValue = this.globalConfig.settings.showWarnPageQueryingMessage;
-    this.autoPlayImages.selectedValue = this.globalConfig.settings.autoPlayImages;
+    this.autoPlayImagesConfig.selectedValue = this.globalConfig.settings.autoPlayImages;
   }
 
-  onThemeChange(event: SelectButtonChangeEvent): void {
+  onThemeChange(event: any): void {
     this.themeService.setThemeMode(event.value);
   }
 
-  onSortFilterStateChange(event: SelectButtonChangeEvent): void {
-    this.sortFilterSelectButtonConfig.selectedValue = event.value;
+  onSortFilterStateChange(event: any): void {
+    this.sortFilterConfig.selectedValue = event.value;
     this.globalConfig.settings.showSortFilterButton = event.value;
   }
 
-  onCarAddingStateChange(event: SelectButtonChangeEvent): void {
-    this.createCarSelectButtonConfig.selectedValue = event.value;
+  onCarAddingStateChange(event: any): void {
+    this.createCarConfig.selectedValue = event.value;
     this.globalConfig.settings.showCreateCarButton = event.value;
   }
 
-  onWarnPageQueryingStateChange(event: SelectButtonChangeEvent): void {
+  onWarnPageQueryingStateChange(event: any): void {
     this.warnMessageAboutTestStagePageQueryingConfig.selectedValue = event.value;
     this.globalConfig.settings.showWarnPageQueryingMessage = event.value;
   }
 
-  onAutoPlayImagesChange(event: SelectButtonChangeEvent): void {
-    this.autoPlayImages.selectedValue = event.value;
+  onAutoPlayImagesChange(event: any): void {
+    this.autoPlayImagesConfig.selectedValue = event.value;
     this.globalConfig.settings.autoPlayImages = event.value;
   }
 }

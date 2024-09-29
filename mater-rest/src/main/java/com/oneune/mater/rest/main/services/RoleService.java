@@ -3,6 +3,9 @@ package com.oneune.mater.rest.main.services;
 import com.oneune.mater.rest.main.contracts.CRUDable;
 import com.oneune.mater.rest.main.readers.RoleReader;
 import com.oneune.mater.rest.main.repositories.RoleRepository;
+import com.oneune.mater.rest.main.repositories.UserRoleLinkRepository;
+import com.oneune.mater.rest.main.store.entities.UserEntity;
+import com.oneune.mater.rest.main.store.entities.UserRoleLinkEntity;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
 import com.oneune.mater.rest.main.store.dtos.RoleDto;
@@ -15,8 +18,11 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -26,6 +32,7 @@ public class RoleService implements CRUDable<RoleDto, RoleEntity> {
 
     ModelMapper modelMapper;
     RoleRepository roleRepository;
+    UserRoleLinkRepository userRoleLinkRepository;
     RoleReader roleReader;
 
     public RoleEntity getEntityByEnum(RoleEnum roleConst) {
@@ -71,5 +78,25 @@ public class RoleService implements CRUDable<RoleDto, RoleEntity> {
     @Override
     public PageResponse<RoleDto> search(PageQuery pageQuery) {
         return roleReader.search(pageQuery);
+    }
+
+    public List<RoleDto> getRoles() {
+        return roleReader.getRoles();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void linkRoles(UserEntity userEntity, List<RoleDto> roles) {
+        userEntity.getUserRoleLinks().clear();
+        List<UserRoleLinkEntity> userRoleLinkEntities = roles.stream()
+                .map(RoleDto::getId)
+                .map(this::getEntityById)
+                .map(roleEntity -> UserRoleLinkEntity.builder()
+                        .user(userEntity)
+                        .role(roleEntity)
+                        .build())
+                .map(wildcard -> (UserRoleLinkEntity) wildcard)
+                .toList();
+        userEntity.getUserRoleLinks().addAll(userRoleLinkEntities);
+        userRoleLinkRepository.saveAllAndFlush(userRoleLinkEntities);
     }
 }

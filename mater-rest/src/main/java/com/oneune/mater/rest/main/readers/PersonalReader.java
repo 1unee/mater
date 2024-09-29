@@ -35,7 +35,7 @@ public class PersonalReader implements Readable<PersonalDto, PersonalEntity>, Ba
 
     @Override
     public JPAQuery<PersonalEntity> writeBaseQuery(Predicate... predicates) {
-        return queryFactory.selectFrom(qPersonal).where(predicates);
+        return queryFactory.selectFrom(qPersonal).where(predicates).orderBy(qPersonal.id.asc());
     }
 
     public PersonalEntity getEntityById(Long personalId) {

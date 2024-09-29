@@ -44,6 +44,11 @@ import {FileDto} from "../../../store/dtos/file.dto";
 import {environment} from "../../../../environments/environment";
 import {ActionService} from "../../../services/https/action.service";
 import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
+import {GearboxEnum, GearboxTitle, getGearboxTitle} from "../../../store/enums/gearbox.enum";
+import {getCarStateTitle} from "../../../store/enums/car-state.enum";
+import {getEngineOilTypeTitle} from "../../../store/enums/engine-oil-type.enum";
+import {getTransmissionTitle} from "../../../store/enums/transmission.enum";
+import {getSteeringWheelTitle} from "../../../store/enums/steering-wheel.enum";
 
 @Component({
   selector: 'app-car-list',
@@ -85,6 +90,7 @@ export class CarListComponent implements OnInit {
   readonly ContactTypeTitle = ContactTypeTitle;
   readonly PaginationDirection = PaginationDirection;
   readonly environment = environment;
+  readonly GearboxTitle = GearboxTitle;
 
   @ViewChild('contactsOverlayPanel') contactsOverlayPanel: OverlayPanel;
 
@@ -330,5 +336,12 @@ export class CarListComponent implements OnInit {
       );
     }
   }
+
+  protected readonly GearboxEnum = GearboxEnum;
+  protected readonly getGearboxTitle = getGearboxTitle;
+  protected readonly getCarStateTitle = getCarStateTitle;
+  protected readonly getEngineOilTypeTitle = getEngineOilTypeTitle;
+  protected readonly getTransmissionTitle = getTransmissionTitle;
+  protected readonly getSteeringWheelTitle = getSteeringWheelTitle;
 }
 

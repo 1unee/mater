@@ -109,6 +109,7 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
     public UserDto put(Long userId, UserDto userDto) {
         UserEntity userEntity = userReader.getEntityById(userId);
         modelMapper.map(userDto, userEntity);
+        roleService.linkRoles(userEntity, userDto.getRoles());
         userRepository.saveAndFlush(userEntity);
         return userReader.getById(userDto.getId());
     }
@@ -117,6 +118,7 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
     public UserDto putByParams(Long userId, UserDto userDto, VariableFieldEnum variableField) {
         UserEntity userEntity = userReader.getEntityById(userId);
         modelMapper.map(userDto, userEntity);
+        roleService.linkRoles(userEntity, userDto.getRoles());
         commitVariableField(userEntity, variableField);
         userRepository.saveAndFlush(userEntity);
         return userReader.getById(userDto.getId());
@@ -154,5 +156,9 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
     @Override
     public PageResponse<UserDto> search(PageQuery pageQuery) {
         return userReader.search(pageQuery);
+    }
+
+    public List<UserDto> getUsers() {
+        return userReader.getUsers();
     }
 }

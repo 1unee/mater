@@ -67,4 +67,9 @@ public class UserController implements CRUDable<UserDto, UserEntity> {
     public PageResponse<UserDto> search(@RequestBody PageQuery pageQuery) {
         return userService.search(pageQuery);
     }
+
+    @GetMapping
+    public List<UserDto> getUsers() {
+        return userService.getUsers();
+    }
 }

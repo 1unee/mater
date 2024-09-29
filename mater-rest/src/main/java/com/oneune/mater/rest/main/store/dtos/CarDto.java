@@ -1,6 +1,7 @@
 package com.oneune.mater.rest.main.store.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.oneune.mater.rest.main.store.enums.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,4 +31,10 @@ public class CarDto extends AbstractDto {
     Integer ownersAmount;
     Integer power;
     List<FileDto> files;
+    String documentsColor;
+    GearboxEnum gearbox;
+    CarStateEnum state;
+    EngineOilTypeEnum engineOilType;
+    TransmissionEnum transmission;
+    SteeringWheelEnum steeringWheel;
 }
