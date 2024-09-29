@@ -1,11 +1,8 @@
-import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AccordionModule} from "primeng/accordion";
 import {ButtonDirective} from "primeng/button";
-import {NgOptimizedImage} from "@angular/common";
+import {NgIf, NgOptimizedImage} from "@angular/common";
 import {TelegramService} from "../../../services/utils/telegram.service";
-import {Router} from "@angular/router";
-import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
-import {UserService} from "../../../services/https/user.service";
 import {StorageService} from "../../../services/utils/storage.service";
 import {BlockUIModule} from "primeng/blockui";
 import {ImageModule} from "primeng/image";
@@ -13,8 +10,8 @@ import {TagModule} from "primeng/tag";
 import {FeedbackDialogComponent} from "../../dialogs/feedback-dialog/feedback-dialog.component";
 import {DialogService} from "primeng/dynamicdialog";
 import {LoaderComponent} from "../../core/loader/loader.component";
-import {LOADING} from "../../../app.config";
-import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
+import {RoleDto} from "../../../store/dtos/role.dto";
+import {RoleEnum} from "../../../store/enums/role.enum";
 
 @Component({
   selector: 'app-support-page',
@@ -26,7 +23,8 @@ import {LoadingReference} from "../../../store/interfaces/loading-reference.inte
     BlockUIModule,
     ImageModule,
     TagModule,
-    LoaderComponent
+    LoaderComponent,
+    NgIf
   ],
   templateUrl: './support-page.component.html',
   styleUrl: './support-page.component.scss'
@@ -34,11 +32,20 @@ import {LoadingReference} from "../../../store/interfaces/loading-reference.inte
 export class SupportPageComponent implements OnInit {
 
   constructor(private telegramService: TelegramService,
-              private dialogService: DialogService) {
+              private dialogService: DialogService,
+              private storageService: StorageService) {
   }
 
   async ngOnInit(): Promise<void> {
     await this.telegramService.tune();
+  }
+
+  get isSupport(): boolean {
+    return this.storageService.user.roles.map((role: RoleDto): RoleEnum => role.name).includes(RoleEnum.SUPPORT);
+  }
+
+  get isAdmin(): boolean {
+    return this.storageService.user.roles.map((role: RoleDto): RoleEnum => role.name).includes(RoleEnum.ADMIN);
   }
 
   onOpenFeedbackDialog(): void {

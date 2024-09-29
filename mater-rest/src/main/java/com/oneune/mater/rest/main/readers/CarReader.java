@@ -40,7 +40,7 @@ public class CarReader implements Readable<CarDto, CarEntity>, BaseQueryable<Car
 
     @Override
     public JPAQuery<CarEntity> writeBaseQuery(Predicate... predicates) {
-        return queryFactory.selectFrom(qCar).where(predicates);
+        return queryFactory.selectFrom(qCar).where(predicates).orderBy(qCar.id.asc());
     }
 
     public JPAQuery<CarEntity> writeLightQuery(Predicate... predicates) {
@@ -71,5 +71,9 @@ public class CarReader implements Readable<CarDto, CarEntity>, BaseQueryable<Car
     @Override
     public PageResponse<CarDto> search(PageQuery pageQuery) {
         return paginationService.process(pageQuery, CarDto.class, writeLightQuery(), "car");
+    }
+
+    public List<CarDto> getAll() {
+        return modelMapper.map(writeHeavyQuery().fetch(), CAR_DTO_LIST);
     }
 }

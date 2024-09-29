@@ -7,7 +7,8 @@ import {ThemeEnum} from "../../store/enums/theme.enum";
 })
 export class ThemeService {
 
-  constructor(@Inject(DOCUMENT) private _document: Document) {}
+  constructor(@Inject(DOCUMENT) private _document: Document) {
+  }
 
   private get linkElement(): HTMLLinkElement {
     return this._document.getElementById('app-theme') as HTMLLinkElement;

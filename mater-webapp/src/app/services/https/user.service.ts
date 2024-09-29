@@ -22,9 +22,21 @@ export class UserService extends AbstractHttpService{
     );
   }
 
+  async put(user: UserDto): Promise<UserDto> {
+    return lastValueFrom(
+      this.http.put<UserDto>(`${this._REST_PATH}/${user.id}`, user)
+    );
+  }
+
   async putByParams(user: UserDto, variableField: VariableFieldEnum): Promise<UserDto> {
     return lastValueFrom(
       this.http.put<UserDto>(`${this._REST_PATH}/${user.id}/fields/${variableField}`, user)
+    );
+  }
+
+  async getUsers(): Promise<UserDto[]> {
+    return lastValueFrom(
+      this.http.get<UserDto[]>(`${this._REST_PATH}`)
     );
   }
 }

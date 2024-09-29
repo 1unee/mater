@@ -36,7 +36,7 @@ public class FileReader implements Readable<FileDto, CarFileEntity>, BaseQueryab
 
     @Override
     public JPAQuery<CarFileEntity> writeBaseQuery(Predicate... predicates) {
-        return queryFactory.selectFrom(qCarFile).where(predicates);
+        return queryFactory.selectFrom(qCarFile).where(predicates).orderBy(qCarFile.id.asc());
     }
 
     public CarFileEntity getEntityById(Long fileId) {

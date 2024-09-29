@@ -36,7 +36,7 @@ public class RoleReader implements Readable<RoleDto, RoleEntity>, BaseQueryable<
 
     @Override
     public JPAQuery<RoleEntity> writeBaseQuery(Predicate... predicates) {
-        return queryFactory.selectFrom(qRole).where(predicates);
+        return queryFactory.selectFrom(qRole).where(predicates).orderBy(qRole.id.asc());
     }
 
     public RoleEntity getEntityById(Long roleId) {
@@ -56,5 +56,9 @@ public class RoleReader implements Readable<RoleDto, RoleEntity>, BaseQueryable<
     @Override
     public PageResponse<RoleDto> search(PageQuery pageQuery) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public List<RoleDto> getRoles() {
+        return modelMapper.map(writeBaseQuery().fetch(), ROLE_DTO_LIST);
     }
 }

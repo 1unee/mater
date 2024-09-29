@@ -52,6 +52,16 @@
               В будущем будет добавлено еще много других полезных функций.
             </p>
           </p-accordionTab>
+          <p-accordionTab *ngIf="isSupport" header="Модераторам!">
+            <p>
+              Информация для модераторов...
+            </p>
+          </p-accordionTab>
+          <p-accordionTab *ngIf="isAdmin" header="Администраторам!">
+            <p>
+              Информация для администраторов...
+            </p>
+          </p-accordionTab>
         </p-accordion>
       </div>
     </div>

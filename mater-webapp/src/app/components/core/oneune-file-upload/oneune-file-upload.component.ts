@@ -2,7 +2,7 @@ import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {Button} from "primeng/button";
 import {NgForOf, NgIf} from "@angular/common";
 import {CarDto} from "../../../store/dtos/car.dto";
-import {DynamicDialogConfig} from "primeng/dynamicdialog";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {ClipboardService} from "../../../services/utils/clipboard.service";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
 import {CarService} from "../../../services/https/car.service";
@@ -41,6 +41,7 @@ export class OneuneFileUploadComponent implements OnInit {
   files: File[] = [];
 
   constructor(private dynamicDialogConfig: DynamicDialogConfig,
+              private dynamicDialogRef: DynamicDialogRef,
               public clipboardService: ClipboardService,
               public messageService: OneuneMessageService,
               private confirmationService: ConfirmationService,
@@ -90,7 +91,8 @@ export class OneuneFileUploadComponent implements OnInit {
     try {
       this.loading.value.next(true);
       this.carService.putFiles(this.car.id, this._getMultipartFiles())
-        .then(() => this.messageService.showInfo('Файлы успешно сохранены на сервер! Перезагрузи список, чтобы увидеть.'));
+        .then(() => this.messageService.showInfo(`Файлы машины ${this.car.model} ${this.car.brand} успешно сохранены на сервер! Перезагрузи список, чтобы увидеть.`));
+      this.dynamicDialogRef.close();
       this.messageService.showSuccess('При загрузке больших файлов придется немного подождать (до пару минут).');
     } catch (e) {
       this.messageService.showError('Произошла ошибка при сохранении файлов...');

@@ -15,12 +15,12 @@ import com.oneune.mater.rest.main.store.entities.CarFileEntity;
 import com.oneune.mater.rest.main.store.entities.SellerEntity;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
-import com.oneune.mater.rest.main.utils.ImageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,25 +113,22 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
     @LogExecutionDuration(logStartMessage = true)
     public CompletableFuture<List<FileDto>> putFiles(Long carId, List<MultipartFile> files) {
 
-        // todo: сжимать фотки пропорционально
         files = Objects.isNull(files) ? new ArrayList<>() : files;
         CarEntity carEntity = getEntityById(carId);
         carEntity.getFiles().clear();
 
-        selectelS3Service.uploadFiles(files,true);
-        Map<String, String> fileUrls = selectelS3Service.getFileUrls(
+        selectelS3Service.uploadFiles(files);
+        Map<String, Pair<String, Long>> filesMeta = selectelS3Service.getFilesMeta(
                 files.stream().map(MultipartFile::getOriginalFilename).toList()
-        ); // Получаем URL файлов
+        );
 
         List<CarFileEntity> carFileEntities = files.stream()
                 .map(file -> CarFileEntity.builder()
                         .car(carEntity)
                         .name(file.getOriginalFilename())
                         .type(file.getContentType())
-                        .size((long) ImageUtils.compressImage(
-                                file, ImageUtils.DEFAULT_QUALITY, ImageUtils.DEFAULT_COMPRESS_MULTIPLIER
-                        ).length)
-                        .url(fileUrls.get(file.getOriginalFilename()))
+                        .size(filesMeta.get(file.getOriginalFilename()).getSecond())
+                        .url(filesMeta.get(file.getOriginalFilename()).getFirst())
                         .build())
                 .collect(Collectors.toList());
 
@@ -140,5 +137,9 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
         carFileRepository.flush();
 
         return CompletableFuture.completedFuture(modelMapper.map(carFileEntities, FileReader.FILE_DTO_LIST));
+    }
+
+    public List<CarDto> getAll() {
+        return carReader.getAll();
     }
 }

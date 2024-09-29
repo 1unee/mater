@@ -1,0 +1,76 @@
+<div>
+  <div class="grid">
+    <div class="col-12">
+      <p-accordion>
+        <p-accordionTab header="Роли">
+          <div class="border-1 border-round-2xl border-200">
+            <div class="m-1">
+              <div class="col-12 p-1 text-lg">
+                {{ !!user?.roles?.length ? 'Привязанные роли' : 'Привязанных ролей нет' }}
+              </div>
+              <div class="col-12 p-1">
+                <div *ngFor="let role of user.roles">
+                  <div class="border-1 border-round-lg border-200">
+                    <div class="m-2 grid grid-nogutter">
+                      <div class="col-8">
+                        {{ RoleTitle[role.name] }}
+                      </div>
+                      <div class="col-4">
+                        <p-button styleClass="p-1 text-sm border-round-2xl"
+                                  severity="secondary"
+                                  icon="pi pi-angle-down"
+                                  (click)="onDropRole(role)"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="border-1 border-round-2xl border-200">
+           <div class="m-1">
+             <div class="col-12 p-1 text-lg">
+               {{ !!freeRoles?.length ? 'Свободные роли' : 'Свободных ролей нет' }}
+             </div>
+             <div class="col-12 p-1">
+               <div *ngFor="let role of freeRoles">
+                 <div class="border-1 border-round-lg border-200">
+                   <div class="m-2 grid grid-nogutter">
+                     <div class="col-8">
+                       {{ RoleTitle[role.name] }}
+                     </div>
+                     <div class="col-4">
+                       <p-button styleClass="p-1 text-sm border-round-2xl"
+                                 severity="secondary"
+                                 icon="pi pi-angle-up"
+                                 (click)="onAddRole(role)"
+                       />
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+    </div>
+
+    <div class="col-12 p-1">
+      <div class="flex justify-content-center flex-wrap">
+        <div class="flex align-items-center justify-content-center gap-1">
+          <p-button styleClass="p-1"
+                    severity="secondary"
+                    label="Сохранить и закрыть"
+                    icon="pi pi-upload"
+                    (click)="onSave()"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

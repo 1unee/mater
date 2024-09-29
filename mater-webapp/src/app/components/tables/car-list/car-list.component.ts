@@ -28,7 +28,7 @@ import {SellerDto} from "../../../store/dtos/seller.dto";
 import {OneuneFileUploadComponent} from "../../core/oneune-file-upload/oneune-file-upload.component";
 import {InputTextModule} from "primeng/inputtext";
 import {AutoFocus} from "primeng/autofocus";
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {PageResponse} from "../../../store/pagination/page.response.pagination";
 import {GlobalConfig} from "../../../store/interfaces/global-config.interface";
 import {ContactTypeTitle} from "../../../store/enums/contact-type.enum";
@@ -42,6 +42,13 @@ import {PageQueryProcessingComponent} from "../../core/page-query-processing/pag
 import {GalleriaModule} from "primeng/galleria";
 import {FileDto} from "../../../store/dtos/file.dto";
 import {environment} from "../../../../environments/environment";
+import {ActionService} from "../../../services/https/action.service";
+import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
+import {GearboxEnum, GearboxTitle, getGearboxTitle} from "../../../store/enums/gearbox.enum";
+import {getCarStateTitle} from "../../../store/enums/car-state.enum";
+import {getEngineOilTypeTitle} from "../../../store/enums/engine-oil-type.enum";
+import {getTransmissionTitle} from "../../../store/enums/transmission.enum";
+import {getSteeringWheelTitle} from "../../../store/enums/steering-wheel.enum";
 
 @Component({
   selector: 'app-car-list',
@@ -83,6 +90,7 @@ export class CarListComponent implements OnInit {
   readonly ContactTypeTitle = ContactTypeTitle;
   readonly PaginationDirection = PaginationDirection;
   readonly environment = environment;
+  readonly GearboxTitle = GearboxTitle;
 
   @ViewChild('contactsOverlayPanel') contactsOverlayPanel: OverlayPanel;
 
@@ -119,7 +127,8 @@ export class CarListComponent implements OnInit {
               private dialogService: DialogService,
               private sellerService: SellerService,
               @Inject(GLOBAL_CONFIG) public globalConfig: GlobalConfig,
-              @Inject(LOADING) public loadingReference: LoadingReference) {
+              @Inject(LOADING) public loadingReference: LoadingReference,
+              private routerService: OneuneRouterService) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -190,8 +199,30 @@ export class CarListComponent implements OnInit {
       const processingCar: CarDto = !car ? new CarDto() : car;
       this._openCarProcessingDialog(processingCar);
     } else {
-      this.messageService.showInfo('Чтобы добавлять машины, сначала нужно оставить свои контакты для связи в профиле.');
+      this._confirmRedirecting();
     }
+  }
+
+  async onCarCreatingFromExisting(car: CarDto): Promise<void> {
+    const processingCar: CarDto = JSON.parse(JSON.stringify(car)) as CarDto;
+    processingCar.id = null as any;
+    this._openCarProcessingDialog(processingCar);
+  }
+
+  private _confirmRedirecting(): void {
+    this.confirmationService.confirm({
+      message: 'Чтобы добавлять машины, сначала нужно оставить свои контакты для связи в профиле. Открыть профиль?',
+      header: 'Информация',
+      icon: 'pi pi-question-circle',
+      acceptLabel: 'Да',
+      accept: async () => this._openProfilePage(),
+      rejectLabel: 'Нет',
+      reject: () => {}
+    });
+  }
+
+  private _openProfilePage(): void {
+    this.routerService.wrapRouting('/profile')
   }
 
   onUpload(car: CarDto): void {
@@ -202,8 +233,8 @@ export class CarListComponent implements OnInit {
     this.dialogService.open(OneuneFileUploadComponent, {
       header: `${car.brand} ${car.model} (${car.productionYear})`,
       width: '90%',
-      data: {car}
-    }).onClose.subscribe(async () => await this.loadCurrentPage());
+      data: { car: car }
+    }).onClose.subscribe(async (): Promise<void> => await this.loadCurrentPage());
   }
 
   onRemove(carId: number): void {
@@ -305,5 +336,12 @@ export class CarListComponent implements OnInit {
       );
     }
   }
+
+  protected readonly GearboxEnum = GearboxEnum;
+  protected readonly getGearboxTitle = getGearboxTitle;
+  protected readonly getCarStateTitle = getCarStateTitle;
+  protected readonly getEngineOilTypeTitle = getEngineOilTypeTitle;
+  protected readonly getTransmissionTitle = getTransmissionTitle;
+  protected readonly getSteeringWheelTitle = getSteeringWheelTitle;
 }
 

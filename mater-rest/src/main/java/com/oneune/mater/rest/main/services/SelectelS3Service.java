@@ -8,6 +8,7 @@ import com.oneune.mater.rest.main.utils.ImageUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
+
+import static com.oneune.mater.rest.main.utils.ImageUtils.DEFAULT_COMPRESS_MULTIPLIER;
+import static com.oneune.mater.rest.main.utils.ImageUtils.DEFAULT_QUALITY;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -30,44 +32,58 @@ import java.util.stream.Collectors;
 @Log4j2
 public class SelectelS3Service {
 
-    AmazonS3 s3Client;
     SelectelS3Properties selectelS3Properties;
+    AmazonS3 s3Client;
+    Queue<List<MultipartFile>> multipartFilesQueue = new ConcurrentLinkedQueue<>();
+
+    @NonFinal
+    volatile Boolean isMultipartFileProcessing = false;
 
     public boolean isFileExist(String fileName) {
         return s3Client.doesObjectExist(selectelS3Properties.getBucketProperties().getName(), fileName);
     }
 
-    public Pair<String, String> uploadFile(MultipartFile file, boolean compress) {
-        ObjectMetadata metadata = new ObjectMetadata();
-        byte[] compressedImageBytes = ImageUtils.compressImage(
-                file, compress ? ImageUtils.DEFAULT_QUALITY : 1, compress ? ImageUtils.DEFAULT_COMPRESS_MULTIPLIER : 1
-        );
-        metadata.setContentLength(compressedImageBytes.length);
-        metadata.setContentType(file.getContentType());
-        try (InputStream inputStream = new ByteArrayInputStream(compressedImageBytes)) {
-            s3Client.putObject(new PutObjectRequest(
-                    selectelS3Properties.getBucketProperties().getName(),
-                    file.getOriginalFilename(),
-                    inputStream,
-                    metadata
-            ));
-        } catch (IOException e) {
-            log.error(e);
+    private byte[] getPreparedFileContent(MultipartFile file) {
+        if (Objects.nonNull(file.getContentType()) && file.getContentType().startsWith("image")) {
+            return ImageUtils.compressImage(file, DEFAULT_QUALITY, DEFAULT_COMPRESS_MULTIPLIER);
+        } else {
+            try(InputStream inputStream = file.getInputStream()) {
+                return inputStream.readAllBytes();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        return Pair.of(
-                Optional.ofNullable(file.getOriginalFilename()).orElseThrow(),
-                getObjectUrl(file.getOriginalFilename())
-        );
+    }
+
+    public void uploadFile(MultipartFile file) {
+        byte[] preparedFileContent = getPreparedFileContent(file);
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(preparedFileContent.length);
+        metadata.setContentType(file.getContentType());
+        s3Client.putObject(new PutObjectRequest(
+                selectelS3Properties.getBucketProperties().getName(),
+                file.getOriginalFilename(), new ByteArrayInputStream(preparedFileContent), metadata
+        ));
     }
 
     /**
      * Does not create duplicates.
      */
-    public Map<String, String> uploadFiles(List<MultipartFile> files, boolean compress) {
-        return files.stream()
-                .filter(file -> !isFileExist(file.getOriginalFilename()))
-                .map(file -> uploadFile(file, compress))
-                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond, (l, r) -> l));
+    public void uploadFiles() {
+        if (!multipartFilesQueue.isEmpty()) {
+            isMultipartFileProcessing = true;
+            multipartFilesQueue.poll().stream()
+                    .filter(file -> !isFileExist(file.getOriginalFilename()))
+                    .forEach(this::uploadFile);
+            isMultipartFileProcessing = false;
+        }
+    }
+
+    public void uploadFiles(List<MultipartFile> files) {
+        multipartFilesQueue.add(files);
+        log.info("File queue size is {}", multipartFilesQueue.size());
+        while (isMultipartFileProcessing) { Thread.onSpinWait(); }
+        uploadFiles();
     }
 
     public List<String> getFilenames() {
@@ -83,12 +99,15 @@ public class SelectelS3Service {
         return String.format("%s/%s", selectelS3Properties.getBucketProperties().getDomain(), objectName);
     }
 
-    public Map<String, String> getFileUrls(List<String> filenames) {
+    public Map<String, Pair<String, Long>> getFilesMeta(List<String> filenames) {
         return s3Client.listObjects(selectelS3Properties.getBucketProperties().getName())
                 .getObjectSummaries()
                 .stream()
                 .filter(obj -> filenames.contains(obj.getKey()))
-                .collect(Collectors.toMap(S3ObjectSummary::getKey, obj -> getObjectUrl(obj.getKey())));
+                .collect(Collectors.toMap(
+                S3ObjectSummary::getKey,
+                obj -> Pair.of(getObjectUrl(obj.getKey()), obj.getSize())
+        ));
     }
 
     public String generateObjectPresignedUrl(String objectName) {

@@ -39,7 +39,7 @@ public class UserEntity extends AbstractEntity {
     @JoinColumn(name = "seller_id")
     SellerEntity seller;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude
     List<UserRoleLinkEntity> userRoleLinks = new ArrayList<>();

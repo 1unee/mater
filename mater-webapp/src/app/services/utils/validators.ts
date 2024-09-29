@@ -43,3 +43,11 @@ export function isInteger(): ValidatorFn {
     return isValid ? null : { notInteger: true };
   };
 }
+
+export function isText(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const textPattern: RegExp = /^[a-zA-Zа-яА-ЯёЁ_]*$/;
+    const isValid = textPattern.test(control.value);
+    return isValid ? null : { notText: true };
+  };
+}

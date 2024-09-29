@@ -16,7 +16,7 @@ export abstract class AbstractFormComponent<T> {
    * For example:
    *
    *  this.feedbackForm = this.formBuilder.group({
-   *    messageBody: ['', [
+   *    messageBody: ['<INITIAL_VALUE>', [
    *      Validators.required, areOnlyWhitespaces()
    *    ]],
    *  });

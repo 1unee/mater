@@ -1,9 +1,12 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MenubarModule} from "primeng/menubar";
-import {BlockableUI, MenuItem} from "primeng/api";
-import {ActivatedRoute, Router} from "@angular/router";
+import {MenuItem} from "primeng/api";
+import {Router} from "@angular/router";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
 import {ActionService} from "../../../services/https/action.service";
+import {StorageService} from "../../../services/utils/storage.service";
+import {RoleEnum} from "../../../store/enums/role.enum";
+import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
 import {BlockUI} from "primeng/blockui";
 
 @Component({
@@ -19,14 +22,16 @@ export class GeneralToolbarComponent implements OnInit {
 
   items: MenuItem[];
 
-  constructor(private router: Router,
-              private activatedRoute: ActivatedRoute,
+  constructor(private routerService: OneuneRouterService,
               private messageService: OneuneMessageService,
-              private actionService: ActionService,
-              private elementRef: ElementRef) {
+              private storageService: StorageService) {
   }
 
   ngOnInit(): void {
+    this.initializeToolbarItems();
+  }
+
+  private initializeToolbarItems(): void {
     this.items = [
       {
         label: 'Профиль',
@@ -61,6 +66,18 @@ export class GeneralToolbarComponent implements OnInit {
         command: () => this._openSettingsPage()
       },
       {
+        label: 'Администрирование',
+        icon: 'pi pi-globe',
+        visible: this.storageService.userHasRole(RoleEnum.ADMIN),
+        items: [
+          {
+            label: 'Пользователи',
+            icon: 'pi pi-users',
+            command: () => this._openAdministratingPage()
+          }
+        ]
+      },
+      {
         label: 'Помощь',
         icon: 'pi pi-question',
         command: () => this._openSupportPage()
@@ -68,30 +85,27 @@ export class GeneralToolbarComponent implements OnInit {
     ]
   }
 
-  private _wrapRouting(futureRoute: string): void {
-    const pastUrl: string = this.router.url;
-    this.router.navigate([futureRoute]).then(async (): Promise<void> => {
-      await this.actionService.track(`${pastUrl} -> ${futureRoute}`);
-    });
+  private _openAdministratingPage(): void {
+    this.routerService.wrapRouting('/administrating');
   }
 
   private _openProfilePage(): void {
-    this._wrapRouting('/profile')
+    this.routerService.wrapRouting('/profile');
   }
 
   private _openCarsMarketPage(): void {
-    this._wrapRouting('/cars/market');
+    this.routerService.wrapRouting('/cars/market');
   }
 
   private _openActionsPage(): void {
-    this._wrapRouting('/actions');
+    this.routerService.wrapRouting('/actions');
   }
 
   private _openSettingsPage(): void {
-    this._wrapRouting('/settings');
+    this.routerService.wrapRouting('/settings');
   }
 
   private _openSupportPage(): void {
-    this._wrapRouting('/support');
+    this.routerService.wrapRouting('/support');
   }
 }

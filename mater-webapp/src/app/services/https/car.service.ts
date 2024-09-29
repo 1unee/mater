@@ -43,9 +43,15 @@ export class CarService extends AbstractHttpService {
     );
   }
 
-  async putFiles(carId: number, formData: FormData): Promise<FileDto[]> {
+  async putFiles(carId: number, formData: FormData): Promise<void> {
     return lastValueFrom(
-      this.http.put<FileDto[]>(`${this._REST_PATH}/${carId}/files`, formData)
+      this.http.put<void>(`${this._REST_PATH}/${carId}/files`, formData)
+    );
+  }
+
+  async getAll(): Promise<CarDto[]> {
+    return lastValueFrom(
+      this.http.get<CarDto[]>(`${this._REST_PATH}`)
     );
   }
 }

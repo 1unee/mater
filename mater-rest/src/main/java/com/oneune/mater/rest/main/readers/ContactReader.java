@@ -35,7 +35,7 @@ public class ContactReader implements Readable<ContactDto, ContactEntity>, BaseQ
 
     @Override
     public JPAQuery<ContactEntity> writeBaseQuery(Predicate... predicates) {
-        return queryFactory.selectFrom(qContact).where(predicates);
+        return queryFactory.selectFrom(qContact).where(predicates).orderBy(qContact.id.asc());
     }
 
     public ContactEntity getEntityById(Long contactId) {

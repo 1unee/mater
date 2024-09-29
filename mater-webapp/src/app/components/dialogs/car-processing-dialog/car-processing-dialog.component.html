@@ -2,6 +2,7 @@
       (ngSubmit)="onSubmit()"
 >
   <div>
+    <!-- brand -->
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
@@ -10,11 +11,22 @@
           Марка
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
-          <input formControlName="carBrand"
-                 pInputText
-                 class="p-1 w-full text-sm"
-                 type="text"
-          />
+          <p-dropdown formControlName="carBrand"
+                      styleClass="w-full text-sm"
+                      panelStyleClass="w-full text-sm"
+                      optionLabel="brand"
+                      placeholder="Марка"
+                      filterBy="brand"
+                      filterMatchMode="contains"
+                      filterPlaceholder="Поиск"
+                      appendTo="body"
+                      emptyMessage="Марок не найдено. Введите вручную"
+                      [editable]="true"
+                      [loading]="loadingReference.value.getValue()"
+                      [filter]="true"
+                      [showClear]="true"
+                      [options]="cars"
+          ></p-dropdown>
         </p-inputGroupAddon>
       </p-inputGroup>
 
@@ -25,10 +37,14 @@
           <small *ngIf="form.get('carBrand')?.errors?.['required']">
             Поле не может быть пустым
           </small>
+          <small *ngIf="form.get('carBrand')?.errors?.['notText']">
+            Значение должно состоять только из букв
+          </small>
         </div>
       </div>
     </div>
 
+    <!-- model -->
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
@@ -37,11 +53,22 @@
           Модель
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
-          <input formControlName="carModel"
-                 pInputText
-                 class="p-1 w-full text-sm"
-                 type="text"
-          />
+          <p-dropdown formControlName="carModel"
+                      styleClass="w-full text-sm"
+                      panelStyleClass="w-full text-sm"
+                      optionLabel="model"
+                      placeholder="Модель"
+                      filterBy="model"
+                      filterMatchMode="contains"
+                      filterPlaceholder="Поиск"
+                      appendTo="body"
+                      emptyMessage="Моделей не найдено. Введите вручную"
+                      [editable]="true"
+                      [loading]="loadingReference.value.getValue()"
+                      [filter]="true"
+                      [showClear]="true"
+                      [options]="cars"
+          ></p-dropdown>
         </p-inputGroupAddon>
       </p-inputGroup>
 
@@ -56,6 +83,7 @@
       </div>
     </div>
 
+    <!-- production year -->
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
@@ -66,8 +94,9 @@
         <p-inputGroupAddon styleClass="w-12rem text-sm">
           <input formControlName="carProductionYear"
                  pInputText
-                 class="p-1 w-full text-sm"
+                 class="pl-2 p-1 w-full"
                  type="text"
+                 placeholder="Год выпуска"
           />
         </p-inputGroupAddon>
       </p-inputGroup>
@@ -95,6 +124,7 @@
       </div>
     </div>
 
+    <!-- price -->
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
@@ -105,8 +135,9 @@
         <p-inputGroupAddon styleClass="w-12rem text-sm">
           <input formControlName="carPrice"
                  pInputText
-                 class="p-1 w-full text-sm"
+                 class="pl-2 p-1 w-full"
                  type="text"
+                 placeholder="Цена в рублях"
           />
         </p-inputGroupAddon>
       </p-inputGroup>
@@ -128,6 +159,7 @@
       </div>
     </div>
 
+    <!-- mileage -->
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
@@ -138,8 +170,9 @@
         <p-inputGroupAddon styleClass="w-12rem text-sm">
           <input formControlName="carMileage"
                  pInputText
-                 class="p-1 w-full text-sm"
+                 class="pl-2 p-1 w-full"
                  type="text"
+                 placeholder="Пробег в км"
           />
         </p-inputGroupAddon>
       </p-inputGroup>
@@ -161,18 +194,20 @@
       </div>
     </div>
 
+    <!-- VIN -->
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
                            (click)="clipboardService.extCopy(car.VIN,'ВИН скопирован')"
         >
-          ВИН
+          ВИН {{ form.get('carVIN')?.invalid && !!form.value['carVIN'] ? ('(' + form.value['carVIN'].length + '/17)') : '' }}
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
           <input formControlName="carVIN"
                  pInputText
-                 class="p-1 w-full text-sm"
+                 class="pl-2 p-1 w-full"
                  type="text"
+                 placeholder="ВИН код"
           />
         </p-inputGroupAddon>
       </p-inputGroup>
@@ -194,6 +229,7 @@
       </div>
     </div>
 
+    <!-- owners amount -->
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
@@ -204,8 +240,9 @@
         <p-inputGroupAddon styleClass="w-12rem text-sm">
           <input formControlName="carOwnersAmount"
                  pInputText
-                 class="p-1 w-full text-sm"
+                 class="pl-2 p-1 w-full"
                  type="text"
+                 placeholder="Кол-во владельцев"
           />
         </p-inputGroupAddon>
       </p-inputGroup>
@@ -227,6 +264,7 @@
       </div>
     </div>
 
+    <!-- power -->
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
@@ -237,8 +275,9 @@
         <p-inputGroupAddon styleClass="w-12rem text-sm">
           <input formControlName="carPower"
                  pInputText
-                 class="p-1 w-full text-sm"
+                 class="pl-2 p-1 w-full"
                  type="text"
+                 placeholder="Кол-во Л.С."
           />
         </p-inputGroupAddon>
       </p-inputGroup>
@@ -255,6 +294,216 @@
           </small>
           <small *ngIf="form.get('carPower')?.errors?.['min']">
             Введеное значение меньше минимально допустимого значения {{ form.get('carPrice')?.errors?.['min']?.['min'] }}
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- documents color -->
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Цвет по документам
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <p-dropdown formControlName="carDocumentsColor"
+                      styleClass="w-full text-sm"
+                      panelStyleClass="w-full text-sm"
+                      optionLabel="documentsColor"
+                      placeholder="Цвет по документам"
+                      filterBy="documentsColor"
+                      filterMatchMode="contains"
+                      filterPlaceholder="Поиск"
+                      appendTo="body"
+                      emptyMessage="Цвета не найдены. Введите вручную"
+                      [editable]="true"
+                      [loading]="loadingReference.value.getValue()"
+                      [filter]="true"
+                      [showClear]="true"
+                      [options]="cars"
+          ></p-dropdown>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carDocumentsColor')?.invalid && form.get('carDocumentsColor')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carDocumentsColor')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+          <small *ngIf="form.get('carDocumentsColor')?.errors?.['notText']">
+            Значение должно состоять только из букв
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- gearbox -->
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Коробка передач
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <p-dropdown formControlName="carGearbox"
+                      styleClass="w-full text-sm"
+                      panelStyleClass="w-full text-sm"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Коробка передач"
+                      appendTo="body"
+                      [loading]="loadingReference.value.getValue()"
+                      [options]="carGearboxes"
+          ></p-dropdown>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carGearbox')?.invalid && form.get('carGearbox')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carGearbox')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+          <small *ngIf="form.get('carGearbox')?.errors?.['notText']">
+            Значение должно состоять только из букв
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- state -->
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Состояние
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <p-dropdown formControlName="carState"
+                      styleClass="w-full text-sm"
+                      panelStyleClass="w-full text-sm"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Состояние"
+                      appendTo="body"
+                      [loading]="loadingReference.value.getValue()"
+                      [options]="carStates"
+          ></p-dropdown>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carState')?.invalid && form.get('carState')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carState')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+          <small *ngIf="form.get('carState')?.errors?.['notText']">
+            Значение должно состоять только из букв
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- engine oil type -->
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Тип двигателя
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <p-dropdown formControlName="carEngineOilType"
+                      styleClass="w-full text-sm"
+                      panelStyleClass="w-full text-sm"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Состояние"
+                      appendTo="body"
+                      [loading]="loadingReference.value.getValue()"
+                      [options]="carEngineOilTypes"
+          ></p-dropdown>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carEngineOilType')?.invalid && form.get('carEngineOilType')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carEngineOilType')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+          <small *ngIf="form.get('carEngineOilType')?.errors?.['notText']">
+            Значение должно состоять только из букв
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- transmission -->
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Привод
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <p-dropdown formControlName="carTransmission"
+                      styleClass="w-full text-sm"
+                      panelStyleClass="w-full text-sm"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Привод"
+                      appendTo="body"
+                      [loading]="loadingReference.value.getValue()"
+                      [options]="carTransmissions"
+          ></p-dropdown>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carTransmission')?.invalid && form.get('carTransmission')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carTransmission')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+          <small *ngIf="form.get('carTransmission')?.errors?.['notText']">
+            Значение должно состоять только из букв
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- steering wheel -->
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Руль
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <p-dropdown formControlName="carSteeringWheel"
+                      styleClass="w-full text-sm"
+                      panelStyleClass="w-full text-sm"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Руль"
+                      appendTo="body"
+                      [loading]="loadingReference.value.getValue()"
+                      [options]="carSteeringWheels"
+          ></p-dropdown>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('carSteeringWheel')?.invalid && form.get('carSteeringWheel')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('carSteeringWheel')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+          <small *ngIf="form.get('carSteeringWheel')?.errors?.['notText']">
+            Значение должно состоять только из букв
           </small>
         </div>
       </div>

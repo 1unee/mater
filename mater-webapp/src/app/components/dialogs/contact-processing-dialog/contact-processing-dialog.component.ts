@@ -4,7 +4,7 @@ import {InputGroupAddonModule} from "primeng/inputgroupaddon";
 import {InputGroupModule} from "primeng/inputgroup";
 import {InputTextModule} from "primeng/inputtext";
 import {PaginatorModule} from "primeng/paginator";
-import {DynamicDialogConfig} from "primeng/dynamicdialog";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
 import {ClipboardService} from "../../../services/utils/clipboard.service";
 import {ContactDto} from "../../../store/dtos/contact.dto";
@@ -15,6 +15,7 @@ import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AbstractFormComponent} from "../../core/abstract-form/abstract-form.component";
 import {contactReferenceValue} from "../../../services/utils/validators";
 import {NgIf} from "@angular/common";
+import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
 
 @Component({
   selector: 'app-contact-processing-dialog',
@@ -47,12 +48,16 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
     ]
   };
 
+  disableCarListRedirectButton: boolean = true;
+
   constructor(private dynamicDialogConfig: DynamicDialogConfig,
+              private dynamicDialogRef: DynamicDialogRef,
               public messageService: OneuneMessageService,
               public clipboardService: ClipboardService,
               private sellerService: SellerService,
               private storageService: StorageService,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private routerService: OneuneRouterService) {
     super();
   }
 
@@ -86,9 +91,6 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
 
   async onSubmit(): Promise<void> {
     this.contact = this._buildModel();
-
-    console.log(this.contact);
-
     if (!!this.contact.id) {
       await this.sellerService.putContact(this.storageService.user.seller.id, this.contact);
       this.messageService.showSuccess('Данные о контакте успешно изменены!');
@@ -98,5 +100,13 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
     }
     this.contact = new ContactDto();
     this.form.reset();
+    this.disableCarListRedirectButton = false;
+    this.dynamicDialogRef.close();
+  }
+
+  async openCarsMarketPage(): Promise<void> {
+    await this.onSubmit();
+    this.routerService.wrapRouting('/cars/market');
+    this.disableCarListRedirectButton = true;
   }
 }

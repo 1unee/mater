@@ -66,3 +66,30 @@ body {
   font-size: 0.9rem;
 }
 
+/* чтобы дродаун был компактнее и красивее */
+.p-dropdown-label {
+  padding: 5px 5px 5px 10px;
+}
+.p-dropdown-header {
+  padding: 5px;
+}
+.p-dropdown-filter {
+  padding: 5px;
+  width: 100%;
+}
+.p-dropdown-items {
+  padding: 5px;
+}
+.p-dropdown-item {
+  padding: 5px;
+}
+
+/* уменьшаем паддинги */
+.p-tag-secondary {
+  padding: 3px;
+}
+
+.p-galleria-indicators {
+  padding: 10px 5px 5px;
+}
+

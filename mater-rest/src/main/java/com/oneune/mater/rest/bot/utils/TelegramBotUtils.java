@@ -33,21 +33,19 @@ public class TelegramBotUtils {
         } else if (update.hasCallbackQuery()) {
             chatId = update.getCallbackQuery().getMessage().getChatId();
         } else {
-            throw new BusinessLogicException("Not predicted state!");
+            throw new BusinessLogicException("Not predicted state: %s!".formatted(update));
         }
         return chatId;
     }
 
-    public  <S extends Serializable,
-             M extends BotApiMethod<S>> S uncheckedExecute(DefaultAbsSender bot,
-                                                           M method) {
+    public <S extends Serializable,
+            M extends BotApiMethod<S>> S uncheckedExecute(DefaultAbsSender bot, M method) {
         try {
             return bot.execute(method);
         } catch (TelegramApiException e) {
             String message = "Сообщение не отправлено!";
             log.error("%s - %s".formatted(message, e.getMessage()), e);
             throw new BusinessLogicException(message, e);
-//            return null;
         }
     }
 

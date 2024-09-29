@@ -43,11 +43,11 @@ public class UserReader implements Readable<UserDto, UserEntity>, BaseQueryable<
     PaginationService<UserDto, UserEntity> paginationService;
 
     QueryDslModelMapperFactory queryDslModelMapperFactory;
-    ModelMapper modelMapper;
+    ModelMapper userModelMapper;
 
     @Override
     public JPAQuery<UserEntity> writeBaseQuery(Predicate... predicates) {
-        return queryFactory.selectFrom(qUser).where(predicates);
+        return queryFactory.selectFrom(qUser).where(predicates).orderBy(qUser.id.asc());
     }
 
     public JPAQuery<UserEntity> writeLightQuery(Predicate... predicates) {
@@ -71,7 +71,7 @@ public class UserReader implements Readable<UserDto, UserEntity>, BaseQueryable<
     @Override
     public UserDto getById(Long userId) {
         UserEntity userEntity = getEntityById(userId);
-        return modelMapper.map(userEntity, UserDto.class);
+        return userModelMapper.map(userEntity, UserDto.class);
     }
 
     @Override
@@ -84,5 +84,9 @@ public class UserReader implements Readable<UserDto, UserEntity>, BaseQueryable<
         ModelMapper queryDslModelMapper = queryDslModelMapperFactory.from(query);
         List<UserDto> userDtos = queryDslModelMapper.map(query.fetch(), USER_LIST_TYPE);
         return userDtos.isEmpty() ? Optional.empty() : Optional.ofNullable(userDtos.get(0));
+    }
+
+    public List<UserDto> getUsers() {
+        return userModelMapper.map(writeLightQuery().fetch(), USER_LIST_TYPE);
     }
 }

@@ -69,4 +69,9 @@ public class CarController implements CRUDable<CarDto, CarEntity> {
                                                      @RequestParam(name = "files", required = false) List<MultipartFile> files) {
         return carService.putFiles(carId, files);
     }
+
+    @GetMapping
+    public List<CarDto> getAll() {
+        return carService.getAll();
+    }
 }
