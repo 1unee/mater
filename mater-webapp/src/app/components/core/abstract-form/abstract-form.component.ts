@@ -23,5 +23,5 @@ export abstract class AbstractFormComponent<T> {
    */
   protected abstract _initializeForm(): void;
   protected abstract _buildModel(): T;
-  public abstract onSubmit(): Promise<void>;
+  public abstract onSubmit(closeDialog: boolean): Promise<void>;
 }

@@ -31,7 +31,7 @@ import {AutoFocus} from "primeng/autofocus";
 import {Router, RouterLink} from "@angular/router";
 import {PageResponse} from "../../../store/pagination/page.response.pagination";
 import {GlobalConfig} from "../../../store/interfaces/global-config.interface";
-import {ContactTypeTitle} from "../../../store/enums/contact-type.enum";
+import {ContactTypeEnum, ContactTypeTitle} from "../../../store/enums/contact-type.enum";
 import {GLOBAL_CONFIG, LOADING} from "../../../app.config";
 import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
 import {FilterType} from "../../../store/pagination/filter-type.pagination";
@@ -49,6 +49,9 @@ import {getCarStateTitle} from "../../../store/enums/car-state.enum";
 import {getEngineOilTypeTitle} from "../../../store/enums/engine-oil-type.enum";
 import {getTransmissionTitle} from "../../../store/enums/transmission.enum";
 import {getSteeringWheelTitle} from "../../../store/enums/steering-wheel.enum";
+import {AccordionModule} from "primeng/accordion";
+import {LongClickDirective} from "../../../services/directives/long-click.directive";
+import {ContactDto} from "../../../store/dtos/contact.dto";
 
 @Component({
   selector: 'app-car-list',
@@ -79,7 +82,9 @@ import {getSteeringWheelTitle} from "../../../store/enums/steering-wheel.enum";
     AutoFocus,
     RouterLink,
     PageQueryProcessingComponent,
-    GalleriaModule
+    GalleriaModule,
+    AccordionModule,
+    LongClickDirective
   ],
   templateUrl: './car-list.component.html',
   styleUrl: './car-list.component.scss'
@@ -90,7 +95,11 @@ export class CarListComponent implements OnInit {
   readonly ContactTypeTitle = ContactTypeTitle;
   readonly PaginationDirection = PaginationDirection;
   readonly environment = environment;
-  readonly GearboxTitle = GearboxTitle;
+  readonly getGearboxTitle = getGearboxTitle;
+  readonly getCarStateTitle = getCarStateTitle;
+  readonly getEngineOilTypeTitle = getEngineOilTypeTitle;
+  readonly getTransmissionTitle = getTransmissionTitle;
+  readonly getSteeringWheelTitle = getSteeringWheelTitle;
 
   @ViewChild('contactsOverlayPanel') contactsOverlayPanel: OverlayPanel;
 
@@ -215,14 +224,18 @@ export class CarListComponent implements OnInit {
       header: 'Информация',
       icon: 'pi pi-question-circle',
       acceptLabel: 'Да',
-      accept: async () => this._openProfilePage(),
+      acceptButtonStyleClass: 'p-1',
+      accept: async () => this._openProfilePage('user-contacts'),
       rejectLabel: 'Нет',
+      rejectButtonStyleClass: 'p-1',
       reject: () => {}
     });
   }
 
-  private _openProfilePage(): void {
-    this.routerService.wrapRouting('/profile')
+  private _openProfilePage(
+    targetProfileTab: 'user-description' | 'user-rating' | 'user-search-history' | 'user-contacts' | 'none' = 'none'
+  ): void {
+    this.routerService.relativeRedirect(`/profile`, {'target-profile-tab': targetProfileTab})
   }
 
   onUpload(car: CarDto): void {
@@ -257,8 +270,10 @@ export class CarListComponent implements OnInit {
       header: 'Подтверждение',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Да',
+      acceptButtonStyleClass: 'p-1',
       accept: async () => this._removeCar(carId),
       rejectLabel: 'Нет',
+      rejectButtonStyleClass: 'p-1',
       reject: () => this.messageService.showInfo('Понял, оставляем как есть')
     });
   }
@@ -337,11 +352,50 @@ export class CarListComponent implements OnInit {
     }
   }
 
-  protected readonly GearboxEnum = GearboxEnum;
-  protected readonly getGearboxTitle = getGearboxTitle;
-  protected readonly getCarStateTitle = getCarStateTitle;
-  protected readonly getEngineOilTypeTitle = getEngineOilTypeTitle;
-  protected readonly getTransmissionTitle = getTransmissionTitle;
-  protected readonly getSteeringWheelTitle = getSteeringWheelTitle;
+  private _confirmOpeningContactUrlReference(contact: ContactDto): void {
+    this.confirmationService.confirm({
+      message: 'Открыть ссылку?',
+      header: 'Подтверждение',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Да',
+      acceptButtonStyleClass: 'p-1',
+      accept: () => this.routerService.absoluteRedirect(contact.value),
+      rejectLabel: 'Нет',
+      rejectButtonStyleClass: 'p-1',
+      reject: () => this.messageService.showInfo('Понял, но контакт все равно скопирован в буфер обмена!')
+    });
+  }
+
+  onClickContact(contact: ContactDto): void {
+    const isUrlReference: boolean = [
+      ContactTypeEnum.TELEGRAM,
+      ContactTypeEnum.WHATSAPP,
+      ContactTypeEnum.INSTAGRAM,
+      ContactTypeEnum.VKONTAKTE
+    ].includes(contact.type);
+    if (isUrlReference) {
+      this._confirmOpeningContactUrlReference(contact);
+    } else {
+      this.clipboardService.extCopy(contact.value, 'Скопировано!')
+    }
+  }
+
+  private _chooseCarImagesDemonstratingType(event: Event, overlayPanel: OverlayPanel, car: CarDto): void {
+    this.confirmationService.confirm({
+      message: 'Открыть в галерее прикрепленные фото машины?',
+      header: 'Подтверждение',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Да',
+      acceptButtonStyleClass: 'p-1',
+      accept: () => this.routerService.relativeRedirect('galleria', { 'car-id': car.id }),
+      rejectLabel: 'Нет',
+      rejectButtonStyleClass: 'p-1',
+      reject: () => overlayPanel.toggle(event)
+    });
+  }
+
+  onCarImagesShow(event: Event, overlayPanel: OverlayPanel, car: CarDto): void {
+    this._chooseCarImagesDemonstratingType(event, overlayPanel, car);
+  }
 }
 

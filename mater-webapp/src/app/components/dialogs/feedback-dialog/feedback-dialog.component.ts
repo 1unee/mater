@@ -17,6 +17,7 @@ import {AbstractFormComponent} from "../../core/abstract-form/abstract-form.comp
 import {LOADING} from "../../../app.config";
 import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
 import {DynamicDialogRef} from "primeng/dynamicdialog";
+import {LongClickDirective} from "../../../services/directives/long-click.directive";
 
 @Component({
   selector: 'app-feedback-dialog',
@@ -31,7 +32,8 @@ import {DynamicDialogRef} from "primeng/dynamicdialog";
     FloatLabelModule,
     InputTextareaModule,
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    LongClickDirective
   ],
   templateUrl: './feedback-dialog.component.html',
   styleUrl: './feedback-dialog.component.scss'
@@ -65,14 +67,17 @@ export class FeedbackDialogComponent extends AbstractFormComponent<string> imple
     return this.form.value.messageBody;
   }
 
-  async onSubmit(): Promise<void> {
+  async onSubmit(closeDialog: boolean): Promise<void> {
     try {
       this.loadingReference.value.next(true);
-      await this.notificationService.sendSimpleMailToSelf(this.storageService.user.username, this._buildModel());
+      this.notificationService.sendSimpleMailToSelf(this.storageService.user.username, this._buildModel())
+        .catch((): void => this.messageService.showError('К сожалению, доставить твое пожелание разработчику не получилось по техническим причинам. Попробуй чуть позже...'))
       this.messageBody = '';
       this.messageService.showSuccess('Обращение успешно отправлено разработчику!');
       this.form.reset();
-      this.dynamicDialogRef.close();
+      if (closeDialog) {
+        this.dynamicDialogRef.close();
+      }
     } catch (e) {
       this.messageService.showDefaultError();
     } finally {

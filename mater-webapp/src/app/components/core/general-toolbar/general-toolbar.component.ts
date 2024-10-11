@@ -86,26 +86,26 @@ export class GeneralToolbarComponent implements OnInit {
   }
 
   private _openAdministratingPage(): void {
-    this.routerService.wrapRouting('/administrating');
+    this.routerService.relativeRedirect('/administrating');
   }
 
   private _openProfilePage(): void {
-    this.routerService.wrapRouting('/profile');
+    this.routerService.relativeRedirect('/profile');
   }
 
   private _openCarsMarketPage(): void {
-    this.routerService.wrapRouting('/cars/market');
+    this.routerService.relativeRedirect('/cars/market');
   }
 
   private _openActionsPage(): void {
-    this.routerService.wrapRouting('/actions');
+    this.routerService.relativeRedirect('/actions');
   }
 
   private _openSettingsPage(): void {
-    this.routerService.wrapRouting('/settings');
+    this.routerService.relativeRedirect('/settings');
   }
 
   private _openSupportPage(): void {
-    this.routerService.wrapRouting('/support');
+    this.routerService.relativeRedirect('/support');
   }
 }

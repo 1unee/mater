@@ -17,25 +17,33 @@
                     styleClass="text-center text-sm p-2 w-12"
                     icon="pi pi-plus"
                     severity="secondary"
+                    appLongClick
                     (click)="onCarProcessing(null)"
+                    (longClick)="messageService.showInfo('Открывает диалог для добавления новой машины')"
           ></p-button>
           <p-button styleClass="text-center text-sm p-2 w-12"
                     icon="pi pi-refresh"
                     severity="secondary"
+                    appLongClick
                     (click)="onPageReload()"
+                    (longClick)="messageService.showInfo('Перезагружает список машин, синхронизируя информацию с сервером')"
           ></p-button>
           <p-button *ngIf="!environment.production && globalConfig.settings.showSortFilterButton"
                     styleClass="text-center text-sm p-2 w-12"
                     icon="pi pi-list-check"
                     severity="secondary"
+                    appLongClick
                     (click)="onTogglePageQuerying()"
+                    (longClick)="messageService.showInfo('Открывает меню для быстрого поиска и фильтрации по параметрам')"
           ></p-button>
           <p-selectButton styleClass="text-sm"
                           optionLabel="label"
                           optionValue="value"
+                          appLongClick
                           [options]="selectButtonStatesConfig.states"
                           [(ngModel)]="selectButtonStatesConfig.selectedValue"
                           (ngModelChange)="onChange()"
+                          (longClick)="messageService.showInfo('Показывает либо только твои машины, либо вообще все')"
           />
         </div>
       </div>
@@ -70,6 +78,7 @@
                 <div class="flex align-items-center justify-content-center ml-2 mt-2">
                   <p-tag styleClass="border-round-2xl text-base"
                          severity="secondary"
+                         icon="pi pi-copy"
                          [value]="_car.brand + ' ' + _car.model + ' (' + _car.productionYear + ')'"
                          (click)="clipboardService.extCopy(_car.brand + ' ' + _car.model + ' (' + _car.productionYear + ')', 'Модель машины скопирована!')"
                   />
@@ -79,8 +88,10 @@
                 </div>
                 <div class="flex align-items-center justify-content-center mt-2 mr-3">
                   <i class="text-lg w-1rem"
+                     appLongClick
                      [ngClass]="starIconFlag ? 'pi pi-star-fill' : 'pi pi-star'"
                      (click)="messageService.informAboutDeveloping(); starIconFlag = !starIconFlag"
+                     (longClick)="messageService.showInfo('Добавляет машину в список избранных (рассылка уведомлений об изменениях)')"
                   ></i>
                 </div>
               </div>
@@ -90,86 +101,94 @@
             <div class="col-12 mt-2 pb-0">
               <div class="grid">
 
-                <!-- car item photos (left side of body) -->
-                <div class="col-6 p-0">
-                  <div class="ml-3 border-1 border-round-xl border-200">
-                    <div class="flex align-items-center flex-wrap">
-                      <div class="flex align-items-center justify-content-center">
+                <div class="col-12">
+                  <div class="ml-2 mr-2 border-1 border-round-xl border-200">
+                    <div class="grid ml-2 mt-2 mr-2">
+                      <!-- car item photos (left side of body) -->
+                      <div class="col-6 p-0">
+                        <div class="flex align-items-center flex-wrap">
+                          <div class="flex align-items-center justify-content-center">
 
-                        <p-carousel #carPhotoCarousel
-                                    contentClass="h-auto"
-                                    *ngIf="!!getCarImages(_car).length; else onNotFoundCarPhotosBlock"
-                                    [value]="getCarImages(_car)"
-                                    [numVisible]="1"
-                                    [numScroll]="1"
-                                    [showIndicators]="false"
-                                    [autoplayInterval]="globalConfig.settings.autoPlayImages ? 5e3 : 1e9"
-                                    [circular]="true"
-                        >
-                          <ng-template pTemplate="item" let-photo>
-                            <div class="flex align-content-center flex-wrap" style="min-height: 200px">
+                            <p-carousel #carPhotoCarousel
+                                        styleClass="w-10rem"
+                                        contentClass="h-10rem"
+                                        *ngIf="!!getCarImages(_car).length; else onNotFoundCarPhotosBlock"
+                                        [value]="getCarImages(_car)"
+                                        [numVisible]="1"
+                                        [numScroll]="1"
+                                        [showIndicators]="false"
+                                        [autoplayInterval]="globalConfig.settings.autoPlayImages ? 5e3 : 1e9"
+                                        [circular]="true"
+                            >
+                              <ng-template pTemplate="item" let-photo>
+                                <div class="flex align-content-center flex-wrap h-10rem">
+                                  <div class="flex align-items-center justify-content-center">
+                                    <div class="relative mx-auto">
+                                      <p-image styleClass="w-full"
+                                               imageClass="border-round-2xl w-full h-full"
+                                               alt="Car Photo"
+                                               width="125"
+                                               height="125"
+                                               [src]="photo.url"
+                                      ></p-image>
+                                      <p-tag class="absolute"
+                                             styleClass="border-round-3xl"
+                                             severity="secondary"
+                                             [value]="(carPhotoCarousel._page + 1).toString() + '/' + getCarImages(_car).length"
+                                             [ngStyle]="{ 'left.px': 5, 'top.px': 5 }"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-template>
+                            </p-carousel>
+
+                            <div class="flex justify-content-start flex-wrap">
                               <div class="flex align-items-center justify-content-center">
-                                <div class="relative mx-auto">
-                                  <p-image styleClass="w-full"
-                                           imageClass="border-round-2xl w-full h-full"
+                                <ng-template #onNotFoundCarPhotosBlock>
+                                  <p-image styleClass="w-full ml-2"
+                                           imageClass="border-round-2xl"
+                                           src="../../../../assets/car_logo_mater.jpg"
                                            alt="Car Photo"
                                            width="125"
                                            height="125"
-                                           [src]="photo.url"
+                                           appLongClick
+                                           [imageStyle]="{height: '140px', width: '140px'}"
+                                           (longClick)="messageService.showInfo('Фотография машины по умолчанию (рекомендуется загрузить настоящие фотографии машины для привлечения покупателей)')"
                                   ></p-image>
-                                  <p-tag class="absolute"
-                                         styleClass="border-round-3xl"
-                                         severity="secondary"
-                                         [value]="(carPhotoCarousel._page + 1).toString() + '/' + getCarImages(_car).length"
-                                         [ngStyle]="{ 'left.px': 5, 'top.px': 5 }"
-                                  />
-                                </div>
+                                </ng-template>
                               </div>
                             </div>
-                          </ng-template>
-                        </p-carousel>
-
-                        <ng-template #onNotFoundCarPhotosBlock>
-                          <p-image styleClass="w-full ml-2"
-                                   imageClass="border-round-2xl w-full h-full"
-                                   [imageStyle]="{height: '140px', width: '140px'}"
-                                   src="../../../../assets/car_logo_mater.jpg"
-                                   alt="Car Photo"
-                                   width="125"
-                                   height="125"
-                          ></p-image>
-                        </ng-template>
-
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
 
-                <!-- car item description properties (right side of body) -->
-                <div class="col-6 p-0">
-                  <div class="mr-3 border-1 border-round-xl border-200">
-                    <div class="flex flex-column justify-content-between flex-1 gap-4">
-                      <div class="flex flex-row justify-content-between align-cars-start gap-2">
-                        <div>
-                          <div class="m-1 text-sm text-600">
-                            <span class="mr-1">Пробег:</span>
-                            <p-tag severity="secondary" [value]="_car.mileage + ' км'"/>
-                          </div>
-                          <div class="m-1 text-xs text-600" (click)="clipboardService.extCopy(_car.VIN, 'Вин-код скопирован!')">
-                            <span class="mr-1">ВИН:</span>
-                            <p-tag severity="secondary" [value]="_car.VIN ?? 'не определен'"/>
-                          </div>
-                          <div class="m-1 text-sm text-600">
-                            <span class="mr-1">Владельцы:</span>
-                            <p-tag severity="secondary" [value]="_car.ownersAmount"/>
-                          </div>
-                          <div class="m-1 text-sm text-600">
-                            <span class="mr-1">Кол-во Л.С.:</span>
-                            <p-tag severity="secondary" [value]="_car.power"/>
-                          </div>
-                          <div class="m-1 text-sm text-600">
-                            <span class="mr-1">Стоимость:</span>
-                            <p-tag severity="secondary" [value]="_car.price + ' ₽'"/>
+                      <!-- car item description properties (right side of body) -->
+                      <div class="col-6 p-0">
+                        <div class="flex flex-column justify-content-between flex-1">
+                          <div class="flex flex-row justify-content-between align-cars-start gap-2">
+                            <div>
+                              <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Пробег:</span>
+                                <p-tag severity="secondary" [value]="_car.mileage + ' км'"/>
+                              </div>
+                              <div class="m-1 text-sm text-600" (click)="clipboardService.extCopy(_car.VIN, 'Вин-код скопирован!')">
+                                <span class="mr-1">ВИН:</span>
+                                <p-tag severity="secondary" icon="pi pi-copy" [value]="!_car.VIN ? 'не определен' : _car.VIN.substring(0, 10) + '...'"/>
+                              </div>
+                              <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Владельцы:</span>
+                                <p-tag severity="secondary" [value]="_car.ownersAmount"/>
+                              </div>
+                              <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Кол-во Л.С.:</span>
+                                <p-tag severity="secondary" [value]="_car.power"/>
+                              </div>
+                              <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Стоимость:</span>
+                                <p-tag severity="secondary" [value]="_car.price + ' ₽'"/>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -179,58 +198,69 @@
 
                 <!-- additional car parameters -->
                 <div class="col-12">
-                  <div class="ml-2 mr-2 p-2 border-1 border-round-xl border-200">
-                    <div class="grid">
-                      <div class="col-7 pl-1 p-0">
-                        <div class="m-1 text-sm text-600">
-                          <span class="mr-1">Цвет по док-ам:</span>
-                          <p-tag severity="secondary" [value]="_car.documentsColor"/>
+                  <div class="ml-2 mr-2">
+                    <p-accordion>
+                      <p-accordionTab header="Расширенная информация"
+                                      headerStyleClass="p-2"
+                                      contentStyleClass="p-1 pt-2 pb-2"
+                      >
+                        <div class="ml-2 mr-2 p-2 border-1 border-round-xl border-200">
+                          <div class="grid mt-1 ml-2 mr-2 mb-1">
+                            <div class="col-12 pl-1 p-0">
+                              <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Цвет по док-ам:</span>
+                                <p-tag severity="secondary" [value]="_car.documentsColor"/>
+                              </div>
+                            </div>
+                            <div class="col-12 pl-1 p-0">
+                              <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Коробка:</span>
+                                <p-tag severity="secondary" [value]="getGearboxTitle(_car.gearbox)"/>
+                              </div>
+                            </div>
+                            <div class="col-12 pl-1 p-0">
+                              <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Состояние:</span>
+                                <p-tag severity="secondary" [value]="getCarStateTitle(_car.state)"/>
+                              </div>
+                            </div>
+                            <div class="col-12 pl-1 p-0">
+                              <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Двигатель:</span>
+                                <p-tag severity="secondary" [value]="getEngineOilTypeTitle(_car.engineOilType)"/>
+                              </div>
+                            </div>
+                            <div class="col-12 pl-1 p-0">
+                              <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Привод:</span>
+                                <p-tag severity="secondary" [value]="getTransmissionTitle(_car.transmission)"/>
+                              </div>
+                            </div>
+                            <div class="col-12 pl-1 p-0">
+                              <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Руль:</span>
+                                <p-tag severity="secondary" [value]="getSteeringWheelTitle(_car.steeringWheel)"/>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div class="col-5 pl-1 p-0">
-                        <div class="m-1 text-sm text-600">
-                          <span class="mr-1">Коробка:</span>
-                          <p-tag severity="secondary" [value]="getGearboxTitle(_car.gearbox)"/>
-                        </div>
-                      </div>
-                      <div class="col-7 pl-1 p-0">
-                        <div class="m-1 text-sm text-600">
-                          <span class="mr-1">Состояние:</span>
-                          <p-tag severity="secondary" [value]="getCarStateTitle(_car.state)"/>
-                        </div>
-                      </div>
-                      <div class="col-5 pl-1 p-0">
-                        <div class="m-1 text-sm text-600">
-                          <span class="mr-1">Двигатель:</span>
-                          <p-tag severity="secondary" [value]="getEngineOilTypeTitle(_car.engineOilType)"/>
-                        </div>
-                      </div>
-                      <div class="col-7 pl-1 p-0">
-                        <div class="m-1 text-sm text-600">
-                          <span class="mr-1">Привод:</span>
-                          <p-tag severity="secondary" [value]="getTransmissionTitle(_car.transmission)"/>
-                        </div>
-                      </div>
-                      <div class="col-5 pl-1 p-0">
-                        <div class="m-1 text-sm text-600">
-                          <span class="mr-1">Руль:</span>
-                          <p-tag severity="secondary" [value]="getSteeringWheelTitle(_car.steeringWheel)"/>
-                        </div>
-                      </div>
-                    </div>
+                      </p-accordionTab>
+                    </p-accordion>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- car item footer -->
-            <div class="col-12 pb-0">
+            <div class="col-12 p-0">
               <div class="flex flex-wrap align-items-center justify-content-center">
                 <p-button styleClass="text-center text-sm p-2 m-1"
                           icon="pi pi-envelope"
                           severity="secondary"
                           label="Контакты"
-                          (onClick)="onOpenContacts($event, _car.id)"
+                          appLongClick
+                          (click)="onOpenContacts($event, _car.id)"
+                          (longClick)="messageService.showInfo('Открывает список контактов продавца этой машины')"
                 ></p-button>
 
                 <div *ngIf="contactsOverlayPanel && contactsOverlayPanel.overlayVisible"
@@ -261,9 +291,11 @@
                                   <div class="flex justify-content-center flex-wrap">
                                     <div class="flex align-items-center justify-content-center">
                                       <p-button styleClass="p-1 w-8rem text-sm"
-                                                icon="pi pi-clipboard"
+                                                icon="pi pi-copy"
                                                 label="Скопировать"
-                                                (click)="clipboardService.extCopy(contact.value, 'Скопировано!')"
+                                                appLongClick
+                                                (click)="onClickContact(contact)"
+                                                (longClick)="messageService.showInfo('Копирует место для связи в буфер обмена')"
                                       ></p-button>
                                     </div>
                                   </div>
@@ -280,10 +312,12 @@
                 <p-button styleClass="text-center p-2 m-1"
                           icon="pi pi-instagram"
                           severity="secondary"
+                          appLongClick
                           [label]="getCarImages(_car).length.toString() ?? 0"
                           [outlined]="true"
                           [disabled]="getCarImages(_car).length === 0"
-                          (click)="imagesOverlayPanel.toggle($event)"
+                          (click)="onCarImagesShow($event, imagesOverlayPanel, _car)"
+                          (longClick)="messageService.showInfo('Открывает список прикрепленных фотографий машины')"
                 ></p-button>
 
                 <p-overlayPanel #imagesOverlayPanel
@@ -304,7 +338,6 @@
                                       [showThumbnailNavigators]="false"
                                       [showIndicators]="true"
                                       [showThumbnails]="false"
-                                      class
                           >
                             <ng-template pTemplate="item" let-photo>
                               <p-image styleClass="w-full"
@@ -332,10 +365,12 @@
                 <p-button styleClass="text-center p-2 m-1"
                           icon="pi pi-video"
                           severity="secondary"
+                          appLongClick
                           [label]="getCarVideos(_car).length.toString() ?? 0"
                           [outlined]="true"
                           [disabled]="!getCarVideos(_car).length"
                           (click)="videosOverlayPanel.toggle($event)"
+                          (longClick)="messageService.showInfo('Открывает список прикрепленных видео машины')"
                 ></p-button>
 
                 <div *ngIf="videosOverlayPanel && videosOverlayPanel.overlayVisible"
@@ -354,36 +389,41 @@
             </div>
 
             <!-- edit buttons -->
-            <!-- *ngIf="storageService.user?.seller?.id === _car.seller?.id" -->
             <div *ngIf="selectButtonStatesConfig.selectedValue === CarCategorySortEnum.MINE"
-                 class="col-12 pb-0 mb-1">
+                 class="col-12 pb-1 mb-1"
+            >
               <div class="flex flex-wrap align-items-center justify-content-center gap-1">
                 <p-button styleClass="text-center text-xs p-2 ml-1"
                           icon="pi pi-wrench"
                           severity="secondary"
-                          label="Изменить"
+                          appLongClick
                           (click)="onCarProcessing(_car)"
+                          (longClick)="messageService.showInfo('Открывает диалог для изменения информации о машине')"
                 ></p-button>
 
                 <p-button styleClass="text-center text-xs p-2"
                           icon="pi pi-copy"
                           severity="secondary"
-                          label="Создать из"
+                          appLongClick
                           (click)="onCarCreatingFromExisting(_car)"
+                          (longClick)="messageService.showInfo('Открывает диалог для создания машины на основе текущей (параметры можно изменять как угодно)')"
                 ></p-button>
 
                 <p-button styleClass="text-center text-xs p-2"
                           icon="pi pi-upload"
                           severity="secondary"
-                          label="Файлы"
+                          appLongClick
                           [disabled]="loadingReference.value.getValue()"
                           (click)="onUpload(_car)"
+                          (longClick)="messageService.showInfo('Открывает диалог для добавления или реадктирования фото и видео, прикрепленных к машине')"
                 ></p-button>
 
                 <p-button styleClass="text-center text-xs p-2 mr-1"
                           icon="pi pi-trash"
                           severity="secondary"
+                          appLongClick
                           (click)="onRemove(_car.id)"
+                          (longClick)="messageService.showInfo('Удаляет машину из списка. При нажатии будет показано подтверждающее окно')"
                 ></p-button>
               </div>
             </div>
@@ -392,6 +432,7 @@
       </div>
     </div>
   </ng-template>
+
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap align-items-center justify-content-center">
       <button pButton
@@ -399,38 +440,48 @@
               severity="secondary"
               class="text-center rounded-3 mr-1 p-1"
               icon="pi pi-angle-double-left"
+              appLongClick
               [disabled]="paginationConfig.pageNumber === 0"
               (click)="loadFirstPage()"
+              (longClick)="messageService.showInfo('Открывает самую первую страницу списка машин')"
       ></button>
       <button pButton
               pRipple
               severity="secondary"
               class="text-center rounded-3 mr-1 p-1"
               icon="pi pi-angle-left"
+              appLongClick
               [disabled]="paginationConfig.pageNumber === 0"
               (click)="search(PaginationDirection.PREV)"
+              (longClick)="messageService.showInfo('Открывает предыдущую страницу списка машин')"
       ></button>
       <button pButton
               pRipple
               severity="secondary"
               class="text-center rounded-3 p-1"
+              appLongClick
               [label]="(paginationConfig.pageNumber + 1).toString()"
+              (longClick)="messageService.showInfo('Текущая страница списка машин')"
       ></button>
       <button pButton
               pRipple
               severity="secondary"
               class="text-center rounded-3 ml-1 p-1"
               icon="pi pi-angle-right"
+              appLongClick
               [disabled]="paginationConfig.pageResponse.totalPages === 0 || paginationConfig.pageNumber + 1 === paginationConfig.pageResponse.totalPages"
               (click)="search(PaginationDirection.NEXT)"
+              (longClick)="messageService.showInfo('Открывает следующую страницу списка машин')"
       ></button>
       <button pButton
               pRipple
               severity="secondary"
               class="text-center rounded-3 ml-1 p-1"
               icon="pi pi-angle-double-right"
+              appLongClick
               [disabled]="paginationConfig.pageResponse.totalPages === 0 || paginationConfig.pageNumber + 1 === paginationConfig.pageResponse.totalPages"
               (click)="loadLastPage()"
+              (longClick)="messageService.showInfo('Открывает самую последнюю страницу списка машин')"
       ></button>
     </div>
   </ng-template>

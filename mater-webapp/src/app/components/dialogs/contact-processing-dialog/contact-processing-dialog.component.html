@@ -1,6 +1,4 @@
-<form [formGroup]="form"
-      (ngSubmit)="onSubmit()"
->
+<form [formGroup]="form">
   <div>
     <div>
       <p-inputGroup>
@@ -9,8 +7,7 @@
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
           <p-dropdown formControlName="contactType"
-                      styleClass="w-auto p-1 text-sm"
-                      panelStyleClass="p-1 text-sm"
+                      styleClass="w-auto"
                       optionLabel="label"
                       optionValue="value"
                       appendTo="body"
@@ -68,23 +65,32 @@
       </div>
     </div>
 
-    <div class="ml-1 mt-3 mr-1">
-      <div class="flex align-items-center justify-content-center mb-2">
+    <div class="p-0 mt-3 mb-0">
+      <div class="flex align-items-center justify-content-center gap-3">
         <p-button styleClass='text-center p-1'
-                  label="Сохранить и закрыть"
-                  icon="pi pi-check"
+                  icon="pi pi-pen-to-square"
                   severity="secondary"
-                  type="submit"
+                  appLongClick
+                  (longClick)="messageService.showInfo('Эта кнопка сохраняет твой контакт, но не закрывает форму создания (можно добавлять контакты дальше)')"
                   [disabled]="form.invalid"
+                  (click)="onSubmit(false)"
         />
-      </div>
 
-      <div class="flex align-items-center justify-content-center">
         <p-button styleClass='text-center p-1'
-                  label="Сохранить и перейти к машинам"
-                  icon="pi pi-check"
+                  icon="pi pi-save"
                   severity="secondary"
+                  appLongClick
+                  (longClick)="messageService.showInfo('Эта кнопка сохраняет твой контакт и закрывает форму создания')"
                   [disabled]="form.invalid"
+                  (click)="onSubmit(true)"
+        />
+
+        <p-button styleClass='text-center p-1'
+                  icon="pi pi-reply"
+                  severity="secondary"
+                  appLongClick
+                  [disabled]="form.invalid"
+                  (longClick)="messageService.showInfo('Эта кнопка сохраняет твой контакт, закрывает форму создания и открывает список машин')"
                   (click)="openCarsMarketPage()"
         />
       </div>

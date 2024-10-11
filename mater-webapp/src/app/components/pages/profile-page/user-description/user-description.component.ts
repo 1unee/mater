@@ -74,8 +74,10 @@ export class UserDescriptionComponent implements OnInit {
         header: 'Подтверждение',
         icon: 'pi pi-exclamation-triangle',
         acceptLabel: 'Да',
+        acceptButtonStyleClass: 'p-1',
         accept: async () => this._editUser(variableField),
         rejectLabel: 'Нет',
+        rejectButtonStyleClass: 'p-1',
         reject: () => this.messageService.showInfo('Понял, пока не сохраняем!')
       });
     } else {

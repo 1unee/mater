@@ -16,6 +16,7 @@ import {LoadingReference} from "./store/interfaces/loading-reference.interface";
 import {GlobalConfig} from "./store/interfaces/global-config.interface";
 import {LoaderComponent} from "./components/core/loader/loader.component";
 import {ThemeService} from "./services/utils/theme.service";
+import {LongClickDirective} from "./services/directives/long-click.directive";
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,8 @@ import {ThemeService} from "./services/utils/theme.service";
     BlockUIModule,
     ConfirmDialogModule,
     StyleClassModule,
-    LoaderComponent
+    LoaderComponent,
+    LongClickDirective
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -40,7 +42,7 @@ export class AppComponent implements OnInit {
 
   messages: Message[] = [];
 
-  constructor(private messageService: OneuneMessageService,
+  constructor(public messageService: OneuneMessageService,
               @Inject(LOADING) public loading: LoadingReference,
               private primengConfig: PrimeNGConfig,
               @Inject(GLOBAL_CONFIG) private globalConfig: GlobalConfig,

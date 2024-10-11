@@ -17,6 +17,7 @@ import {TooltipModule} from "primeng/tooltip";
 import {NgIf} from "@angular/common";
 import {FeedbackDialogComponent} from "../../dialogs/feedback-dialog/feedback-dialog.component";
 import {DialogService} from "primeng/dynamicdialog";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-profile-page',
@@ -41,6 +42,13 @@ import {DialogService} from "primeng/dynamicdialog";
 })
 export class ProfilePageComponent implements OnInit {
 
+  profileTabsMap: Map<string, number> = new Map([
+    ['user-description', 0],
+    // ['user-rating', 1],
+    // ['user-search-history', 2],
+    ['user-contacts', 1]
+  ]);
+  targetProfileTab: string = 'none';
   user: UserDto;
   searchHistory: any[];
 
@@ -49,11 +57,19 @@ export class ProfilePageComponent implements OnInit {
 
   constructor(private storageService: StorageService,
               public messageService: OneuneMessageService,
-              private dialogService: DialogService) {
+              private dialogService: DialogService,
+              private activatedRoute: ActivatedRoute) {
   }
 
   async ngOnInit(): Promise<void> {
+    this._openTargetProfileTab();
     await this._loadData();
+  }
+
+  private _openTargetProfileTab(): void {
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.targetProfileTab = params['target-profile-tab'];
+    });
   }
 
   private async _loadData(): Promise<void> {

@@ -9,6 +9,7 @@ import {Button} from "primeng/button";
 import {RoleTitle} from "../../../store/enums/role.enum";
 import {UserService} from "../../../services/https/user.service";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
+import {LongClickDirective} from "../../../services/directives/long-click.directive";
 
 @Component({
   selector: 'app-user-processing-dialog',
@@ -16,7 +17,8 @@ import {OneuneMessageService} from "../../../services/utils/oneune-message.servi
   imports: [
     AccordionModule,
     NgForOf,
-    Button
+    Button,
+    LongClickDirective
   ],
   templateUrl: './user-processing-dialog.component.html',
   styleUrl: './user-processing-dialog.component.scss'
@@ -32,7 +34,7 @@ export class UserProcessingDialogComponent implements OnInit {
               private dynamicDialogRef: DynamicDialogRef,
               private roleService: RoleService,
               private userService: UserService,
-              private messageService: OneuneMessageService) {
+              public messageService: OneuneMessageService) {
   }
 
   async ngOnInit(): Promise<void> {

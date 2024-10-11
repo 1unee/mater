@@ -15,12 +15,13 @@ import {isInteger, isNumber, isText} from "../../../services/utils/validators";
 import {StorageService} from "../../../services/utils/storage.service";
 import {LOADING} from "../../../app.config";
 import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
-import {DropdownModule} from "primeng/dropdown";
+import {Dropdown, DropdownChangeEvent, DropdownModule} from "primeng/dropdown";
 import {GearboxEnum, GearboxTitle} from "../../../store/enums/gearbox.enum";
 import {CarStateEnum, CarStateTitle} from "../../../store/enums/car-state.enum";
 import {EngineOilTypeEnum, EngineOilTypeTitle} from "../../../store/enums/engine-oil-type.enum";
 import {SteeringWheelEnum, SteeringWheelTitle} from "../../../store/enums/steering-wheel.enum";
 import {TransmissionEnum, TransmissionTitle} from "../../../store/enums/transmission.enum";
+import {LongClickDirective} from "../../../services/directives/long-click.directive";
 
 @Component({
   selector: 'app-car-processing-dialog',
@@ -34,7 +35,8 @@ import {TransmissionEnum, TransmissionTitle} from "../../../store/enums/transmis
     Button,
     FormsModule,
     DropdownModule,
-    ButtonDirective
+    ButtonDirective,
+    LongClickDirective
   ],
   templateUrl: './car-processing-dialog.component.html',
   styleUrl: './car-processing-dialog.component.scss'
@@ -158,7 +160,7 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
     return this.car;
   }
 
-  async onSubmit(): Promise<void> {
+  async onSubmit(closeDialog: boolean): Promise<void> {
     this.car = this._buildModel();
     try {
       this.loadingReference.value.next(true);
@@ -171,11 +173,17 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
       }
       this.car = new CarDto();
       this.form.reset();
-      this.dynamicDialogRef.close();
+      if (closeDialog) {
+        this.dynamicDialogRef.close();
+      }
     } catch (e) {
       this.messageService.showDefaultError();
     } finally {
       this.loadingReference.value.next(false);
     }
+  }
+
+  onChange(dropdown: Dropdown): void {
+    dropdown.hide();
   }
 }

@@ -1,4 +1,4 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CardModule} from "primeng/card";
 import {ListboxModule} from "primeng/listbox";
 import {ContactDto} from "../../../../store/dtos/contact.dto";
@@ -19,7 +19,7 @@ import {StorageService} from "../../../../services/utils/storage.service";
 import {OneuneMessageService} from "../../../../services/utils/oneune-message.service";
 import {ContactTypeEnum} from "../../../../store/enums/contact-type.enum";
 import {SelectButtonModule} from "primeng/selectbutton";
-import {UserDto} from "../../../../store/dtos/user.dto";
+import {LongClickDirective} from "../../../../services/directives/long-click.directive";
 
 @Component({
   selector: 'app-user-contacts',
@@ -35,7 +35,8 @@ import {UserDto} from "../../../../store/dtos/user.dto";
     Button,
     DataViewModule,
     NgForOf,
-    SelectButtonModule
+    SelectButtonModule,
+    LongClickDirective
   ],
   templateUrl: './user-contacts.component.html',
   styleUrl: './user-contacts.component.scss'

@@ -54,4 +54,10 @@ export class CarService extends AbstractHttpService {
       this.http.get<CarDto[]>(`${this._REST_PATH}`)
     );
   }
+
+  async getById(carId: number): Promise<CarDto> {
+    return lastValueFrom(
+      this.http.get<CarDto>(`${this._REST_PATH}/${carId}`)
+    );
+  }
 }

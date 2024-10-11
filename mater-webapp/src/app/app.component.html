@@ -19,8 +19,9 @@
           pRipple
           class="p-button-secondary rounded-3"
           icon="pi pi-delete-left"
-          pTooltip="Удалить все всплывашки"
+          appLongClick
           (click)="clearMessages()"
+          (longClick)="messageService.showInfo('Убирает все уведомления с экрана разом')"
   ></button>
 </div>
 

@@ -26,10 +26,10 @@ body {
   width: 20px;
 }
 
-.p-carousel-items-content {
-  width: 140px !important;
-  height: 140px !important;
-}
+/*.p-carousel-items-content {*/
+/*  width: 140px !important;*/
+/*  height: 140px !important;*/
+/*}*/
 /*finish p-carousel styles*/
 
 /* для затемнения фона при открытии оверлея */

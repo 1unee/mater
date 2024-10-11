@@ -73,7 +73,7 @@ public class CarEntity extends AbstractEntity {
     /**
      * Прикрепленные файлы.
      */
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude
     List<CarFileEntity> files = new ArrayList<>();

@@ -11,12 +11,16 @@
         <p-button styleClass="text-center text-sm p-2 m-1"
                   icon="pi pi-plus"
                   severity="secondary"
-                  (onClick)="onContactProcessing(null)"
+                  appLongClick
+                  (click)="onContactProcessing(null)"
+                  (longClick)="messageService.showInfo('Открывает диалог для добавления нового контакта')"
         ></p-button>
         <p-button styleClass="text-center text-sm p-2 m-1"
                   icon="pi pi-refresh"
                   severity="secondary"
-                  (onClick)="reload()"
+                  appLongClick
+                  (click)="reload()"
+                  (longClick)="messageService.showInfo('Обновляет список текущих контактов')"
         ></p-button>
       </div>
       <div class="flex align-items-center justify-content-center gap-1">
@@ -26,7 +30,7 @@
   </ng-template>
   <ng-template pTemplate="list" let-contacts>
     <div class="grid">
-      <div *ngFor="let contact of contacts" class="col-12">
+      <div *ngFor="let contact of contacts" class="col-12 p-1">
         <p-inputGroup>
           <p-inputGroupAddon styleClass="w-8rem text-sm">
             {{ getContactTypeLocalized(contact.type) }}
@@ -34,7 +38,7 @@
           <p-inputGroupAddon styleClass="w-14rem text-sm"
                              (click)="clipboardService.extCopy(contact.value, 'Контакт скопирован')"
           >
-            {{ contact.value }}
+            {{ contact.value.length < 16 ? contact.value : contact.value.substring(0, 13) + '...' }}
           </p-inputGroupAddon>
           <p-inputGroupAddon styleClass="w-2rem">
             <i class="pi pi-wrench p-1 text-sm" (click)="onContactProcessing(contact)"></i>

@@ -14,6 +14,7 @@ import {ConfirmationService} from "primeng/api";
 import {LOADING} from "../../../app.config";
 import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
 import {FileDto} from "../../../store/dtos/file.dto";
+import {LongClickDirective} from "../../../services/directives/long-click.directive";
 
 @Component({
   selector: 'app-oneune-file-upload',
@@ -24,7 +25,8 @@ import {FileDto} from "../../../store/dtos/file.dto";
     NgForOf,
     SelectButtonModule,
     FormsModule,
-    TagModule
+    TagModule,
+    LongClickDirective
   ],
   templateUrl: './oneune-file-upload.component.html',
   styleUrl: './oneune-file-upload.component.scss'
@@ -93,7 +95,7 @@ export class OneuneFileUploadComponent implements OnInit {
       this.carService.putFiles(this.car.id, this._getMultipartFiles())
         .then(() => this.messageService.showInfo(`Файлы машины ${this.car.model} ${this.car.brand} успешно сохранены на сервер! Перезагрузи список, чтобы увидеть.`));
       this.dynamicDialogRef.close();
-      this.messageService.showSuccess('При загрузке больших файлов придется немного подождать (до пару минут).');
+      this.messageService.showSuccess('При загрузке больших файлов придется немного подождать (до пары минут).');
     } catch (e) {
       this.messageService.showError('Произошла ошибка при сохранении файлов...');
     } finally {
@@ -124,8 +126,10 @@ export class OneuneFileUploadComponent implements OnInit {
       header: 'Подтверждение',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Да',
+      acceptButtonStyleClass: 'p-1',
       accept: () => this.files = [],
       rejectLabel: 'Нет',
+      rejectButtonStyleClass: 'p-1',
       reject: () => {}
     });
   }

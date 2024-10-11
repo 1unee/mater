@@ -17,7 +17,6 @@
           </div>
           <div class="col-12 p-1">
             <p-dropdown styleClass="w-full"
-                        panelStyleClass="p-1 text-sm"
                         appendTo="body"
                         placeholder="Характеристика"
                         [options]="pageQueryProcessingConfig.fields"
@@ -27,7 +26,6 @@
           </div>
           <div class="col-12 p-1">
             <p-dropdown styleClass="w-full"
-                        panelStyleClass="p-1 text-sm"
                         appendTo="body"
                         placeholder="Тип фильтрации"
                         [options]="pageQueryProcessingConfig.filters"
@@ -46,7 +44,6 @@
           </div>
           <div class="col-12 p-1">
             <p-dropdown styleClass="w-full"
-                        panelStyleClass="p-1 text-sm"
                         appendTo="body"
                         placeholder="Тип сортировки"
                         [options]="pageQueryProcessingConfig.sorts"
@@ -60,18 +57,22 @@
                 <div class="grid w-auto">
                   <div class="col-6 p-1">
                     <p-button label="Применить"
-                              styleClass="p-2 w-10rem"
+                              styleClass="p-1 w-8rem"
                               icon="pi pi-check"
                               severity="secondary"
+                              appLongClick
                               (click)="apply()"
+                              (longClick)="messageService.showInfo('Применяет выбранные фильтры и обновляет список машин')"
                     ></p-button>
                   </div>
                   <div class="col-6 p-1">
-                    <p-button label="Убрать"
-                              styleClass="p-2 w-10rem"
+                    <p-button label="Очистить"
+                              styleClass="p-1 w-8rem"
                               icon="pi pi-times"
                               severity="secondary"
+                              appLongClick
                               (click)="clear()"
+                              (longClick)="messageService.showInfo('Очищает выбранные фильтры')"
                     ></p-button>
                   </div>
                 </div>

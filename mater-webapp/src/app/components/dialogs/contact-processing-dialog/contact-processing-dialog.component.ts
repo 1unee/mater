@@ -16,6 +16,7 @@ import {AbstractFormComponent} from "../../core/abstract-form/abstract-form.comp
 import {contactReferenceValue} from "../../../services/utils/validators";
 import {NgIf} from "@angular/common";
 import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
+import {LongClickDirective} from "../../../services/directives/long-click.directive";
 
 @Component({
   selector: 'app-contact-processing-dialog',
@@ -27,7 +28,8 @@ import {OneuneRouterService} from "../../../services/utils/oneune-router.service
     InputTextModule,
     PaginatorModule,
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    LongClickDirective
   ],
   templateUrl: './contact-processing-dialog.component.html',
   styleUrl: './contact-processing-dialog.component.scss'
@@ -89,7 +91,7 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
     return this.contact;
   }
 
-  async onSubmit(): Promise<void> {
+  async onSubmit(closeDialog: boolean): Promise<void> {
     this.contact = this._buildModel();
     if (!!this.contact.id) {
       await this.sellerService.putContact(this.storageService.user.seller.id, this.contact);
@@ -101,12 +103,14 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
     this.contact = new ContactDto();
     this.form.reset();
     this.disableCarListRedirectButton = false;
-    this.dynamicDialogRef.close();
+    if (closeDialog) {
+      this.dynamicDialogRef.close();
+    }
   }
 
   async openCarsMarketPage(): Promise<void> {
-    await this.onSubmit();
-    this.routerService.wrapRouting('/cars/market');
+    await this.onSubmit(true);
+    this.routerService.relativeRedirect('/cars/market');
     this.disableCarListRedirectButton = true;
   }
 }

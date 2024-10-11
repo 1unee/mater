@@ -1,9 +1,8 @@
 package com.oneune.mater.rest.main.store.entities;
 
 import com.oneune.mater.rest.main.store.entities.core.AbstractEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import com.oneune.mater.rest.main.store.enums.ActionTypeEnum;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -21,7 +20,8 @@ import java.time.Instant;
 public class ActionEntity extends AbstractEntity {
     Long userId;
     String body;
-    String type;
+    @Enumerated(EnumType.STRING)
+    ActionTypeEnum type;
     @Builder.Default
     Instant timestamp = Instant.now();
 }

@@ -45,7 +45,7 @@
 
     <div class="col-12 p-1">
       <div class="flex justify-content-center flex-wrap">
-        <div class="flex align-items-center justify-content-center gap-1">
+        <div class="flex align-items-center justify-content-center gap-2">
           <input #htmlFileInput
                  type="file"
                  multiple
@@ -55,20 +55,25 @@
           />
           <p-button styleClass="p-1"
                     severity="secondary"
-                    label="Выбрать"
                     icon="pi pi-upload"
+                    appLongClick
                     (click)="htmlFileInput.click()"
+                    (longClick)="messageService.showInfo('Открывает файловый менеджер на устройстве, откуда можно выбрать нужные фото и видео')"
           />
           <p-button styleClass="p-1"
                     severity="secondary"
-                    [label]="'Сохранить (' + files.length + ')'"
                     icon="pi pi-save"
+                    appLongClick
+                    [label]="'(' + files.length + ')'"
                     (click)="onSave()"
+                    (longClick)="messageService.showInfo('Сохраняет на сервере выбранные фото и видео. Сохранение происходит в фоновом режиме, поэтому когда файлы полностью сохранятся, об этом придет уведомление')"
           />
           <p-button styleClass="p-1"
                     severity="secondary"
                     icon="pi pi-trash"
+                    appLongClick
                     (click)="onClean()"
+                    (longClick)="messageService.showInfo('Убирает из списка все выбранные файлы. После нажатия будет показано подтвреждающее окно.')"
           />
         </div>
       </div>

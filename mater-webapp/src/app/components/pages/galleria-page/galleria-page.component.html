@@ -1,0 +1,40 @@
+<div class="w-full">
+
+  <div class="grid">
+    <div class="col-12 p-1">
+      {{ car?.title }}
+    </div>
+    <div class="col-12 p-1">
+      <p-carousel #imagesCarousel
+                  styleClass="w-full"
+                  contentClass="w-full"
+                  [value]="images"
+                  [numVisible]="1"
+                  [numScroll]="1"
+                  [showIndicators]="true"
+                  [autoplayInterval]="globalConfig.settings.autoPlayImages ? 5e3 : 1e9"
+                  [circular]="true"
+      >
+        <ng-template pTemplate="item" let-image>
+          <div class="flex align-content-center flex-wrap">
+            <div class="flex align-items-center justify-content-center">
+              <div class="relative mx-auto w-full h-full">
+                <p-image styleClass="w-full"
+                         imageClass="border-round-2xl w-full h-full"
+                         alt="Car Photo"
+                         [src]="image.url"
+                ></p-image>
+                <p-tag class="absolute"
+                       styleClass="border-round-3xl"
+                       severity="secondary"
+                       [value]="(imagesCarousel._page + 1).toString() + '/' + images.length"
+                       [ngStyle]="{ 'left.px': 5, 'top.px': 5 }"
+                />
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+    </div>
+  </div>
+</div>

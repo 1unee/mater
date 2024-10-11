@@ -6,6 +6,8 @@ spring:
     password: ${DATASOURCE_PASSWORD}
   flyway:
     locations: classpath:db/migration/default,classpath:db/migration/dev
+  mail:
+    test-connection: false
 
 server:
   ssl:

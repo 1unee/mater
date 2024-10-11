@@ -22,4 +22,9 @@ export class CarDto extends AbstractDto {
   engineOilType: EngineOilTypeEnum;
   transmission: TransmissionEnum;
   steeringWheel: SteeringWheelEnum;
+
+  get title(): string {
+    return (!!this.brand && !!this.model && !!this.productionYear)
+      ? 'Информация о машине загружается...' : `${this.brand} ${this.model} (${this.productionYear})`;
+  }
 }

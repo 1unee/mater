@@ -9,6 +9,7 @@ import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
 import {ColumnQuery} from "../../../store/pagination/column-query.pagination";
+import {LongClickDirective} from "../../../services/directives/long-click.directive";
 
 @Component({
   selector: 'app-page-query-processing',
@@ -19,7 +20,8 @@ import {ColumnQuery} from "../../../store/pagination/column-query.pagination";
     Button,
     InputTextModule,
     IconFieldModule,
-    InputIconModule
+    InputIconModule,
+    LongClickDirective
   ],
   templateUrl: './page-query-processing.component.html',
   styleUrl: './page-query-processing.component.scss'
