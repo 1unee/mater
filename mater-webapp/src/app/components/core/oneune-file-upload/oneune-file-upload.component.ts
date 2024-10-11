@@ -63,9 +63,7 @@ export class OneuneFileUploadComponent implements OnInit {
   }
 
   private _isFilesEqual(leftFile: File, rightFile: File): boolean {
-    return leftFile.name === rightFile.name
-      && leftFile.size === rightFile.size
-      && leftFile.type === rightFile.type;
+    return leftFile.name === rightFile.name && leftFile.type === rightFile.type;
   }
 
   onChoose(event: any): void {

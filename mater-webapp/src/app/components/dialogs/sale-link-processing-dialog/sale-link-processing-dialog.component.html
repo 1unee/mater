@@ -1,0 +1,65 @@
+<form [formGroup]="form">
+  <div>
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Статус
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <p-dropdown formControlName="saleLinkStatus"
+                      styleClass="w-auto"
+                      optionLabel="label"
+                      optionValue="value"
+                      appendTo="body"
+                      placeholder="Выбери статус"
+                      [options]="saleLinkStatusConfig.options"
+          />
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('saleLinkStatus')?.invalid && form.get('saleLinkStatus')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('saleLinkStatus')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Оценка продавца
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <p-rating formControlName="saleLinkScore" [cancel]="false"/>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('saleLinkScore')?.invalid && form.get('saleLinkScore')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('saleLinkScore')?.errors?.['required']">
+            Поле не может быть пустым
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-0 mt-3 mb-0">
+      <div class="flex align-items-center justify-content-center gap-3">
+        <p-button styleClass='text-center p-1'
+                  icon="pi pi-save"
+                  severity="secondary"
+                  appLongClick
+                  (longClick)="messageService.showInfo('Эта кнопка сохраняет статус и закрывает форму')"
+                  [disabled]="form.invalid"
+                  (click)="onSubmit(true)"
+        />
+      </div>
+    </div>
+  </div>
+</form>

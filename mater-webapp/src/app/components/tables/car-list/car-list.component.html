@@ -18,6 +18,7 @@
                     icon="pi pi-plus"
                     severity="secondary"
                     appLongClick
+                    [outlined]="true"
                     (click)="onCarProcessing(null)"
                     (longClick)="messageService.showInfo('Открывает диалог для добавления новой машины')"
           ></p-button>
@@ -25,6 +26,7 @@
                     icon="pi pi-refresh"
                     severity="secondary"
                     appLongClick
+                    [outlined]="true"
                     (click)="onPageReload()"
                     (longClick)="messageService.showInfo('Перезагружает список машин, синхронизируя информацию с сервером')"
           ></p-button>
@@ -33,6 +35,7 @@
                     icon="pi pi-list-check"
                     severity="secondary"
                     appLongClick
+                    [outlined]="true"
                     (click)="onTogglePageQuerying()"
                     (longClick)="messageService.showInfo('Открывает меню для быстрого поиска и фильтрации по параметрам')"
           ></p-button>
@@ -45,6 +48,14 @@
                           (ngModelChange)="onChange()"
                           (longClick)="messageService.showInfo('Показывает либо только твои машины, либо вообще все')"
           />
+<!--          <p-dropdown optionLabel="label"-->
+<!--                      optionValue="value"-->
+<!--                      appLongClick-->
+<!--                      [options]="selectButtonStatesConfig.states"-->
+<!--                      [ngModel]="selectButtonStatesConfig.selectedValue"-->
+<!--                      (ngModelChange)="onChange($event)"-->
+<!--                      (longClick)="messageService.showInfo('Показывает либо только твои машины, либо вообще все')"-->
+<!--          ></p-dropdown>-->
         </div>
       </div>
     </div>
@@ -86,11 +97,13 @@
                 <div class="flex align-items-center justify-content-center ml-2 mt-2 mr-2">
                   <!-- header's center content if necessary-->
                 </div>
-                <div class="flex align-items-center justify-content-center mt-2 mr-3">
+                <div *ngIf="selectButtonStatesConfig.selectedValue === CarCategorySortEnum.ALL"
+                     class="flex align-items-center justify-content-center mt-2 mr-3"
+                >
                   <i class="text-lg w-1rem"
                      appLongClick
-                     [ngClass]="starIconFlag ? 'pi pi-star-fill' : 'pi pi-star'"
-                     (click)="messageService.informAboutDeveloping(); starIconFlag = !starIconFlag"
+                     [ngClass]="isCarFavoriteForCurrentUser(_car) ? 'pi pi-star-fill' : 'pi pi-star'"
+                     (click)="onProcessingCarFavorite(_car)"
                      (longClick)="messageService.showInfo('Добавляет машину в список избранных (рассылка уведомлений об изменениях)')"
                   ></i>
                 </div>
@@ -98,10 +111,10 @@
             </div>
 
             <!-- car item body -->
-            <div class="col-12 mt-2 pb-0">
+            <div class="col-12 pb-0">
               <div class="grid">
 
-                <div class="col-12">
+                <div class="col-12 pb-0">
                   <div class="ml-2 mr-2 border-1 border-round-xl border-200">
                     <div class="grid ml-2 mt-2 mr-2">
                       <!-- car item photos (left side of body) -->
@@ -197,7 +210,7 @@
                 </div>
 
                 <!-- additional car parameters -->
-                <div class="col-12">
+                <div class="col-12 pb-0">
                   <div class="ml-2 mr-2">
                     <p-accordion>
                       <p-accordionTab header="Расширенная информация"
@@ -259,7 +272,7 @@
                           severity="secondary"
                           label="Контакты"
                           appLongClick
-                          (click)="onOpenContacts($event, _car.id)"
+                          (click)="onOpenContacts($event, contactsOverlayPanel, _car.id)"
                           (longClick)="messageService.showInfo('Открывает список контактов продавца этой машины')"
                 ></p-button>
 
@@ -294,7 +307,7 @@
                                                 icon="pi pi-copy"
                                                 label="Скопировать"
                                                 appLongClick
-                                                (click)="onClickContact(contact)"
+                                                (click)="onClickContact(contact, _car, contactsOverlayPanel)"
                                                 (longClick)="messageService.showInfo('Копирует место для связи в буфер обмена')"
                                       ></p-button>
                                     </div>

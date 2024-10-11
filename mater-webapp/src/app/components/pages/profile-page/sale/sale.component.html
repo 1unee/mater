@@ -1,0 +1,64 @@
+<div class="grid">
+<!--  <div class="col-12 p-1">-->
+<!--    <div class="header">-->
+<!--      Header-->
+<!--    </div>-->
+<!--  </div>-->
+
+  <div class="col-12 p-1">
+    <div *ngIf="saleLinks.length > 0; else onNotCreatedSaleLinks">
+      <div *ngFor="let saleLink of saleLinks"
+           appLongClick
+           (click)="onSaleLinkProcessing(saleLink)"
+           (longClick)="messageService.showInfo('Чтобы изменить статус, нажми на нужный блок')"
+      >
+        <div class="col-12 p-0">
+          <div class="border-1 border-round-xl border-200">
+            <div class="grid m-3">
+              <div class="col-4 p-0">
+                Машина
+              </div>
+              <div class="col-8 p-0">
+                {{ saleLink.car.brand + ' ' + saleLink.car.model + ' (' + saleLink.car.productionYear + ')' }}
+              </div>
+
+              <div class="col-4 p-0">
+                Статус
+              </div>
+              <div class="col-8 p-0">
+                {{ SaleLinkStatusTitle[saleLink.status] }}
+              </div>
+
+              <div class="col-4 p-0">
+                Дата
+              </div>
+              <div class="col-8 p-0">
+                {{
+                  saleLink.createdAt.toLocaleString().split(', ')[0]
+                  + ' (' + saleLink.createdAt.toLocaleString().split(', ')[1] + ')'
+                }}
+              </div>
+
+              <div class="col-4 p-0">
+                Оценка
+              </div>
+              <div class="col-8 p-0">
+                {{ saleLink.score + '/5' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #onNotCreatedSaleLinks>
+      Интересующих машин еще нет
+    </ng-template>
+  </div>
+
+<!--  <div class="col-12 p-1">-->
+<!--    <div class="footer">-->
+<!--      Footer-->
+<!--    </div>-->
+<!--  </div>-->
+</div>

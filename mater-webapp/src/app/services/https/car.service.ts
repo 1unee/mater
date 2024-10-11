@@ -19,7 +19,7 @@ export class CarService extends AbstractHttpService {
   }
 
   async post(sellerId: number, car: CarDto): Promise<CarDto> {
-    const httpParams: HttpParams = new HttpParams().append('seller-id', sellerId)
+    const httpParams: HttpParams = new HttpParams().append('seller-id', sellerId);
     return lastValueFrom(
       this.http.post<CarDto>(`${this._REST_PATH}/by-params`, car, {params: httpParams})
     );
@@ -58,6 +58,31 @@ export class CarService extends AbstractHttpService {
   async getById(carId: number): Promise<CarDto> {
     return lastValueFrom(
       this.http.get<CarDto>(`${this._REST_PATH}/${carId}`)
+    );
+  }
+
+  async postFavoriteCar(userId: number, carId: number): Promise<void> {
+    const httpParams: HttpParams = new HttpParams()
+      .append('user-id', userId)
+      .append('car-id', carId);
+    return lastValueFrom(
+      this.http.post<void>(`${this._REST_PATH}/favorites`, {}, { params: httpParams })
+    );
+  }
+
+  async getFavoriteCars(userId: number): Promise<CarDto[]> {
+    const httpParams: HttpParams = new HttpParams().append('user-id', userId);
+    return lastValueFrom(
+      this.http.get<CarDto[]>(`${this._REST_PATH}/favorites`, { params: httpParams })
+    );
+  }
+
+  async deleteFavoriteCar(userId: number, carId: number): Promise<void> {
+    const httpParams: HttpParams = new HttpParams()
+      .append('user-id', userId)
+      .append('car-id', carId);
+    return lastValueFrom(
+      this.http.delete<void>(`${this._REST_PATH}/favorites`, { params: httpParams })
     );
   }
 }

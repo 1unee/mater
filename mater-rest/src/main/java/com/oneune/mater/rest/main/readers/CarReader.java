@@ -6,6 +6,8 @@ import com.oneune.mater.rest.main.contracts.Readable;
 import com.oneune.mater.rest.main.store.dtos.CarDto;
 import com.oneune.mater.rest.main.store.entities.CarEntity;
 import com.oneune.mater.rest.main.store.entities.QCarEntity;
+import com.oneune.mater.rest.main.store.entities.QUserFavoriteCarLinkEntity;
+import com.oneune.mater.rest.main.store.entities.UserFavoriteCarLinkEntity;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
 import com.oneune.mater.rest.main.store.pagination.PaginationService;
@@ -24,6 +26,7 @@ import java.util.List;
 import static com.oneune.mater.rest.main.readers.ContactReader.qContact;
 import static com.oneune.mater.rest.main.readers.FileReader.qCarFile;
 import static com.oneune.mater.rest.main.readers.SellerReader.qSeller;
+import static com.oneune.mater.rest.main.readers.UserReader.qUser;
 
 @Repository
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -32,6 +35,7 @@ public class CarReader implements Readable<CarDto, CarEntity>, BaseQueryable<Car
 
     public final static Type CAR_DTO_LIST = TypeToken.getParameterized(List.class, CarDto.class).getType();
     public final static QCarEntity qCar = new QCarEntity("car");
+    public final static QUserFavoriteCarLinkEntity qUserFavoriteCarLink = new QUserFavoriteCarLinkEntity("user_favorite_car_link");
 
     JPAQueryFactory queryFactory;
     PaginationService<CarDto, CarEntity> paginationService;
@@ -75,5 +79,20 @@ public class CarReader implements Readable<CarDto, CarEntity>, BaseQueryable<Car
 
     public List<CarDto> getAll() {
         return modelMapper.map(writeHeavyQuery().fetch(), CAR_DTO_LIST);
+    }
+
+    public List<CarDto> getFavoritesByUserId(Long userId) {
+        List<CarEntity> favoriteCarEntities = queryFactory.selectFrom(qCar)
+                .join(qUserFavoriteCarLink).on(qUserFavoriteCarLink.car.id.eq(qCar.id))
+                .join(qUser).on(qUserFavoriteCarLink.user.id.eq(qUser.id).and(qUser.id.eq(userId)))
+                .fetch();
+        return modelMapper.map(favoriteCarEntities, CAR_DTO_LIST);
+    }
+
+    public UserFavoriteCarLinkEntity getFavoriteLinkByIds(Long userId, Long carId) {
+        return queryFactory.selectFrom(qUserFavoriteCarLink)
+                .where(qUserFavoriteCarLink.user.id.eq(userId)
+                        .and(qUserFavoriteCarLink.car.id.eq(carId)))
+                .fetchOne();
     }
 }

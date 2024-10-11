@@ -1,14 +1,18 @@
 package com.oneune.mater.rest.main.services;
 
 import com.oneune.mater.rest.main.contracts.CRUDable;
+import com.oneune.mater.rest.main.readers.CarReader;
 import com.oneune.mater.rest.main.readers.SellerReader;
+import com.oneune.mater.rest.main.readers.UserReader;
+import com.oneune.mater.rest.main.repositories.SaleLinkRepository;
 import com.oneune.mater.rest.main.repositories.SellerRepository;
 import com.oneune.mater.rest.main.store.dtos.ContactDto;
+import com.oneune.mater.rest.main.store.dtos.SaleLinkDto;
+import com.oneune.mater.rest.main.store.dtos.SellerDto;
+import com.oneune.mater.rest.main.store.entities.*;
+import com.oneune.mater.rest.main.store.enums.SaleStatusEnum;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
-import com.oneune.mater.rest.main.store.dtos.SellerDto;
-import com.oneune.mater.rest.main.store.entities.ContactEntity;
-import com.oneune.mater.rest.main.store.entities.SellerEntity;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -16,6 +20,9 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -27,6 +34,9 @@ public class SellerService implements CRUDable<SellerDto, SellerEntity> {
     SellerRepository sellerRepository;
     SellerReader sellerReader;
     ContactService contactService;
+    UserReader userReader;
+    SaleLinkRepository saleLinkRepository;
+    CarReader carReader;
 
     @Transactional
     @Override
@@ -81,5 +91,32 @@ public class SellerService implements CRUDable<SellerDto, SellerEntity> {
         sellerRepository.saveAndFlush(sellerEntity);
         contactService.flush();
         return modelMapper.map(contactEntity, ContactDto.class);
+    }
+
+    @Transactional
+    public void processSaleLink(Long buyerId, Long carId, SaleStatusEnum saleStatus) {
+        Optional<SaleLinkEntity> optSaleLinkEntity = sellerReader.getSaleLinkByParams(buyerId, carId, saleStatus);
+        if (optSaleLinkEntity.isEmpty()) {
+            UserEntity buyerEntity = userReader.getEntityById(buyerId);
+            CarEntity carEntity = carReader.getEntityById(carId);
+            SaleLinkEntity saleLinkEntity = SaleLinkEntity.builder()
+                    .buyer(buyerEntity)
+                    .car(carEntity)
+                    .status(saleStatus)
+                    .build();
+            saleLinkRepository.save(saleLinkEntity);
+        }
+    }
+
+    @Transactional
+    public void processSaleLink(Long saleLinkId, SaleLinkDto saleLinkDto) {
+        SaleLinkEntity saleLinkEntity = sellerReader.getSaleLinkById(saleLinkId);
+        saleLinkEntity.setStatus(saleLinkDto.getStatus());
+        saleLinkEntity.setScore(saleLinkDto.getScore());
+        saleLinkRepository.save(saleLinkEntity);
+    }
+
+    public List<SaleLinkDto> getSalesByBuyerId(Long buyerId) {
+        return sellerReader.getSalesByBuyerId(buyerId);
     }
 }

@@ -82,7 +82,7 @@ export class GeneralToolbarComponent implements OnInit {
         icon: 'pi pi-question',
         command: () => this._openSupportPage()
       }
-    ]
+    ];
   }
 
   private _openAdministratingPage(): void {

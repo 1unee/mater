@@ -1,8 +1,31 @@
 <div class="w-full">
 
   <div class="grid">
-    <div class="col-12 p-1">
-      {{ car?.title }}
+    <div class="col-12 pl-3 pr-3">
+      <div class="m-1 border-1 border-round-xl border-200">
+        <div class="flex justify-content-between flex-wrap">
+          <div class="flex align-items-center justify-content-center">
+            <div class="p-2">
+              {{ car.brand + ' ' + car.model + ' (' + car.productionYear + ')' }}
+            </div>
+          </div>
+          <div class="flex align-items-center justify-content-center">
+            <!--          center content-->
+          </div>
+          <div class="flex align-items-center justify-content-center gap-1">
+            <div class="p-2">
+              <p-button styleClass="text-center text-sm p-2 w-12"
+                        icon="pi pi-replay"
+                        severity="secondary"
+                        appLongClick
+                        [outlined]="true"
+                        (click)="onPreviousPage()"
+                        (longClick)="messageService.showInfo('Возвращает на предыдущую страницу приложения')"
+              ></p-button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="col-12 p-1">
       <p-carousel #imagesCarousel

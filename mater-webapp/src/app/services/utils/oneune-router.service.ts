@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import {Router} from "@angular/router";
 import {ActionService} from "../https/action.service";
 import {ActionTypeEnum} from "../../store/enums/action-type.enum";
-import {defaultRoute, routes} from "../../app.routes";
+import {defaultRoute} from "../../app.routes";
+import {Location} from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ import {defaultRoute, routes} from "../../app.routes";
 export class OneuneRouterService {
 
   constructor(private router: Router,
-              private actionService: ActionService) {
+              private actionService: ActionService,
+              private location: Location) {
   }
 
   private async _trackRedirect(currentUrl: string, futureUrl: string): Promise<void> {
@@ -30,5 +32,9 @@ export class OneuneRouterService {
   public defaultRedirect(): void {
     this.router.navigate([defaultRoute.path!])
       .then(async (): Promise<void> => { await this._trackRedirect(this.router.url, defaultRoute.path!); });
+  }
+
+  public previousRedirect(): void {
+    this.location.back();
   }
 }

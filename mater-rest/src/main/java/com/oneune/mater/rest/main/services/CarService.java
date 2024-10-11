@@ -8,11 +8,10 @@ import com.oneune.mater.rest.main.readers.CarReader;
 import com.oneune.mater.rest.main.readers.FileReader;
 import com.oneune.mater.rest.main.repositories.CarFileRepository;
 import com.oneune.mater.rest.main.repositories.CarRepository;
+import com.oneune.mater.rest.main.repositories.UserFavoriteCarLinkRepository;
 import com.oneune.mater.rest.main.store.dtos.CarDto;
 import com.oneune.mater.rest.main.store.dtos.FileDto;
-import com.oneune.mater.rest.main.store.entities.CarEntity;
-import com.oneune.mater.rest.main.store.entities.CarFileEntity;
-import com.oneune.mater.rest.main.store.entities.SellerEntity;
+import com.oneune.mater.rest.main.store.entities.*;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
 import lombok.AccessLevel;
@@ -49,6 +48,8 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
     SellerService sellerService;
     SelectelS3Service selectelS3Service;
     CarFileRepository carFileRepository;
+    UserService userService;
+    UserFavoriteCarLinkRepository userFavoriteCarLinkRepository;
 
     @Override
     public void execute(DefaultAbsSender bot, Update update) {
@@ -141,5 +142,26 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
 
     public List<CarDto> getAll() {
         return carReader.getAll();
+    }
+
+    @Transactional
+    public void postFavoriteCar(Long userId, Long carId) {
+        UserEntity userEntity = userService.getEntityById(userId);
+        CarEntity carEntity = getEntityById(carId);
+        UserFavoriteCarLinkEntity userFavoriteCarLinkEntity = UserFavoriteCarLinkEntity.builder()
+                .user(userEntity)
+                .car(carEntity)
+                .build();
+        userFavoriteCarLinkRepository.save(userFavoriteCarLinkEntity);
+    }
+
+    public List<CarDto> getFavoritesByUserId(Long userId) {
+        return carReader.getFavoritesByUserId(userId);
+    }
+
+    @Transactional
+    public void deleteFavoriteCar(Long userId, Long carId) {
+        UserFavoriteCarLinkEntity userFavoriteCarLinkEntity = carReader.getFavoriteLinkByIds(userId, carId);
+        userFavoriteCarLinkRepository.delete(userFavoriteCarLinkEntity);
     }
 }

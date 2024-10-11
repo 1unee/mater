@@ -4,6 +4,8 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {lastValueFrom} from "rxjs";
 import {SellerDto} from "../../store/dtos/seller.dto";
 import {ContactDto} from "../../store/dtos/contact.dto";
+import {SaleLinkStatusEnum} from "../../store/enums/sale-link-status.enum";
+import {SaleLinkDto} from "../../store/dtos/sale-link.dto";
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +52,29 @@ export class SellerService extends AbstractHttpService {
   async getContactsBySellerId(sellerId: number): Promise<ContactDto[]> {
     return lastValueFrom(
       this.http.get<ContactDto[]>(`${this._REST_PATH}/${sellerId}/contacts`)
+    );
+  }
+
+  async postSaleLink(buyerId: number, carId: number): Promise<void> {
+    const params: HttpParams = new HttpParams()
+      .append('buyer-id', buyerId)
+      .append('car-id', carId);
+    return lastValueFrom(
+      this.http.post<void>(`${this._REST_PATH}/sales`, {}, { params: params })
+    );
+  }
+
+  async getSaleLinksByBuyerId(buyerId: number): Promise<SaleLinkDto[]> {
+    const params: HttpParams = new HttpParams()
+      .append('buyer-id', buyerId);
+    return lastValueFrom(
+      this.http.get<SaleLinkDto[]>(`${this._REST_PATH}/sales`, { params: params })
+    )
+  }
+
+  async putSaleLink(saleLink: SaleLinkDto): Promise<void> {
+    return lastValueFrom(
+      this.http.put<void>(`${this._REST_PATH}/sales/${saleLink.id}`, saleLink)
     );
   }
 }

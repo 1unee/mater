@@ -11,6 +11,10 @@ import {CarDto} from "../../../store/dtos/car.dto";
 import {FileDto} from "../../../store/dtos/file.dto";
 import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
+import {environment} from "../../../../environments/environment";
+import {Button} from "primeng/button";
+import {LongClickDirective} from "../../../services/directives/long-click.directive";
+import {SelectButtonModule} from "primeng/selectbutton";
 
 @Component({
   selector: 'app-galleria-page',
@@ -19,7 +23,10 @@ import {OneuneMessageService} from "../../../services/utils/oneune-message.servi
     GalleriaModule,
     CarouselModule,
     ImageModule,
-    TagModule
+    TagModule,
+    Button,
+    LongClickDirective,
+    SelectButtonModule
   ],
   templateUrl: './galleria-page.component.html',
   styleUrl: './galleria-page.component.scss'
@@ -55,4 +62,7 @@ export class GalleriaPageComponent implements OnInit {
     return !!this.car ? this.car.files.filter(file => file.type.startsWith('image')) : [];
   }
 
+  onPreviousPage(): void {
+    this.routerService.previousRedirect();
+  }
 }

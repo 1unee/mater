@@ -2,11 +2,11 @@ package com.oneune.mater.rest.main.controllers;
 
 import com.oneune.mater.rest.main.contracts.CRUDable;
 import com.oneune.mater.rest.main.services.UserService;
-import com.oneune.mater.rest.main.store.pagination.PageQuery;
-import com.oneune.mater.rest.main.store.pagination.PageResponse;
 import com.oneune.mater.rest.main.store.dtos.UserDto;
 import com.oneune.mater.rest.main.store.entities.UserEntity;
 import com.oneune.mater.rest.main.store.enums.VariableFieldEnum;
+import com.oneune.mater.rest.main.store.pagination.PageQuery;
+import com.oneune.mater.rest.main.store.pagination.PageResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

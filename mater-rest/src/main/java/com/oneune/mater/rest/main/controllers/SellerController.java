@@ -4,6 +4,8 @@ import com.oneune.mater.rest.main.contracts.CRUDable;
 import com.oneune.mater.rest.main.services.ContactService;
 import com.oneune.mater.rest.main.services.SellerService;
 import com.oneune.mater.rest.main.store.dtos.ContactDto;
+import com.oneune.mater.rest.main.store.dtos.SaleLinkDto;
+import com.oneune.mater.rest.main.store.enums.SaleStatusEnum;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
 import com.oneune.mater.rest.main.store.dtos.SellerDto;
@@ -83,5 +85,22 @@ public class SellerController implements CRUDable<SellerDto, SellerEntity> {
     public ContactDto put(@PathVariable(name = "sellerId") Long sellerId,
                           @PathVariable(name = "contactId") Long contactId) {
         return contactService.deleteById(contactId);
+    }
+
+    @PostMapping("sales")
+    public void postSaleLink(@RequestParam(name = "buyer-id") Long buyerId,
+                             @RequestParam(name = "car-id") Long carId) {
+        sellerService.processSaleLink(buyerId, carId, SaleStatusEnum.INTERESTED);
+    }
+
+    @GetMapping("sales")
+    public List<SaleLinkDto> getSaleLinksByBuyerId(@RequestParam("buyer-id") Long buyerId) {
+        return sellerService.getSalesByBuyerId(buyerId);
+    }
+
+    @PutMapping("sales/{sale-link-id}")
+    public void putSaleLink(@PathVariable(name = "sale-link-id") Long saleLinkId,
+                            @RequestBody SaleLinkDto saleLink) {
+        sellerService.processSaleLink(saleLinkId, saleLink);
     }
 }

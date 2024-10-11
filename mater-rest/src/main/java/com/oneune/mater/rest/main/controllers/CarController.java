@@ -74,4 +74,21 @@ public class CarController implements CRUDable<CarDto, CarEntity> {
     public List<CarDto> getAll() {
         return carService.getAll();
     }
+
+    @PostMapping("favorites")
+    public void postFavoriteCar(@RequestParam(name = "user-id") Long userId,
+                                @RequestParam(name = "car-id") Long carId) {
+        carService.postFavoriteCar(userId, carId);
+    }
+
+    @GetMapping("favorites")
+    public List<CarDto> getFavoriteCars(@RequestParam(name = "user-id") Long userId) {
+        return carService.getFavoritesByUserId(userId);
+    }
+
+    @DeleteMapping("favorites")
+    public void deleteFavoriteCar(@RequestParam(name = "user-id") Long userId,
+                                  @RequestParam(name = "car-id") Long carId) {
+        carService.deleteFavoriteCar(userId, carId);
+    }
 }

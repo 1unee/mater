@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {TableModule} from "primeng/table";
 import {CarDto} from "../../../store/dtos/car.dto";
 import {NgClass, NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
@@ -11,7 +11,7 @@ import {DataViewModule} from "primeng/dataview";
 import {DropdownModule} from "primeng/dropdown";
 import {FormsModule} from "@angular/forms";
 import {TagModule} from "primeng/tag";
-import {ConfirmationService} from "primeng/api";
+import {ConfirmationService, MenuItem} from "primeng/api";
 import {ImageModule} from "primeng/image";
 import {BadgeModule} from "primeng/badge";
 import {CarouselModule} from "primeng/carousel";
@@ -28,7 +28,7 @@ import {SellerDto} from "../../../store/dtos/seller.dto";
 import {OneuneFileUploadComponent} from "../../core/oneune-file-upload/oneune-file-upload.component";
 import {InputTextModule} from "primeng/inputtext";
 import {AutoFocus} from "primeng/autofocus";
-import {Router, RouterLink} from "@angular/router";
+import {RouterLink} from "@angular/router";
 import {PageResponse} from "../../../store/pagination/page.response.pagination";
 import {GlobalConfig} from "../../../store/interfaces/global-config.interface";
 import {ContactTypeEnum, ContactTypeTitle} from "../../../store/enums/contact-type.enum";
@@ -42,9 +42,8 @@ import {PageQueryProcessingComponent} from "../../core/page-query-processing/pag
 import {GalleriaModule} from "primeng/galleria";
 import {FileDto} from "../../../store/dtos/file.dto";
 import {environment} from "../../../../environments/environment";
-import {ActionService} from "../../../services/https/action.service";
 import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
-import {GearboxEnum, GearboxTitle, getGearboxTitle} from "../../../store/enums/gearbox.enum";
+import {getGearboxTitle} from "../../../store/enums/gearbox.enum";
 import {getCarStateTitle} from "../../../store/enums/car-state.enum";
 import {getEngineOilTypeTitle} from "../../../store/enums/engine-oil-type.enum";
 import {getTransmissionTitle} from "../../../store/enums/transmission.enum";
@@ -52,6 +51,7 @@ import {getSteeringWheelTitle} from "../../../store/enums/steering-wheel.enum";
 import {AccordionModule} from "primeng/accordion";
 import {LongClickDirective} from "../../../services/directives/long-click.directive";
 import {ContactDto} from "../../../store/dtos/contact.dto";
+import {MenubarModule} from "primeng/menubar";
 
 @Component({
   selector: 'app-car-list',
@@ -84,7 +84,8 @@ import {ContactDto} from "../../../store/dtos/contact.dto";
     PageQueryProcessingComponent,
     GalleriaModule,
     AccordionModule,
-    LongClickDirective
+    LongClickDirective,
+    MenubarModule
   ],
   templateUrl: './car-list.component.html',
   styleUrl: './car-list.component.scss'
@@ -100,8 +101,6 @@ export class CarListComponent implements OnInit {
   readonly getEngineOilTypeTitle = getEngineOilTypeTitle;
   readonly getTransmissionTitle = getTransmissionTitle;
   readonly getSteeringWheelTitle = getSteeringWheelTitle;
-
-  @ViewChild('contactsOverlayPanel') contactsOverlayPanel: OverlayPanel;
 
   paginationConfig: {
     pageNumber: number,
@@ -119,14 +118,15 @@ export class CarListComponent implements OnInit {
 
   selectButtonStatesConfig: { states: { label: string, value: CarCategorySortEnum, styleClass: string }[], selectedValue: CarCategorySortEnum } = {
     states: [
-      { label: CarCategorySortTitle.MINE, value: CarCategorySortEnum.MINE, styleClass: 'p-2 p-button-secondary' },
-      { label: CarCategorySortTitle.ALL, value: CarCategorySortEnum.ALL, styleClass: 'p-2 p-button-secondary' },
+      { label: CarCategorySortTitle.MINE, value: CarCategorySortEnum.MINE, styleClass: 'p-2 p-button-secondary p-button-outlined' },
+      { label: CarCategorySortTitle.ALL, value: CarCategorySortEnum.ALL, styleClass: 'p-2 p-button-secondary p-button-outlined' },
+      // { label: CarCategorySortTitle.FAVORITES, value: CarCategorySortEnum.FAVORITES, styleClass: 'p-2 p-button-secondary' },
     ],
     selectedValue: CarCategorySortEnum.MINE
   }
 
   seller: SellerDto;
-  starIconFlag: boolean = false;
+  userFavoriteCars: CarDto[];
 
   constructor(private carService: CarService,
               public messageService: OneuneMessageService,
@@ -142,6 +142,7 @@ export class CarListComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.onChange();
+    this.userFavoriteCars = await this.carService.getFavoriteCars(this.storageService.user.id);
     this.seller = await this.sellerService.getById(this.storageService.user.seller.id);
   }
 
@@ -291,11 +292,13 @@ export class CarListComponent implements OnInit {
     }
   }
 
-  async onOpenContacts(event: MouseEvent, carId: number): Promise<void> {
+  async onOpenContacts(event: MouseEvent,
+                       overlayPanel: OverlayPanel,
+                       carId: number): Promise<void> {
     try {
       this.loadingReference.value.next(true);
       this.seller = await this.sellerService.getByCarId(carId);
-      this.contactsOverlayPanel.toggle(event);
+      overlayPanel.toggle(event);
     } catch (e) {
       this.messageService.showDefaultError();
     } finally {
@@ -318,7 +321,6 @@ export class CarListComponent implements OnInit {
 
   async onChange(): Promise<void> {
     if (this.selectButtonStatesConfig.selectedValue === CarCategorySortEnum.MINE) {
-
       const columnQuery: ColumnQuery = {
         name: 'seller.id',
         filterType: FilterType.EQUALS,
@@ -366,7 +368,7 @@ export class CarListComponent implements OnInit {
     });
   }
 
-  onClickContact(contact: ContactDto): void {
+  onClickContact(contact: ContactDto, car: CarDto, overlayPanel: OverlayPanel): void {
     const isUrlReference: boolean = [
       ContactTypeEnum.TELEGRAM,
       ContactTypeEnum.WHATSAPP,
@@ -378,9 +380,11 @@ export class CarListComponent implements OnInit {
     } else {
       this.clipboardService.extCopy(contact.value, 'Скопировано!')
     }
+    this.sellerService.postSaleLink(this.storageService.user.id, car.id).finally();
+    overlayPanel.overlayVisible = false;
   }
 
-  private _chooseCarImagesDemonstratingType(event: Event, overlayPanel: OverlayPanel, car: CarDto): void {
+  private _chooseCarImagesDemonstratingType(event: MouseEvent, overlayPanel: OverlayPanel, car: CarDto): void {
     this.confirmationService.confirm({
       message: 'Открыть в галерее прикрепленные фото машины?',
       header: 'Подтверждение',
@@ -394,8 +398,28 @@ export class CarListComponent implements OnInit {
     });
   }
 
-  onCarImagesShow(event: Event, overlayPanel: OverlayPanel, car: CarDto): void {
+  onCarImagesShow(event: MouseEvent, overlayPanel: OverlayPanel, car: CarDto): void {
     this._chooseCarImagesDemonstratingType(event, overlayPanel, car);
+  }
+
+  isCarFavoriteForCurrentUser(questioningCar: CarDto): boolean {
+
+    console.log(this.userFavoriteCars);
+
+    return this.userFavoriteCars
+      .map((car: CarDto): number => car.id)
+      .includes(questioningCar.id);
+  }
+
+  async onProcessingCarFavorite(car: CarDto): Promise<void> {
+    if (!this.isCarFavoriteForCurrentUser(car)) {
+      await this.carService.postFavoriteCar(this.storageService.user.id, car.id);
+      this.messageService.showSuccess('Машина добавлена в список избранных')
+    } else {
+      await this.carService.deleteFavoriteCar(this.storageService.user.id, car.id);
+      this.messageService.showSuccess('Машина убрана из списка избранных')
+    }
+    this.userFavoriteCars = await this.carService.getFavoriteCars(this.storageService.user.id);
   }
 }
 

@@ -18,6 +18,8 @@ import {NgIf} from "@angular/common";
 import {FeedbackDialogComponent} from "../../dialogs/feedback-dialog/feedback-dialog.component";
 import {DialogService} from "primeng/dynamicdialog";
 import {ActivatedRoute} from "@angular/router";
+import {SaleComponent} from "./sale/sale.component";
+import {LongClickDirective} from "../../../services/directives/long-click.directive";
 
 @Component({
   selector: 'app-profile-page',
@@ -35,7 +37,9 @@ import {ActivatedRoute} from "@angular/router";
     SidebarModule,
     Ripple,
     TooltipModule,
-    NgIf
+    NgIf,
+    SaleComponent,
+    LongClickDirective
   ],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.scss'
@@ -46,7 +50,8 @@ export class ProfilePageComponent implements OnInit {
     ['user-description', 0],
     // ['user-rating', 1],
     // ['user-search-history', 2],
-    ['user-contacts', 1]
+    ['user-contacts', 1],
+    ['sales', 2]
   ]);
   targetProfileTab: string = 'none';
   user: UserDto;
@@ -54,6 +59,7 @@ export class ProfilePageComponent implements OnInit {
 
   showUserDescriptionSupportSidebar: boolean = false;
   showContactsSupportSidebar: boolean = false;
+  showSalesSupportSidebar: boolean = false;
 
   constructor(private storageService: StorageService,
               public messageService: OneuneMessageService,
