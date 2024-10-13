@@ -32,7 +32,7 @@ public class UserController implements CRUDable<UserDto, UserEntity> {
 
     @PostMapping("by-telegram-user")
     public UserDto registerOrGet(@RequestBody User telegramUser,
-                                 @RequestParam(name = "telegram-chat-id") Long telegramChatId,
+                                 @RequestParam(name = "telegram-chat-id") String telegramChatId,
                                  @RequestParam(required = false, defaultValue = "") List<String> additionalRoles) {
         return this.userService.registerOrGet(telegramUser, telegramChatId, additionalRoles);
     }

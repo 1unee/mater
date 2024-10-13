@@ -16,47 +16,88 @@
 
       <div class="col-12">
         <p-accordion [activeIndex]="0">
-          <p-accordionTab header="Что нового в этой версии?">
-            <p>
-              <b class="m-1 border-1 border-round-2xl border-200">1.</b>
+          <p-accordionTab contentStyleClass="m-0 p-1 pl-3 pr-3"
+                          header="Что нового в этой версии?"
+          >
+            <p class="p-3 border-1 border-round-2xl border-200">
+              <b class="m-1 p-1 border-1 border-round-2xl border-200 surface-hover">1.</b>
               Добавлено поясняющее сообщение для каждой кнопки.
               Чтобы оно повявилось, необходимо зажать кнопку до его появления.
             </p>
-            <p>
-              <b class="m-1 border-1 border-round-2xl border-200">2.</b>
+            <p class="p-3 border-1 border-round-2xl border-200">
+              <b class="m-1 p-1 border-1 border-round-2xl border-200 surface-hover">2.</b>
               Добавлены дополнительные параметры для описания машины.
               Чтобы добавить новые параметры старым машины (которые уже добавлены в список),
               нужно нажать кнопку ее редактирования и добавить там параметры.
             </p>
+            <p class="p-3 border-1 border-round-2xl border-200">
+              <b class="m-1 p-1 border-1 border-round-2xl border-200 surface-hover">3.</b>
+              Добавлена функция "избранные машины".
+              Чтобы добавить машину в список избранных, нужно нажать на звездочку в ее описании.
+              Функция добавлена для реализации уведомлений об изменениях машин.
+            </p>
+            <p class="p-3 border-1 border-round-2xl border-200">
+              <b class="m-1 p-1 border-1 border-round-2xl border-200 surface-hover">4.</b>
+              Добавлены уведомления об изменениях машин.
+              По умолчанию уведомления приходить не будут.
+              Опцию можно поменять на странице настроек на нужную опцию.
+              Пока что реализованы уведомления только с помощью почты
+              (для этого предварительно нужно добавить почту в описании профиля).
+              В дальнейшем будут добавлены другие типы уведомлений.
+            </p>
+            <p class="p-3 border-1 border-round-2xl border-200">
+              <b class="m-1 p-1 border-1 border-round-2xl border-200 surface-hover">5.</b>
+              Доработаны фильтрация и сортировка в главном списке машин.
+              Теперь можно искать машину по быстрому поиску.
+              Также можно скопировать название машины, отправить покупателю, а он это скопированное значение
+              вставит в быстрый поиск и сразу найдет нужную машину.
+            </p>
+            <p class="p-3 border-1 border-round-2xl border-200">
+              <b class="m-1 p-1 border-1 border-round-2xl border-200 surface-hover">6.</b>
+              Добавлены взаимодействия с продавцами.
+              Теперь в профиле есть вкладка "Интересующие машины".
+              При первом копировании контактов продавца, создается взаимодействие.
+              Его можно менять, выставляя разные статусы.
+              Также можно поставить продавцу рейтинг за взаимодействие.
+            </p>
+            <p class="p-3 border-1 border-round-2xl border-200">
+              <b class="m-1 p-1 border-1 border-round-2xl border-200 surface-hover">7.</b>
+              Внесены некоторые правки для оптимизации работы приложения.
+              И добавлены разные мелкие полезные функции.
+            </p>
           </p-accordionTab>
-          <p-accordionTab header="Зачем я нужен?">
-            <p>
+          <p-accordionTab contentStyleClass="m-0 p-1 pl-3 pr-3"
+                          header="Зачем я нужен?"
+          >
+            <p class="p-3 border-1 border-round-2xl border-200">
               Сейчас я умею помогать собирать основную информацию по машинам, которую мне предоставляют пользователи,
               умею хранить фото и видео этой машины.
             </p>
           </p-accordionTab>
-          <p-accordionTab header="С чего начать?">
-            <p>
+          <p-accordionTab contentStyleClass="m-0 p-1 pl-3 pr-3"
+                          header="С чего начать?"
+          >
+            <p class="p-3 border-1 border-round-2xl border-200">
               Слева сверху есть меню (три полоски), по которому ты можешь открыть любую из доступных страниц.
             </p>
-            <p>
+            <p class="p-3 border-1 border-round-2xl border-200">
               В профиле твоя личная информация, которую ты можешь дополнить при желании, а в контактах - информация
               о том, как можно с тобой связаться (например, телеграмм или по номеру телефона).
             </p>
-            <p>
+            <p class="p-3 border-1 border-round-2xl border-200">
               На странице "маркета" машин можно посмотреть выложенные машины, их характеристики и прочее.
             </p>
-            <p>
+            <p class="p-3 border-1 border-round-2xl border-200">
               На странице "функции" скоро появятся разные полезные функции, которые будут помогать тебе в выборе машины.
               Например, полная расшифровка по стандартам ВИН-номера или проверка в реестре.
             </p>
-            <p>
+            <p class="p-3 border-1 border-round-2xl border-200">
               На странице настроек ты можешь поменять и настроить под себя приложение из того,
               что на текущий момент доступно.
             </p>
           </p-accordionTab>
-          <p-accordionTab header="Что дальше?">
-            <p>
+          <p-accordionTab contentStyleClass="m-0 p-1 pl-3 pr-3" header="Что дальше?">
+            <p class="p-3 border-1 border-round-2xl border-200">
               Сейчас приложение находится в бета-версии. Вполне нормально, если что-то будет ломаться.
               Если есть какие-то пожелания или предложения (в том числе объективная критика),
               то всегда можно обратиться к главному разработчику
@@ -65,13 +106,19 @@
               В будущем будет добавлено еще много других полезных функций.
             </p>
           </p-accordionTab>
-          <p-accordionTab *ngIf="isSupport" header="Модераторам!">
-            <p>
+          <p-accordionTab *ngIf="isSupport"
+                          contentStyleClass="m-0 p-1 pl-3 pr-3"
+                          header="Модераторам!"
+          >
+            <p class="p-3 border-1 border-round-2xl border-200">
               Информация для модераторов...
             </p>
           </p-accordionTab>
-          <p-accordionTab *ngIf="isAdmin" header="Администраторам!">
-            <p>
+          <p-accordionTab *ngIf="isAdmin"
+                          contentStyleClass="m-0 p-1 pl-3 pr-3"
+                          header="Администраторам!"
+          >
+            <p class="p-3 border-1 border-round-2xl border-200">
               Информация для администраторов...
             </p>
           </p-accordionTab>

@@ -69,12 +69,12 @@ public class CarEditedListener {
     }
 
     private void sendNotificationByStrategy(UserEntity userEntity, CarEntity carEntity, String strategy) {
-        if (strategy.equals("TELEGRAM_CHAT")) {
-            notificateByTelegramChat(userEntity, carEntity);
+        if (strategy.equals("NOTHING")) {
+//            notificateByTelegramChat(userEntity, carEntity);
         } else if (strategy.equals("MAIL")) {
             notificateByMail(userEntity, carEntity);
         } else if (strategy.equals("ALL")) {
-            notificateByTelegramChat(userEntity, carEntity);
+//            notificateByTelegramChat(userEntity, carEntity);
             notificateByMail(userEntity, carEntity);
         } else {
             throw new IllegalArgumentException("Unknown strategy: " + strategy);

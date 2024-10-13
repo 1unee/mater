@@ -3,6 +3,7 @@ package com.oneune.mater.rest.main.services;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
+import com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion;
 import com.oneune.mater.rest.main.configs.properties.SelectelS3Properties;
 import com.oneune.mater.rest.main.utils.ImageUtils;
 import lombok.AccessLevel;
@@ -131,11 +132,19 @@ public class SelectelS3Service {
     }
 
     public void deleteObject(String objectName) {
-        s3Client.deleteObject(selectelS3Properties.getBucketProperties().getName(), objectName);
+        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(
+                selectelS3Properties.getBucketProperties().getName(),
+                objectName
+        );
+        s3Client.deleteObject(deleteObjectRequest);
     }
 
     public void deleteObjects(List<String> objectNames) {
-        objectNames.forEach(this::deleteObject);
+        List<KeyVersion> objectsToDelete = objectNames.stream().map(KeyVersion::new).toList();
+        DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(
+                selectelS3Properties.getBucketProperties().getName()
+        ).withKeys(objectsToDelete);
+        s3Client.deleteObjects(deleteObjectsRequest);
     }
 }
 

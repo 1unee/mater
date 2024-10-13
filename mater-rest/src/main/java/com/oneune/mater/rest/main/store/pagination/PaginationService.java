@@ -188,6 +188,7 @@ public class PaginationService<D extends AbstractDto, E extends AbstractEntity> 
                                                                                           P path) {
         return switch (filterType) {
             case EQUALS -> path::equalsIgnoreCase;
+            case NOT_EQUALS -> path::notEqualsIgnoreCase;
             case GREATER_THAN -> path::gt;
             case LESS_THAN -> path::lt;
             case STARTS_WITH -> path::startsWithIgnoreCase;
@@ -234,6 +235,7 @@ public class PaginationService<D extends AbstractDto, E extends AbstractEntity> 
                                                                                              P path) {
         return switch (filterType) {
             case EQUALS -> path::eq;
+            case NOT_EQUALS -> path::ne;
             case GREATER_THAN -> path::gt;
             case LESS_THAN -> path::lt;
             case STARTS_WITH, ENDS_WITH, CONTAINS -> throw new IllegalArgumentException(

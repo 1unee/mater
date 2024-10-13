@@ -141,12 +141,12 @@ VALUES
 -- Заполнение таблицы setting
 INSERT INTO setting (id, code, title, value, description, created_at, updated_at)
 VALUES
-    (nextval('setting_id_seq'), 1, 'Тема', 'system', 'Тема приложения', NOW(), NULL),
-    (nextval('setting_id_seq'), 2, 'Фильтрация и сортировка', 'true', 'Показывать кнопку фильтрации и сортировки в главном списке машин', NOW(), NULL),
-    (nextval('setting_id_seq'), 3, 'Добавление машины', 'true', 'Показывать кнопку добавления машин в главном списке', NOW(), NULL),
+    (nextval('setting_id_seq'), 1, 'Тема', 'VALUE_ON_OPTIONS', 'Тема приложения', NOW(), NULL),
+    (nextval('setting_id_seq'), 2, 'Фильтрация и сортировка', 'VALUE_ON_OPTIONS', 'Показывать кнопку фильтрации и сортировки в главном списке машин', NOW(), NULL),
+    (nextval('setting_id_seq'), 3, 'Добавление машины', 'VALUE_ON_OPTIONS', 'Показывать кнопку добавления машин в главном списке', NOW(), NULL),
     (nextval('setting_id_seq'), 4, 'Тестовый режим фильтрации и сортировки', 'true', 'Показывать сообщение о тестовом режиме работы фильтрации и сортировки', NOW(), NULL),
-    (nextval('setting_id_seq'), 5, 'Автоматическая смена фото', 'true', 'Включить автовоспроизведение фотографий машины', NOW(), NULL),
-    (nextval('setting_id_seq'), 6, 'Уведомления', 'TELEGRAM_CHAT', 'Тип уведомлений об изменениях избранных машин', NOW(), NULL);
+    (nextval('setting_id_seq'), 5, 'Автоматическая смена фото', 'VALUE_ON_OPTIONS', 'Включить автовоспроизведение фотографий машины', NOW(), NULL),
+    (nextval('setting_id_seq'), 6, 'Уведомления', 'VALUE_ON_OPTIONS', 'Тип уведомлений об изменениях избранных машин', NOW(), NULL);
 
 -- Опции для настройки "Тема"
 INSERT INTO option (id, root_id, code, title, value, description, created_at, updated_at)
@@ -162,6 +162,6 @@ VALUES
     (nextval('option_id_seq'), (SELECT id FROM setting WHERE code = 4), 9, 'Нет', 'false', 'Отключить тестовый режим фильтрации и сортировки', NOW(), NULL),
     (nextval('option_id_seq'), (SELECT id FROM setting WHERE code = 5), 10, 'Да', 'true', 'Включить автовоспроизведение изображений', NOW(), NULL),
     (nextval('option_id_seq'), (SELECT id FROM setting WHERE code = 5), 11,'Нет', 'false', 'Отключить автовоспроизведение изображений', NOW(), NULL),
-    (nextval('option_id_seq'), (SELECT id FROM setting WHERE code = 6), 12, 'ТГ', 'TELEGRAM_CHAT', 'Уведомления через Telegram', NOW(), NULL),
+    (nextval('option_id_seq'), (SELECT id FROM setting WHERE code = 6), 12, 'Нигде', 'NOTHING', 'Без уведомлений', NOW(), NULL),
     (nextval('option_id_seq'), (SELECT id FROM setting WHERE code = 6), 13, 'Почта', 'MAIL', 'Уведомления через почту', NOW(), NULL),
     (nextval('option_id_seq'), (SELECT id FROM setting WHERE code = 6), 14, 'Все', 'ALL', 'Уведомления через все каналы', NOW(), NULL);

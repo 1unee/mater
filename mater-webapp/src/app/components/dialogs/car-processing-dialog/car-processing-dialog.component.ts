@@ -161,6 +161,7 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
   }
 
   async onSubmit(closeDialog: boolean): Promise<void> {
+    const carId: number = this.car.id;
     this.car = this._buildModel();
     try {
       this.loadingReference.value.next(true);
@@ -171,7 +172,7 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
         this.car = await this.carService.post(this.storageService.user.seller.id, this.car);
         this.messageService.showSuccess('Машина успешно внесена в список!');
       }
-      if (!this.car.id) {
+      if (!carId) {
         this.car = new CarDto();
         this.form.reset();
       }
@@ -186,6 +187,7 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
   }
 
   onChange(dropdown: Dropdown): void {
+    console.log(this.form.value);
     dropdown.hide();
   }
 }

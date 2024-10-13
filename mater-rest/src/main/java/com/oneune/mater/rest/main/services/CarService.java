@@ -4,6 +4,7 @@ import com.oneune.mater.rest.bot.contracts.Command;
 import com.oneune.mater.rest.bot.utils.TelegramBotUtils;
 import com.oneune.mater.rest.common.aop.annotations.LogExecutionDuration;
 import com.oneune.mater.rest.main.contracts.CRUDable;
+import com.oneune.mater.rest.main.contracts.Identifiable;
 import com.oneune.mater.rest.main.events.CarUpdatedEvent;
 import com.oneune.mater.rest.main.readers.CarReader;
 import com.oneune.mater.rest.main.readers.FileReader;
@@ -30,6 +31,7 @@ import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +121,9 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
 
         files = Objects.isNull(files) ? new ArrayList<>() : files;
         CarEntity carEntity = getEntityById(carId);
-        carEntity.getFiles().clear();
+        List<CarFileEntity> existingCarFiles = carEntity.getFiles();
+        carFileRepository.deleteAllById(Identifiable.extractIds(existingCarFiles, SortOrder.UNSORTED));
+        existingCarFiles.clear();
 
         selectelS3Service.uploadFiles(files);
         Map<String, Pair<String, Long>> filesMeta = selectelS3Service.getFilesMeta(
@@ -136,7 +140,7 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
                         .build())
                 .collect(Collectors.toList());
 
-        carEntity.getFiles().addAll(carFileEntities);
+        existingCarFiles.addAll(carFileEntities);
         carRepository.saveAndFlush(carEntity);
         carFileRepository.flush();
 

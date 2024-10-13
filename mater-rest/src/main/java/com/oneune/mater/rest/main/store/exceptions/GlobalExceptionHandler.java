@@ -24,10 +24,11 @@ public class GlobalExceptionHandler {
     ExceptionRepository exceptionRepository;
 
     @ExceptionHandler(Exception.class)
-    @Transactional
-    public void handleGlobalException(Exception e, WebRequest request) {
+    @Transactional(noRollbackFor = Exception.class)
+    public void handleGlobalException(Exception e, WebRequest request) throws Exception {
         ExceptionEntity exceptionEntity = buildExceptionEntity(e, request);
         exceptionRepository.save(exceptionEntity);
+        throw e;
     }
 
     private ExceptionEntity buildExceptionEntity(Exception exception, WebRequest request) {
@@ -51,7 +52,7 @@ public class GlobalExceptionHandler {
     private String getStackTraceAsString(Exception exception) {
         StringBuilder result = new StringBuilder();
         Arrays.stream(exception.getStackTrace())
-                .forEach(stackTrace -> result.append(stackTrace.toString()).append(";"));
+                .forEach(stackTrace -> result.append(stackTrace.toString()).append("~~~"));
         return result.toString();
     }
 }

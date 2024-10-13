@@ -9,7 +9,7 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
     pagination:
       page-size: 3
   flyway:
@@ -85,3 +85,9 @@ management:
     health:
       enabled: true
       show-details: always
+
+cron:
+  config:
+    clean-orphan-objects:
+      name: clean-orphan-selectel-objects
+      expression: '* * 4 * * *'

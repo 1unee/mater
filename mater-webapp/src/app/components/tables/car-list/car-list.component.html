@@ -32,7 +32,7 @@
                     (click)="onPageReload()"
                     (longClick)="messageService.showInfo('Перезагружает список машин, синхронизируя информацию с сервером')"
           ></p-button>
-          <p-button *ngIf="!environment.production && JSON.parse(storageService.getSettingByCode(2).selectedOption.value)"
+          <p-button *ngIf="JSON.parse(storageService.getSettingByCode(2).selectedOption.value)"
                     styleClass="text-center text-sm p-2 w-12"
                     icon="pi pi-list-check"
                     severity="secondary"

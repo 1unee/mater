@@ -1,5 +1,6 @@
 export enum FilterType {
   EQUALS = 'EQUALS',
+  NOT_EQUALS = 'NOT_EQUALS',
   STARTS_WITH = 'STARTS_WITH',
   ENDS_WITH = 'ENDS_WITH',
   CONTAINS = 'CONTAINS',
@@ -9,6 +10,7 @@ export enum FilterType {
 
 export const FilterTypeTitle: { [key in FilterType]: string } = {
   [FilterType.EQUALS]: 'Равно',
+  [FilterType.NOT_EQUALS]: 'Не равно',
   [FilterType.STARTS_WITH]: 'Начинается с',
   [FilterType.ENDS_WITH]: 'Заканчивается на',
   [FilterType.CONTAINS]: 'Содержит',

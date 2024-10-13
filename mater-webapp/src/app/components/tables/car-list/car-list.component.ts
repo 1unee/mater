@@ -48,10 +48,12 @@ import {getEngineOilTypeTitle} from "../../../store/enums/engine-oil-type.enum";
 import {getTransmissionTitle} from "../../../store/enums/transmission.enum";
 import {getSteeringWheelTitle} from "../../../store/enums/steering-wheel.enum";
 import {AccordionModule} from "primeng/accordion";
-import {LongClickDirective} from "../../../services/directives/long-click.directive";
 import {ContactDto} from "../../../store/dtos/contact.dto";
 import {MenubarModule} from "primeng/menubar";
+import {LongClickDirective} from "../../../services/directives/long-click.directive";
 import {ForeignLink} from "../../../store/interfaces/foreign-link.interface";
+import {ActionService} from "../../../services/https/action.service";
+import {ActionTypeEnum} from "../../../store/enums/action-type.enum";
 
 @Component({
   selector: 'app-car-list',
@@ -139,7 +141,8 @@ export class CarListComponent implements OnInit {
               private sellerService: SellerService,
               @Inject(LOADING) public loadingReference: LoadingReference,
               private routerService: OneuneRouterService,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private actionService: ActionService) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -359,11 +362,19 @@ export class CarListComponent implements OnInit {
         } as ColumnQuery;
 
         if (this.paginationConfig.columnQueries.findIndex(cq => cq === columnQuery) === -1) {
-          this.paginationConfig.columnQueries.push(columnQuery);
+          this.paginationConfig.columnQueries = [columnQuery];
         }
         await this.loadCurrentPage();
       } else {
-        this.paginationConfig.columnQueries = [];
+        const columnQuery: ColumnQuery = {
+          name: 'seller.id',
+          filterType: FilterType.NOT_EQUALS,
+          filterValue: this.storageService.user.seller.id
+        } as ColumnQuery;
+
+        if (this.paginationConfig.columnQueries.findIndex(cq => cq === columnQuery) === -1) {
+          this.paginationConfig.columnQueries = [columnQuery];
+        }
         await this.loadCurrentPage();
       }
     }
@@ -446,7 +457,7 @@ export class CarListComponent implements OnInit {
   }
 
   onCarForeignLinkCopy(car: CarDto): void {
-    if (true) { // environment.production
+    if (environment.production) {
       this.clipboardService.extCopy(`${car.brand} ${car.model} (${car.productionYear})`, 'Машина скопирована. Введите скопированное значение в поиске, чтобы ее найти');
     } else {
       const href: string = `${window.location.href}?car-id=${car.id}`;
@@ -460,6 +471,7 @@ export class CarListComponent implements OnInit {
   }
 
   async onCommonSearchValue(commonSearchValue: string): Promise<void> {
+    this.actionService.track(ActionTypeEnum.COMMON_SEARCH, commonSearchValue).finally();
     const carBrand: string = commonSearchValue.split(' ')[0];
     const carModel: string | undefined = !!commonSearchValue.split(' ')[1] ? commonSearchValue.split(' ')[1] : undefined;
     const carProductionYear: string | undefined = commonSearchValue.split(' ')[2] ? commonSearchValue.split(' ')[2].replace('(', '').replace(')', '') : undefined;

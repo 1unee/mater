@@ -70,7 +70,7 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
       accept: async () => this.routerService.relativeRedirect('/profile', {'target-profile-tab': 'user-description'}),
       rejectLabel: 'Нет',
       rejectButtonStyleClass: 'p-1',
-      reject: () => this.messageService.showWarning('Тогда уведомления будут приходить только в телеграмм-чате')
+      reject: () => this.messageService.showWarning('Окей, тогда пока уведомлений не будет')
     });
   }
 

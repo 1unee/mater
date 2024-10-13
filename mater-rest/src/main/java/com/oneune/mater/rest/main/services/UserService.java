@@ -55,7 +55,7 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
     @Transactional
     public void register(DefaultAbsSender bot, Update update, String roleName) {
         User telegramUser = update.getMessage().getFrom();
-        UserDto userDto = registerOrGet(telegramUser, update.getMessage().getChatId(), List.of(roleName));
+        UserDto userDto = registerOrGet(telegramUser, update.getMessage().getChatId().toString(), List.of(roleName));
         TelegramBotUtils.informAboutSuccess(bot, update);
     }
 
@@ -63,9 +63,9 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
      * @param additionalRoles roles to add for user (exclude USER role which set by default).
      */
     @Transactional
-    public UserDto registerOrGet(User telegramUser, Long telegramChatId, List<String> additionalRoles) {
+    public UserDto registerOrGet(User telegramUser, String telegramChatId, List<String> additionalRoles) {
         Optional<UserDto> user = userReader.getByUsername(telegramUser.getUserName());
-        return user.orElseGet(() -> register(telegramUser, telegramChatId, additionalRoles));
+        return user.orElseGet(() -> register(telegramUser, telegramChatId.equals("undefined") ? -1 : Long.parseLong(telegramChatId), additionalRoles));
     }
 
     @Transactional
