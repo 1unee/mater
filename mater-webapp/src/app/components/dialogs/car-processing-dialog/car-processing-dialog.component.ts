@@ -171,8 +171,10 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
         this.car = await this.carService.post(this.storageService.user.seller.id, this.car);
         this.messageService.showSuccess('Машина успешно внесена в список!');
       }
-      this.car = new CarDto();
-      this.form.reset();
+      if (!this.car.id) {
+        this.car = new CarDto();
+        this.form.reset();
+      }
       if (closeDialog) {
         this.dynamicDialogRef.close();
       }

@@ -11,7 +11,7 @@ import {DataViewModule} from "primeng/dataview";
 import {DropdownModule} from "primeng/dropdown";
 import {FormsModule} from "@angular/forms";
 import {TagModule} from "primeng/tag";
-import {ConfirmationService, MenuItem} from "primeng/api";
+import {ConfirmationService} from "primeng/api";
 import {ImageModule} from "primeng/image";
 import {BadgeModule} from "primeng/badge";
 import {CarouselModule} from "primeng/carousel";
@@ -28,11 +28,10 @@ import {SellerDto} from "../../../store/dtos/seller.dto";
 import {OneuneFileUploadComponent} from "../../core/oneune-file-upload/oneune-file-upload.component";
 import {InputTextModule} from "primeng/inputtext";
 import {AutoFocus} from "primeng/autofocus";
-import {RouterLink} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {PageResponse} from "../../../store/pagination/page.response.pagination";
-import {GlobalConfig} from "../../../store/interfaces/global-config.interface";
 import {ContactTypeEnum, ContactTypeTitle} from "../../../store/enums/contact-type.enum";
-import {GLOBAL_CONFIG, LOADING} from "../../../app.config";
+import {LOADING} from "../../../app.config";
 import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
 import {FilterType} from "../../../store/pagination/filter-type.pagination";
 import {ColumnQuery} from "../../../store/pagination/column-query.pagination";
@@ -52,6 +51,7 @@ import {AccordionModule} from "primeng/accordion";
 import {LongClickDirective} from "../../../services/directives/long-click.directive";
 import {ContactDto} from "../../../store/dtos/contact.dto";
 import {MenubarModule} from "primeng/menubar";
+import {ForeignLink} from "../../../store/interfaces/foreign-link.interface";
 
 @Component({
   selector: 'app-car-list',
@@ -101,6 +101,7 @@ export class CarListComponent implements OnInit {
   readonly getEngineOilTypeTitle = getEngineOilTypeTitle;
   readonly getTransmissionTitle = getTransmissionTitle;
   readonly getSteeringWheelTitle = getSteeringWheelTitle;
+  readonly JSON = JSON;
 
   paginationConfig: {
     pageNumber: number,
@@ -127,6 +128,7 @@ export class CarListComponent implements OnInit {
 
   seller: SellerDto;
   userFavoriteCars: CarDto[];
+  foreignLink: ForeignLink;
 
   constructor(private carService: CarService,
               public messageService: OneuneMessageService,
@@ -135,9 +137,9 @@ export class CarListComponent implements OnInit {
               private confirmationService: ConfirmationService,
               private dialogService: DialogService,
               private sellerService: SellerService,
-              @Inject(GLOBAL_CONFIG) public globalConfig: GlobalConfig,
               @Inject(LOADING) public loadingReference: LoadingReference,
-              private routerService: OneuneRouterService) {
+              private routerService: OneuneRouterService,
+              private activatedRoute: ActivatedRoute) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -319,33 +321,57 @@ export class CarListComponent implements OnInit {
     this.messageService.showInfo('Список машин перезагружен!');
   }
 
-  async onChange(): Promise<void> {
-    if (this.selectButtonStatesConfig.selectedValue === CarCategorySortEnum.MINE) {
-      const columnQuery: ColumnQuery = {
-        name: 'seller.id',
-        filterType: FilterType.EQUALS,
-        filterValue: this.storageService.user.seller.id
-      } as ColumnQuery;
+  private async _initializeForeignLink(): Promise<ForeignLink> {
+    return new Promise(resolve => {
+      let foreignLink: ForeignLink;
+      this.activatedRoute.queryParams.subscribe(params => {
+        const carId: number = params['car-id'];
+        if (carId) {
+          foreignLink = { isForeignLink: true, carId };
+          resolve(foreignLink);
+        } else {
+          foreignLink = { isForeignLink: false, carId: undefined }
+          resolve(foreignLink);
+        }
+      });
+      this.foreignLink = foreignLink!;
+    });
+  }
 
+  async onChange(): Promise<void> {
+    const foreignLink: ForeignLink = await this._initializeForeignLink();
+    if (foreignLink.isForeignLink) {
+      const columnQuery: ColumnQuery = {
+        name: 'id',
+        filterType: FilterType.EQUALS,
+        filterValue: foreignLink.carId
+      } as ColumnQuery;
       if (this.paginationConfig.columnQueries.findIndex(cq => cq === columnQuery) === -1) {
+        this.paginationConfig.columnQueries.push(columnQuery);
+      }
+      await this.loadCurrentPage();
+    } else {
+      if (this.selectButtonStatesConfig.selectedValue === CarCategorySortEnum.MINE) {
         const columnQuery: ColumnQuery = {
           name: 'seller.id',
           filterType: FilterType.EQUALS,
           filterValue: this.storageService.user.seller.id
         } as ColumnQuery;
-        this.paginationConfig.columnQueries.push(columnQuery);
-      }
 
-      await this.loadCurrentPage();
-    } else {
-      this.paginationConfig.columnQueries = [];
-      await this.loadCurrentPage();
+        if (this.paginationConfig.columnQueries.findIndex(cq => cq === columnQuery) === -1) {
+          this.paginationConfig.columnQueries.push(columnQuery);
+        }
+        await this.loadCurrentPage();
+      } else {
+        this.paginationConfig.columnQueries = [];
+        await this.loadCurrentPage();
+      }
     }
   }
 
   onTogglePageQuerying(): void {
     this.paginationConfig.processing = !this.paginationConfig.processing;
-    if (this.globalConfig.settings.showWarnPageQueryingMessage && this.paginationConfig.processing) {
+    if (JSON.parse(this.storageService.getSettingByCode(4).selectedOption.value) && this.paginationConfig.processing) {
       this.messageService.showWarning(
         'Фильтрация и сортировка работают в тестовом режиме.' +
         'Об ошибках сообщать в форме обратной связи ' +
@@ -403,9 +429,6 @@ export class CarListComponent implements OnInit {
   }
 
   isCarFavoriteForCurrentUser(questioningCar: CarDto): boolean {
-
-    console.log(this.userFavoriteCars);
-
     return this.userFavoriteCars
       .map((car: CarDto): number => car.id)
       .includes(questioningCar.id);
@@ -420,6 +443,46 @@ export class CarListComponent implements OnInit {
       this.messageService.showSuccess('Машина убрана из списка избранных')
     }
     this.userFavoriteCars = await this.carService.getFavoriteCars(this.storageService.user.id);
+  }
+
+  onCarForeignLinkCopy(car: CarDto): void {
+    if (true) { // environment.production
+      this.clipboardService.extCopy(`${car.brand} ${car.model} (${car.productionYear})`, 'Машина скопирована. Введите скопированное значение в поиске, чтобы ее найти');
+    } else {
+      const href: string = `${window.location.href}?car-id=${car.id}`;
+      this.clipboardService.extCopy(href, 'Ссылка на машину скопирована!');
+    }
+  }
+
+  async onCloseOpenedForeignLink(): Promise<void> {
+    window.location.href = window.location.href.split('?')[0];
+    await this.onChange();
+  }
+
+  async onCommonSearchValue(commonSearchValue: string): Promise<void> {
+    const carBrand: string = commonSearchValue.split(' ')[0];
+    const carModel: string | undefined = !!commonSearchValue.split(' ')[1] ? commonSearchValue.split(' ')[1] : undefined;
+    const carProductionYear: string | undefined = commonSearchValue.split(' ')[2] ? commonSearchValue.split(' ')[2].replace('(', '').replace(')', '') : undefined;
+    const brandColumnQuery: ColumnQuery = {
+      name: 'brand',
+      filterType: FilterType.CONTAINS,
+      filterValue: carBrand
+    } as ColumnQuery;
+    const modelColumnQuery: ColumnQuery = {
+      name: 'model',
+      filterType: FilterType.CONTAINS,
+      filterValue: carModel
+    } as ColumnQuery;
+    const productionYearColumnQuery: ColumnQuery = {
+      name: 'productionYear',
+      filterType: FilterType.EQUALS,
+      filterValue: carProductionYear
+    } as ColumnQuery;
+    this.paginationConfig.columnQueries = [];
+    this.paginationConfig.columnQueries.push(brandColumnQuery);
+    if (!!carModel) this.paginationConfig.columnQueries.push(modelColumnQuery);
+    if (!!carProductionYear) this.paginationConfig.columnQueries.push(productionYearColumnQuery);
+    await this.loadCurrentPage();
   }
 }
 

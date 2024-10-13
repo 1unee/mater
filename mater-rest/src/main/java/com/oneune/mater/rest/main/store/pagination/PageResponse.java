@@ -1,6 +1,6 @@
 package com.oneune.mater.rest.main.store.pagination;
 
-import com.oneune.mater.rest.main.store.dtos.AbstractDto;
+import com.oneune.mater.rest.main.store.dtos.core.AbstractDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

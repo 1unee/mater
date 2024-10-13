@@ -41,6 +41,7 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
     PersonalService personalService;
     RoleService roleService;
     SellerService sellerService;
+    SettingService settingService;
 
     @Transactional
     @Override
@@ -54,7 +55,7 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
     @Transactional
     public void register(DefaultAbsSender bot, Update update, String roleName) {
         User telegramUser = update.getMessage().getFrom();
-        UserDto userDto = registerOrGet(telegramUser, List.of(roleName));
+        UserDto userDto = registerOrGet(telegramUser, update.getMessage().getChatId(), List.of(roleName));
         TelegramBotUtils.informAboutSuccess(bot, update);
     }
 
@@ -62,25 +63,27 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
      * @param additionalRoles roles to add for user (exclude USER role which set by default).
      */
     @Transactional
-    public UserDto registerOrGet(User telegramUser, List<String> additionalRoles) {
+    public UserDto registerOrGet(User telegramUser, Long telegramChatId, List<String> additionalRoles) {
         Optional<UserDto> user = userReader.getByUsername(telegramUser.getUserName());
-        return user.orElseGet(() -> register(telegramUser, additionalRoles));
+        return user.orElseGet(() -> register(telegramUser, telegramChatId, additionalRoles));
     }
 
     @Transactional
-    protected UserDto register(User telegramUser, List<String> additionalRoles) {
+    protected UserDto register(User telegramUser, Long telegramChatId, List<String> additionalRoles) {
         RoleEntity roleEntity = roleService.getEntityByEnum(RoleEnum.USER);
         PersonalEntity personalEntity = personalService.postByTelegramUser(telegramUser,null,null);
         SellerEntity sellerEntity = sellerService.post();
         UserEntity userEntity = buildUserByTelegramUser(
-                telegramUser, null, personalEntity, sellerEntity,
+                telegramUser, telegramChatId, null, personalEntity, sellerEntity,
                 Stream.concat(Stream.of(roleEntity), additionalRoles.stream().map(roleService::getEntityByEnum)).toList()
         );
         userRepository.saveAndFlush(userEntity);
+        settingService.postDefault(userEntity);
         return userReader.getById(userEntity.getId());
     }
 
     private UserEntity buildUserByTelegramUser(User telegramUser,
+                                               Long telegramChatId,
                                                @Nullable @Email String email,
                                                PersonalEntity personalEntity,
                                                SellerEntity sellerEntity,
@@ -95,6 +98,7 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
                         .orElse("user_%s".formatted(telegramUser.getId())))
                 .email(email)
                 .telegramId(telegramUser.getId())
+                .telegramChatId(telegramChatId)
                 .registeredAt(Instant.now())
                 .personal(personalEntity)
                 .seller(sellerEntity)

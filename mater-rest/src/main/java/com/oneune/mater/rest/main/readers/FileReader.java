@@ -4,7 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.oneune.mater.rest.main.contracts.BaseQueryable;
 import com.oneune.mater.rest.main.contracts.Readable;
 import com.oneune.mater.rest.main.repositories.CarFileRepository;
-import com.oneune.mater.rest.main.store.dtos.FileDto;
+import com.oneune.mater.rest.main.store.dtos.files.FileDto;
 import com.oneune.mater.rest.main.store.entities.CarFileEntity;
 import com.oneune.mater.rest.main.store.entities.QCarFileEntity;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;

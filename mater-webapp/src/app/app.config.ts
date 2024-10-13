@@ -6,8 +6,6 @@ import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
 import {provideAnimations} from "@angular/platform-browser/animations";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {serverResponseInterceptor} from "./services/interceptors/server-response.interceptor";
-import {ThemeEnum} from "./store/enums/theme.enum";
-import {GlobalConfig} from "./store/interfaces/global-config.interface";
 import {LoadingReference} from "./store/interfaces/loading-reference.interface";
 import {BehaviorSubject} from "rxjs";
 
@@ -22,26 +20,6 @@ export const appConfig: ApplicationConfig = {
     DynamicDialogConfig
   ]
 };
-
-/**
- * For settings and etc.
- */
-export const GLOBAL_CONFIG: InjectionToken<GlobalConfig> = new InjectionToken('GLOBAL_CONFIG', {
-  providedIn: 'root',
-  factory: (): GlobalConfig => ({
-    configs: {
-      largeFileOffset: 1e6,
-      messageLifeDuration: 5e3 // in ms
-    },
-    settings: {
-      theme: ThemeEnum.SYSTEM,
-      showSortFilterButton: true,
-      showCreateCarButton: true,
-      showWarnPageQueryingMessage: true,
-      autoPlayImages: true
-    }
-  })
-});
 
 /**
  * For using like an injectable bean.

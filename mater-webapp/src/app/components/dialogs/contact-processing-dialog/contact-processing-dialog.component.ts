@@ -100,8 +100,10 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
       await this.sellerService.postContact(this.storageService.user.seller.id, this.contact);
       this.messageService.showSuccess('Контакт успешно внесен в список!');
     }
-    this.contact = new ContactDto();
-    this.form.reset();
+    if (!this.contact.id) {
+      this.contact = new ContactDto();
+      this.form.reset();
+    }
     this.disableCarListRedirectButton = false;
     if (closeDialog) {
       this.dynamicDialogRef.close();

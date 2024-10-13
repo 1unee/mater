@@ -10,8 +10,8 @@
                      type="text"
                      pInputText
                      placeholder="Общий поиск"
-                     [(ngModel)]="elasticSearchValue"
-                     (focusin)="messageService.informAboutDeveloping()"
+                     [(ngModel)]="commonSearchValue"
+                     (ngModelChange)="onCommonSearchChange($event)"
               />
             </p-iconField>
           </div>
@@ -28,7 +28,8 @@
             <p-dropdown styleClass="w-full"
                         appendTo="body"
                         placeholder="Тип фильтрации"
-                        [options]="pageQueryProcessingConfig.filters"
+                        [disabled]="!pageQueryProcessingConfig.selectedField"
+                        [options]="pageQueryProcessingConfig.filters.get(pageQueryProcessingConfig.selectedField!)"
                         [(ngModel)]="pageQueryProcessingConfig.selectedFilter"
                         (ngModelChange)="onFilterChange($event)"
             ></p-dropdown>

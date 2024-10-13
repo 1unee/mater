@@ -4,13 +4,14 @@ import com.oneune.mater.rest.bot.contracts.Command;
 import com.oneune.mater.rest.bot.utils.TelegramBotUtils;
 import com.oneune.mater.rest.common.aop.annotations.LogExecutionDuration;
 import com.oneune.mater.rest.main.contracts.CRUDable;
+import com.oneune.mater.rest.main.events.CarUpdatedEvent;
 import com.oneune.mater.rest.main.readers.CarReader;
 import com.oneune.mater.rest.main.readers.FileReader;
 import com.oneune.mater.rest.main.repositories.CarFileRepository;
 import com.oneune.mater.rest.main.repositories.CarRepository;
 import com.oneune.mater.rest.main.repositories.UserFavoriteCarLinkRepository;
 import com.oneune.mater.rest.main.store.dtos.CarDto;
-import com.oneune.mater.rest.main.store.dtos.FileDto;
+import com.oneune.mater.rest.main.store.dtos.files.FileDto;
 import com.oneune.mater.rest.main.store.entities.*;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -50,6 +52,7 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
     CarFileRepository carFileRepository;
     UserService userService;
     UserFavoriteCarLinkRepository userFavoriteCarLinkRepository;
+    ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void execute(DefaultAbsSender bot, Update update) {
@@ -79,17 +82,17 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
     @Transactional
     @Override
     public CarDto put(Long carId, CarDto carDto) {
-        // fix error on put
-        CarEntity carEntity = carReader.getExcludeFiles(carId);
+        CarEntity carEntity = carReader.getEntityById(carId);
         modelMapper.map(carDto, carEntity);
         carRepository.saveAndFlush(carEntity);
+        applicationEventPublisher.publishEvent(new CarUpdatedEvent(this, carId));
         return carReader.getById(carId);
     }
 
     @Transactional
     @Override
     public CarDto deleteById(Long carId) {
-        CarEntity carEntity = carReader.getExcludeFiles(carId);
+        CarEntity carEntity = carReader.getEntityById(carId);
         carRepository.delete(carEntity);
         carRepository.flush();
         return modelMapper.map(carEntity, CarDto.class);

@@ -1,124 +1,29 @@
 <div>
   <div class="grid m-2">
     <div class="col-12 p-1">
-      <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-9rem text-sm">
-          Тема
-        </p-inputGroupAddon>
-        <p-inputGroupAddon styleClass="w-13rem text-sm">
-          <p-dropdown styleClass="w-full"
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="Выбери тему"
-                      required
-                      [checkmark]="true"
-                      [options]="themeConfig.states"
-                      [ngModel]="themeConfig.selectedValue"
-                      (onChange)="onThemeChange($event)"
-          ></p-dropdown>
-        </p-inputGroupAddon>
-        <p-inputGroupAddon>
-          <i class="pi pi-question-circle text-lg w-1rem"
-             (click)="messageService.showInfo('Настройка, устанавливающая тему приложения')"
-          ></i>
-        </p-inputGroupAddon>
-      </p-inputGroup>
-
-      <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-9rem text-sm">
-          Кнопка сортировки и фильтрации
-        </p-inputGroupAddon>
-        <p-inputGroupAddon styleClass="w-13rem text-sm">
-          <p-dropdown styleClass="w-full"
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="Выбери вариант"
-                      required
-                      [checkmark]="true"
-                      [options]="sortFilterConfig.states"
-                      [ngModel]="sortFilterConfig.selectedValue"
-                      (onChange)="onSortFilterStateChange($event)"
-          ></p-dropdown>
-        </p-inputGroupAddon>
-        <p-inputGroupAddon>
-          <i class="pi pi-question-circle text-lg w-1rem"
-             (click)="messageService.showInfo('Настройка, показывающая кнопку сортировки и фильтрации')"
-          ></i>
-        </p-inputGroupAddon>
-      </p-inputGroup>
-
-      <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-9rem text-sm">
-          Кнопка добавления машин
-        </p-inputGroupAddon>
-        <p-inputGroupAddon styleClass="w-13rem text-sm">
-          <p-dropdown styleClass="w-full"
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="Выбери вариант"
-                      required
-                      [checkmark]="true"
-                      [options]="createCarConfig.states"
-                      [ngModel]="createCarConfig.selectedValue"
-                      (onChange)="onCarAddingStateChange($event)"
-          ></p-dropdown>
-        </p-inputGroupAddon>
-        <p-inputGroupAddon>
-          <i class="pi pi-question-circle text-lg w-1rem"
-             (click)="messageService.showInfo('Настройка, показывающая кнопку добавления машин')"
-          ></i>
-        </p-inputGroupAddon>
-      </p-inputGroup>
-
-      <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-9rem text-sm">
-          Тестовый режим системы фильтрации и сортировки
-        </p-inputGroupAddon>
-        <p-inputGroupAddon styleClass="w-13rem text-sm">
-          <p-dropdown styleClass="w-full"
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="Выбери вариант"
-                      required
-                      [checkmark]="true"
-                      [options]="warnMessageAboutTestStagePageQueryingConfig.states"
-                      [ngModel]="warnMessageAboutTestStagePageQueryingConfig.selectedValue"
-                      (onChange)="onWarnPageQueryingStateChange($event)"
-          ></p-dropdown>
-        </p-inputGroupAddon>
-        <p-inputGroupAddon>
-          <i class="pi pi-question-circle text-lg w-1rem"
-             (click)="messageService.showInfo(
-             'Настройка, показывающая уведомления о тестовом режим системы фильтрации и сортировки'
-             )"
-          ></i>
-        </p-inputGroupAddon>
-      </p-inputGroup>
-
-      <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-9rem text-sm">
-          Автоматическая смена фото
-        </p-inputGroupAddon>
-        <p-inputGroupAddon styleClass="w-13rem text-sm">
-          <p-dropdown styleClass="w-full"
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="Выбери вариант"
-                      required
-                      [checkmark]="true"
-                      [options]="autoPlayImagesConfig.states"
-                      [ngModel]="autoPlayImagesConfig.selectedValue"
-                      (onChange)="onAutoPlayImagesChange($event)"
-          ></p-dropdown>
-        </p-inputGroupAddon>
-        <p-inputGroupAddon>
-          <i class="pi pi-question-circle text-lg w-1rem"
-             (click)="messageService.showInfo(
-             'Настройка, устанавливающая автоматическую смену фото в списке машин'
-             )"
-          ></i>
-        </p-inputGroupAddon>
-      </p-inputGroup>
+      <div *ngFor="let setting of settings.settings">
+        <p-inputGroup>
+          <p-inputGroupAddon styleClass="w-9rem text-sm">
+            {{ setting.title }}
+          </p-inputGroupAddon>
+          <p-inputGroupAddon styleClass="w-13rem text-sm">
+            <p-dropdown styleClass="w-full"
+                        optionLabel="title"
+                        optionValue="value"
+                        placeholder="Выбери опцию"
+                        [checkmark]="true"
+                        [options]="setting.options"
+                        [ngModel]="setting.selectedOption.value"
+                        (onChange)="onSettingChange(setting, $event)"
+            ></p-dropdown>
+          </p-inputGroupAddon>
+          <p-inputGroupAddon>
+            <i class="pi pi-question-circle text-lg w-1rem"
+               (click)="messageService.showInfo(setting.description)"
+            ></i>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
     </div>
   </div>
 </div>

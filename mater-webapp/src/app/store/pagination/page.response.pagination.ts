@@ -1,4 +1,4 @@
-import {AbstractDto} from "../dtos/abstract.dto";
+import {AbstractDto} from "../dtos/core/abstract.dto";
 
 export class PageResponse<D extends AbstractDto> {
   totalElements: number;

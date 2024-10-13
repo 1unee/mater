@@ -1,7 +1,7 @@
 import {UserDto} from "./user.dto";
 import {CarDto} from "./car.dto";
 import {SaleLinkStatusEnum} from "../enums/sale-link-status.enum";
-import {AbstractDto} from "./abstract.dto";
+import {AbstractDto} from "./core/abstract.dto";
 
 export class SaleLinkDto extends AbstractDto {
   buyer: UserDto;
@@ -9,4 +9,5 @@ export class SaleLinkDto extends AbstractDto {
   createdAt: Date;
   status: SaleLinkStatusEnum;
   score: number;
+  note: string;
 }

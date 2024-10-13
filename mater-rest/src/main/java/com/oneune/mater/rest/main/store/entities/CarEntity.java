@@ -73,7 +73,7 @@ public class CarEntity extends AbstractEntity {
     /**
      * Прикрепленные файлы.
      */
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
     @Builder.Default
     @ToString.Exclude
     List<CarFileEntity> files = new ArrayList<>();
@@ -112,4 +112,8 @@ public class CarEntity extends AbstractEntity {
      */
     @Enumerated(EnumType.STRING)
     SteeringWheelEnum steeringWheel;
+
+    public String getTitle() {
+        return "%s %s (%s)".formatted(brand, model, productionYear);
+    }
 }

@@ -14,6 +14,8 @@ import {OneuneMessageService} from "../../../services/utils/oneune-message.servi
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {SellerService} from "../../../services/https/seller.service";
 import {RatingModule} from "primeng/rating";
+import {FloatLabelModule} from "primeng/floatlabel";
+import {InputTextareaModule} from "primeng/inputtextarea";
 
 @Component({
   selector: 'app-sale-link-processing-dialog',
@@ -28,12 +30,16 @@ import {RatingModule} from "primeng/rating";
     LongClickDirective,
     NgIf,
     ReactiveFormsModule,
-    RatingModule
+    RatingModule,
+    FloatLabelModule,
+    InputTextareaModule
   ],
   templateUrl: './sale-link-processing-dialog.component.html',
   styleUrl: './sale-link-processing-dialog.component.scss'
 })
 export class SaleLinkProcessingDialogComponent extends AbstractFormComponent<SaleLinkDto> implements OnInit {
+
+  readonly MAX_LENGTH_SALE_LINK_NOTE: number = 4096;
 
   saleLink: SaleLinkDto;
   saleLinkStatusConfig: { options: { label: string, value: SaleLinkStatusEnum, styleClass: string }[] } = {
@@ -58,6 +64,10 @@ export class SaleLinkProcessingDialogComponent extends AbstractFormComponent<Sal
     this._initializeForm();
   }
 
+  get formSaleLinkNote(): string {
+    return this.form.value.saleLinkNote ?? '';
+  }
+
   private _initializeSaleLink(): void {
     this.saleLink = this.dynamicDialogConfig.data.saleLink;
   }
@@ -65,13 +75,15 @@ export class SaleLinkProcessingDialogComponent extends AbstractFormComponent<Sal
   protected override _initializeForm(): void {
     this.form = this.formBuilder.group({
       saleLinkStatus: [this.saleLink.status, [Validators.required]],
-      saleLinkScore: [this.saleLink.score, [Validators.required]]
+      saleLinkScore: [this.saleLink.score, [Validators.required]],
+      saleLinkNote: [this.saleLink.note, [Validators.maxLength(this.MAX_LENGTH_SALE_LINK_NOTE)]]
     });
   }
 
   protected override _buildModel(): SaleLinkDto {
     this.saleLink.status = this.form.value.saleLinkStatus;
     this.saleLink.score = this.form.value.saleLinkScore;
+    this.saleLink.note = this.form.value.saleLinkNote;
     return this.saleLink;
   }
 

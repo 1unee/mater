@@ -8,9 +8,11 @@ import com.oneune.mater.rest.main.store.entities.CarEntity;
 import com.oneune.mater.rest.main.store.entities.QCarEntity;
 import com.oneune.mater.rest.main.store.entities.QUserFavoriteCarLinkEntity;
 import com.oneune.mater.rest.main.store.entities.UserFavoriteCarLinkEntity;
+import com.oneune.mater.rest.main.store.enums.SaleStatusEnum;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
 import com.oneune.mater.rest.main.store.pagination.PaginationService;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -25,7 +27,9 @@ import java.util.List;
 
 import static com.oneune.mater.rest.main.readers.ContactReader.qContact;
 import static com.oneune.mater.rest.main.readers.FileReader.qCarFile;
+import static com.oneune.mater.rest.main.readers.SellerReader.qSaleLink;
 import static com.oneune.mater.rest.main.readers.SellerReader.qSeller;
+import static com.oneune.mater.rest.main.readers.SettingReader.*;
 import static com.oneune.mater.rest.main.readers.UserReader.qUser;
 
 @Repository
@@ -62,10 +66,6 @@ public class CarReader implements Readable<CarDto, CarEntity>, BaseQueryable<Car
         return writeHeavyQuery(qCar.id.eq(carId)).fetchOne();
     }
 
-    public CarEntity getExcludeFiles(Long carId) {
-        return writeLightQuery(qCar.id.eq(carId)).fetchOne();
-    }
-
     @Override
     public CarDto getById(Long carId) {
         CarEntity carEntity = writeHeavyQuery(qCar.id.eq(carId)).fetchOne();
@@ -74,7 +74,10 @@ public class CarReader implements Readable<CarDto, CarEntity>, BaseQueryable<Car
 
     @Override
     public PageResponse<CarDto> search(PageQuery pageQuery) {
-        return paginationService.process(pageQuery, CarDto.class, writeLightQuery(), "car");
+        JPAQuery<CarEntity> query = writeLightQuery()
+                .leftJoin(qSaleLink).on(qSaleLink.car.id.eq(qCar.id)
+                        .and(qSaleLink.status.eq(SaleStatusEnum.BOUGHT).not())).fetchJoin();
+        return paginationService.process(pageQuery, CarDto.class, query, "car");
     }
 
     public List<CarDto> getAll() {
@@ -94,5 +97,21 @@ public class CarReader implements Readable<CarDto, CarEntity>, BaseQueryable<Car
                 .where(qUserFavoriteCarLink.user.id.eq(userId)
                         .and(qUserFavoriteCarLink.car.id.eq(carId)))
                 .fetchOne();
+    }
+
+    public List<Tuple> getFavoriteCarsForUpdateEvent(Long carId) {
+        JPAQuery<Tuple> query = queryFactory.select(
+                        qUserSettings.user,
+                        qUserFavoriteCarLink.car,
+                        qUserSettingLink.selectedOption
+                ).from(qUserSettings)
+                .join(qUser).on(qUser.id.eq(qUserSettings.user.id))
+                .join(qUserSettingLink).on(qUserSettingLink.userSettings.id.eq(qUserSettings.id))
+                .join(qSetting).on(qSetting.id.eq(qUserSettingLink.setting.id)
+                        .and(qSetting.code.eq(6)))
+                .join(qOption).on(qOption.id.eq(qUserSettingLink.selectedOption.id))
+                .join(qUserFavoriteCarLink).on(qUserFavoriteCarLink.user.id.eq(qUserSettings.user.id)
+                        .and(qUserFavoriteCarLink.car.id.eq(carId)));
+        return query.fetch();
     }
 }

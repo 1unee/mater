@@ -1,5 +1,6 @@
 package com.oneune.mater.rest.main.store.dtos;
 
+import com.oneune.mater.rest.main.store.dtos.core.AbstractDto;
 import com.oneune.mater.rest.main.store.enums.SaleStatusEnum;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,4 +25,5 @@ public class SaleLinkDto extends AbstractDto {
     Instant createdAt;
     SaleStatusEnum status;
     Float score;
+    String note;
 }

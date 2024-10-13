@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS sale_link (
     created_at timestamptz(6) DEFAULT NOW(),
     status VARCHAR(100) NOT NULL,
     score DECIMAL(4, 3) DEFAULT 5,
+    note VARCHAR(4096),
     PRIMARY KEY (id),
     CONSTRAINT fk_buyer_id
         FOREIGN KEY (buyer_id)

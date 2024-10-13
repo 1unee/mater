@@ -4,7 +4,7 @@ import com.oneune.mater.rest.main.contracts.CRUDable;
 import com.oneune.mater.rest.main.readers.CarReader;
 import com.oneune.mater.rest.main.services.CarService;
 import com.oneune.mater.rest.main.store.dtos.CarDto;
-import com.oneune.mater.rest.main.store.dtos.FileDto;
+import com.oneune.mater.rest.main.store.dtos.files.FileDto;
 import com.oneune.mater.rest.main.store.entities.CarEntity;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;

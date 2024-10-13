@@ -1,17 +1,21 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Button} from "primeng/button";
 import {InputGroupAddonModule} from "primeng/inputgroupaddon";
 import {InputGroupModule} from "primeng/inputgroup";
 import {InputTextModule} from "primeng/inputtext";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {SelectButtonChangeEvent, SelectButtonModule} from "primeng/selectbutton";
+import {SelectButtonModule} from "primeng/selectbutton";
 import {ThemeService} from "../../../services/utils/theme.service";
-import {ThemeEnum, ThemeTitle} from "../../../store/enums/theme.enum";
-import {GLOBAL_CONFIG} from "../../../app.config";
-import {GlobalConfig} from "../../../store/interfaces/global-config.interface";
-import {DropdownModule} from "primeng/dropdown";
-import {DoubleOptionEnum} from "../../../store/enums/double-option.enum";
+import {DropdownChangeEvent, DropdownModule} from "primeng/dropdown";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
+import {StorageService} from "../../../services/utils/storage.service";
+import {ConfirmationService} from "primeng/api";
+import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
+import {SettingService} from "../../../services/https/setting.service";
+import {UserSettingsDto} from "../../../store/dtos/settings/userSettingsDto";
+import {NgForOf} from "@angular/common";
+import {SettingDto} from "../../../store/dtos/settings/setting.dto";
+import {ThemeEnum} from "../../../store/enums/theme.enum";
 
 @Component({
   selector: 'app-settings-page',
@@ -24,88 +28,64 @@ import {OneuneMessageService} from "../../../services/utils/oneune-message.servi
     ReactiveFormsModule,
     SelectButtonModule,
     FormsModule,
-    DropdownModule
+    DropdownModule,
+    NgForOf
   ],
   templateUrl: './settings-page.component.html',
   styleUrl: './settings-page.component.scss'
 })
-export class SettingsPageComponent implements OnInit {
+export class SettingsPageComponent implements OnInit, OnDestroy {
 
-  themeConfig: any = {
-    states: [
-      { label: ThemeTitle.light, value: ThemeEnum.LIGHT, styleClass: "p-1 p-button-secondary"},
-      { label: ThemeTitle.system, value: ThemeEnum.SYSTEM, styleClass: "p-1 p-button-secondary"},
-      { label: ThemeTitle.dark, value: ThemeEnum.DARK, styleClass: "p-1 p-button-secondary"}
-    ],
-    selectedValue: ThemeTitle.system
-  };
+  settings: UserSettingsDto;
 
-  sortFilterConfig: any = {
-    states: [
-      { label: DoubleOptionEnum.YES, value: true, styleClass: "p-1 p-button-secondary"},
-      { label: DoubleOptionEnum.NO, value: false, styleClass: "p-1 p-button-secondary"}
-    ],
-    selectedValue: true
-  };
-
-  createCarConfig: any = {
-    states: [
-      { label: DoubleOptionEnum.YES, value: true, styleClass: "p-1 p-button-secondary"},
-      { label: DoubleOptionEnum.NO, value: false, styleClass: "p-1 p-button-secondary"}
-    ],
-    selectedValue: true
-  };
-
-  warnMessageAboutTestStagePageQueryingConfig: any = {
-    states: [
-      { label: DoubleOptionEnum.YES, value: true, styleClass: "p-1 p-button-secondary"},
-      { label: DoubleOptionEnum.NO, value: false, styleClass: "p-1 p-button-secondary"}
-    ],
-    selectedValue: true
+  constructor(private themeService: ThemeService,
+              public messageService: OneuneMessageService,
+              private storageService: StorageService,
+              private confirmationService: ConfirmationService,
+              private routerService: OneuneRouterService,
+              private settingService: SettingService) {
   }
 
-  autoPlayImagesConfig: any = {
-    states: [
-      { label: DoubleOptionEnum.YES, value: true, styleClass: "p-1 p-button-secondary"},
-      { label: DoubleOptionEnum.NO, value: false, styleClass: "p-1 p-button-secondary"}
-    ],
-    selectedValue: true
-  };
-
-  constructor(@Inject(GLOBAL_CONFIG) private globalConfig: GlobalConfig,
-              private themeService: ThemeService,
-              public messageService: OneuneMessageService) {
+  async ngOnInit(): Promise<void> {
+    await this._initializeSettings();
   }
 
-  ngOnInit(): void {
-    this.themeConfig.selectedValue = this.globalConfig.settings.theme;
-    this.sortFilterConfig.selectedValue = this.globalConfig.settings.showSortFilterButton;
-    this.createCarConfig.selectedValue = this.globalConfig.settings.showCreateCarButton;
-    this.warnMessageAboutTestStagePageQueryingConfig.selectedValue = this.globalConfig.settings.showWarnPageQueryingMessage;
-    this.autoPlayImagesConfig.selectedValue = this.globalConfig.settings.autoPlayImages;
+  async ngOnDestroy(): Promise<void> {
+    this.settingService.put(this.settings).then((): void => this.messageService.showInfo('Настройки обновлены'));
+    this.storageService.setUserSettings(this.settings);
   }
 
-  onThemeChange(event: any): void {
-    this.themeService.setThemeMode(event.value);
+  private async _initializeSettings(): Promise<void> {
+    this.settings = await this.settingService.getByUserId(this.storageService.user.id);
+    this.settings.settings = this.settings.settings.sort((a, b): number => a.id - b.id);
   }
 
-  onSortFilterStateChange(event: any): void {
-    this.sortFilterConfig.selectedValue = event.value;
-    this.globalConfig.settings.showSortFilterButton = event.value;
+  private _confirmRedirecting(): void {
+    this.confirmationService.confirm({
+      message: 'К твоему аккаунту не привязана почта. Открыть твой профиль?',
+      header: 'Информация',
+      icon: 'pi pi-question-circle',
+      acceptLabel: 'Да',
+      acceptButtonStyleClass: 'p-1',
+      accept: async () => this.routerService.relativeRedirect('/profile', {'target-profile-tab': 'user-description'}),
+      rejectLabel: 'Нет',
+      rejectButtonStyleClass: 'p-1',
+      reject: () => this.messageService.showWarning('Тогда уведомления будут приходить только в телеграмм-чате')
+    });
   }
 
-  onCarAddingStateChange(event: any): void {
-    this.createCarConfig.selectedValue = event.value;
-    this.globalConfig.settings.showCreateCarButton = event.value;
+  onSettingChange(setting: SettingDto, event: DropdownChangeEvent): void {
+    this._additionActionOnSettingChange(setting, event.value);
+    setting.selectedOption = setting.options.find(option => option.value === event.value)!;
   }
 
-  onWarnPageQueryingStateChange(event: any): void {
-    this.warnMessageAboutTestStagePageQueryingConfig.selectedValue = event.value;
-    this.globalConfig.settings.showWarnPageQueryingMessage = event.value;
-  }
-
-  onAutoPlayImagesChange(event: any): void {
-    this.autoPlayImagesConfig.selectedValue = event.value;
-    this.globalConfig.settings.autoPlayImages = event.value;
+  private _additionActionOnSettingChange(setting: SettingDto, newValue: string): void {
+    if (setting.code === 6) {
+      if (!this.storageService.user.isEmailSet && newValue !== 'TELEGRAM_CHAT') {
+        this._confirmRedirecting();
+      }
+    } else if (setting.title.startsWith('Тема')) {
+      this.themeService.setThemeMode(newValue as ThemeEnum);
+    }
   }
 }

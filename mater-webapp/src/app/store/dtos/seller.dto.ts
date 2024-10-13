@@ -1,4 +1,4 @@
-import {AbstractDto} from "./abstract.dto";
+import {AbstractDto} from "./core/abstract.dto";
 import {CarDto} from "./car.dto";
 import {ContactDto} from "./contact.dto";
 

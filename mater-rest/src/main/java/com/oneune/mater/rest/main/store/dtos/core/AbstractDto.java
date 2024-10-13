@@ -1,4 +1,4 @@
-package com.oneune.mater.rest.main.store.dtos;
+package com.oneune.mater.rest.main.store.dtos.core;
 
 import com.oneune.mater.rest.main.contracts.Identifiable;
 import lombok.*;

@@ -1,20 +1,18 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {GalleriaModule} from "primeng/galleria";
 import {CarouselModule} from "primeng/carousel";
 import {ImageModule} from "primeng/image";
 import {TagModule} from "primeng/tag";
-import {GLOBAL_CONFIG} from "../../../app.config";
-import {GlobalConfig} from "../../../store/interfaces/global-config.interface";
 import {ActivatedRoute} from "@angular/router";
 import {CarService} from "../../../services/https/car.service";
 import {CarDto} from "../../../store/dtos/car.dto";
 import {FileDto} from "../../../store/dtos/file.dto";
 import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
-import {environment} from "../../../../environments/environment";
 import {Button} from "primeng/button";
 import {LongClickDirective} from "../../../services/directives/long-click.directive";
 import {SelectButtonModule} from "primeng/selectbutton";
+import {StorageService} from "../../../services/utils/storage.service";
 
 @Component({
   selector: 'app-galleria-page',
@@ -33,13 +31,15 @@ import {SelectButtonModule} from "primeng/selectbutton";
 })
 export class GalleriaPageComponent implements OnInit {
 
+  protected readonly JSON = JSON;
+
   car: CarDto;
 
-  constructor(@Inject(GLOBAL_CONFIG) public globalConfig: GlobalConfig,
-              private activatedRoute: ActivatedRoute,
+  constructor(private activatedRoute: ActivatedRoute,
               private carService: CarService,
               private routerService: OneuneRouterService,
-              public messageService: OneuneMessageService) {
+              public messageService: OneuneMessageService,
+              public storageService: StorageService) {
   }
 
   async ngOnInit(): Promise<void> {

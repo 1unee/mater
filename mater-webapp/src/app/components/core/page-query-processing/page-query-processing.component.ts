@@ -28,9 +28,26 @@ import {LongClickDirective} from "../../../services/directives/long-click.direct
 })
 export class PageQueryProcessingComponent {
 
-  @Output() onApply: EventEmitter<ColumnQuery[]> = new EventEmitter<ColumnQuery[]>();
+  readonly STRING_FILTER_TYPE_KEY = 'string';
+  readonly NUMBER_FILTER_TYPE_KEY = 'number';
 
-  elasticSearchValue: string;
+  @Output() onApply: EventEmitter<ColumnQuery[]> = new EventEmitter<ColumnQuery[]>();
+  @Output() onCommonSearchValue: EventEmitter<string> = new EventEmitter<string>();
+
+  commonSearchValue: string;
+
+  filterTypeMap: Map<string, Array<any>> = new Map([
+    [this.STRING_FILTER_TYPE_KEY, [
+      { label: FilterTypeTitle.STARTS_WITH, value: FilterType.STARTS_WITH },
+      { label: FilterTypeTitle.ENDS_WITH, value: FilterType.ENDS_WITH },
+      { label: FilterTypeTitle.CONTAINS, value: FilterType.CONTAINS }
+    ]],
+    [this.NUMBER_FILTER_TYPE_KEY, [
+      { label: FilterTypeTitle.EQUALS, value: FilterType.EQUALS },
+      { label: FilterTypeTitle.GREATER_THAN, value: FilterType.GREATER_THAN },
+      { label: FilterTypeTitle.LESS_THAN, value: FilterType.LESS_THAN },
+    ]]
+  ]);
 
   pageQueryProcessingConfig = {
     fields: [
@@ -43,14 +60,15 @@ export class PageQueryProcessingComponent {
       { label: 'Количество владельцев', value: 'ownersAmount' }
     ],
     selectedField: null,
-    filters: [
-      { label: FilterTypeTitle.EQUALS, value: FilterType.EQUALS },
-      { label: FilterTypeTitle.GREATER_THAN, value: FilterType.GREATER_THAN },
-      { label: FilterTypeTitle.LESS_THAN, value: FilterType.LESS_THAN },
-      { label: FilterTypeTitle.STARTS_WITH, value: FilterType.STARTS_WITH },
-      { label: FilterTypeTitle.ENDS_WITH, value: FilterType.ENDS_WITH },
-      { label: FilterTypeTitle.CONTAINS, value: FilterType.CONTAINS },
-    ],
+    filters: new Map([
+      ['brand', this.filterTypeMap.get(this.STRING_FILTER_TYPE_KEY)],
+      ['model', this.filterTypeMap.get(this.STRING_FILTER_TYPE_KEY)],
+      ['productionYear', this.filterTypeMap.get(this.NUMBER_FILTER_TYPE_KEY)],
+      ['price', this.filterTypeMap.get(this.NUMBER_FILTER_TYPE_KEY)],
+      ['mileage', this.filterTypeMap.get(this.NUMBER_FILTER_TYPE_KEY)],
+      ['VIN', this.filterTypeMap.get(this.STRING_FILTER_TYPE_KEY)],
+      ['ownersAmount', this.filterTypeMap.get(this.NUMBER_FILTER_TYPE_KEY)],
+    ]),
     selectedFilter: null,
     filterValue: null,
     sorts: [
@@ -116,5 +134,9 @@ export class PageQueryProcessingComponent {
     this.pageQueryProcessingConfig.selectedSort = null;
     this.pageQueryProcessingConfig.columnQueries = [];
     this.onApply.emit([]);
+  }
+
+  onCommonSearchChange(commonSearchValue: string): void {
+    this.onCommonSearchValue.emit(commonSearchValue);
   }
 }

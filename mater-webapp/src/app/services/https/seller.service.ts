@@ -4,7 +4,6 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {lastValueFrom} from "rxjs";
 import {SellerDto} from "../../store/dtos/seller.dto";
 import {ContactDto} from "../../store/dtos/contact.dto";
-import {SaleLinkStatusEnum} from "../../store/enums/sale-link-status.enum";
 import {SaleLinkDto} from "../../store/dtos/sale-link.dto";
 
 @Injectable({

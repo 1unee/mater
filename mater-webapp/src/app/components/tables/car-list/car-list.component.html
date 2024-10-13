@@ -12,8 +12,10 @@
         <div class="flex align-items-center justify-content-center">
           <!-- center content -->
         </div>
-        <div class="flex align-items-center justify-content-center gap-1">
-          <p-button *ngIf="globalConfig.settings.showCreateCarButton"
+        <div *ngIf="!foreignLink.isForeignLink; else foreignLinkTemplate"
+             class="flex align-items-center justify-content-center gap-1"
+        >
+          <p-button *ngIf="JSON.parse(storageService.getSettingByCode(3).selectedOption.value)"
                     styleClass="text-center text-sm p-2 w-12"
                     icon="pi pi-plus"
                     severity="secondary"
@@ -30,7 +32,7 @@
                     (click)="onPageReload()"
                     (longClick)="messageService.showInfo('Перезагружает список машин, синхронизируя информацию с сервером')"
           ></p-button>
-          <p-button *ngIf="!environment.production && globalConfig.settings.showSortFilterButton"
+          <p-button *ngIf="!environment.production && JSON.parse(storageService.getSettingByCode(2).selectedOption.value)"
                     styleClass="text-center text-sm p-2 w-12"
                     icon="pi pi-list-check"
                     severity="secondary"
@@ -57,6 +59,17 @@
 <!--                      (longClick)="messageService.showInfo('Показывает либо только твои машины, либо вообще все')"-->
 <!--          ></p-dropdown>-->
         </div>
+
+        <ng-template #foreignLinkTemplate>
+          <p-button styleClass="text-center text-sm p-2 w-12"
+                    icon="pi pi-times"
+                    severity="secondary"
+                    appLongClick
+                    [outlined]="true"
+                    (click)="onCloseOpenedForeignLink()"
+                    (longClick)="messageService.showInfo('Закрывает открытую ссылку и открывает общий список машин')"
+          ></p-button>
+        </ng-template>
       </div>
     </div>
 
@@ -66,7 +79,9 @@
 
         </div>
         <div class="flex align-items-center justify-content-center">
-          <app-page-query-processing (onApply)="applyPageQuery($event)"></app-page-query-processing>
+          <app-page-query-processing (onApply)="applyPageQuery($event)"
+                                     (onCommonSearchValue)="onCommonSearchValue($event)"
+          ></app-page-query-processing>
         </div>
         <div class="flex align-items-center justify-content-center gap-1">
 
@@ -91,7 +106,7 @@
                          severity="secondary"
                          icon="pi pi-copy"
                          [value]="_car.brand + ' ' + _car.model + ' (' + _car.productionYear + ')'"
-                         (click)="clipboardService.extCopy(_car.brand + ' ' + _car.model + ' (' + _car.productionYear + ')', 'Модель машины скопирована!')"
+                         (click)="onCarForeignLinkCopy(_car)"
                   />
                 </div>
                 <div class="flex align-items-center justify-content-center ml-2 mt-2 mr-2">
@@ -130,7 +145,7 @@
                                         [numVisible]="1"
                                         [numScroll]="1"
                                         [showIndicators]="false"
-                                        [autoplayInterval]="globalConfig.settings.autoPlayImages ? 5e3 : 1e9"
+                                        [autoplayInterval]="JSON.parse(storageService.getSettingByCode(5).selectedOption.value) ? 5e3 : 1e9"
                                         [circular]="true"
                             >
                               <ng-template pTemplate="item" let-photo>
@@ -267,7 +282,8 @@
             <!-- car item footer -->
             <div class="col-12 p-0">
               <div class="flex flex-wrap align-items-center justify-content-center">
-                <p-button styleClass="text-center text-sm p-2 m-1"
+                <p-button *ngIf="selectButtonStatesConfig.selectedValue !== CarCategorySortEnum.MINE"
+                          styleClass="text-center text-sm p-2 m-1"
                           icon="pi pi-envelope"
                           severity="secondary"
                           label="Контакты"
@@ -402,7 +418,7 @@
             </div>
 
             <!-- edit buttons -->
-            <div *ngIf="selectButtonStatesConfig.selectedValue === CarCategorySortEnum.MINE"
+            <div *ngIf="!(foreignLink?.isForeignLink) && selectButtonStatesConfig.selectedValue === CarCategorySortEnum.MINE"
                  class="col-12 pb-1 mb-1"
             >
               <div class="flex flex-wrap align-items-center justify-content-center gap-1">

@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-@Component
+@Component("materTelegramBot")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Log4j2
 public class MaterTelegramBot extends AbstractLongPollingTelegramBot {

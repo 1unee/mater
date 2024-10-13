@@ -9,14 +9,14 @@ import {Ripple} from "primeng/ripple";
 import {TooltipModule} from "primeng/tooltip";
 import {GeneralToolbarComponent} from "./components/core/general-toolbar/general-toolbar.component";
 import {BlockUIModule} from "primeng/blockui";
-import {GLOBAL_CONFIG, LOADING} from "./app.config";
+import {LOADING} from "./app.config";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {StyleClassModule} from "primeng/styleclass";
 import {LoadingReference} from "./store/interfaces/loading-reference.interface";
-import {GlobalConfig} from "./store/interfaces/global-config.interface";
 import {LoaderComponent} from "./components/core/loader/loader.component";
 import {ThemeService} from "./services/utils/theme.service";
 import {LongClickDirective} from "./services/directives/long-click.directive";
+import {StorageService} from "./services/utils/storage.service";
 
 @Component({
   selector: 'app-root',
@@ -45,8 +45,8 @@ export class AppComponent implements OnInit {
   constructor(public messageService: OneuneMessageService,
               @Inject(LOADING) public loading: LoadingReference,
               private primengConfig: PrimeNGConfig,
-              @Inject(GLOBAL_CONFIG) private globalConfig: GlobalConfig,
-              private themeService: ThemeService) {
+              private themeService: ThemeService,
+              private storageService: StorageService) {
     this._subscribeOnCreatingMessages();
   }
 
@@ -88,7 +88,7 @@ export class AppComponent implements OnInit {
     const maxLifeDuration: number = Math.max(...lifeDurations);
     setTimeout((): void => {
       this.clearMessages();
-    }, maxLifeDuration + this.globalConfig.configs.messageLifeDuration * 2.5);
+    }, Number(this.storageService.getConfigByCode(2).value) * 2.5);
   }
 
   clearMessages(): void {

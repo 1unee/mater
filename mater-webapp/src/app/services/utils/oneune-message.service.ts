@@ -1,18 +1,16 @@
 import {Inject, Injectable} from '@angular/core';
 import {Message, MessageService} from "primeng/api";
 import {Observable} from "rxjs";
-import {GLOBAL_CONFIG} from "../../app.config";
-import {GlobalConfig} from "../../store/interfaces/global-config.interface";
 import {MessageTypeEnum} from "../../store/enums/message-type.enum";
 import {MessagePositionEnum} from "../../store/enums/message-position.enum";
+import {StorageService} from "./storage.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class OneuneMessageService {
 
-  constructor(private messageService: MessageService,
-              @Inject(GLOBAL_CONFIG) private globalConfig: GlobalConfig) {
+  constructor(private messageService: MessageService) {
   }
 
   get creatingObserver(): Observable<Message | Message[]> {
@@ -61,7 +59,7 @@ export class OneuneMessageService {
       summary: `${this._getLocalizedSummary(severity)}`,
       detail: detail.toString(),
       closable: true,
-      life: this.globalConfig.configs.messageLifeDuration,
+      life: 5e3, // fix circular dependency
       sticky: sticky
     });
   }

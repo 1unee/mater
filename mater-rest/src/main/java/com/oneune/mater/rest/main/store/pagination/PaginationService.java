@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import com.google.gson.reflect.TypeToken;
 import com.oneune.mater.rest.main.configs.properties.PaginationProperties;
 import com.oneune.mater.rest.main.mappers.oneune.QueryDslModelMapperFactory;
-import com.oneune.mater.rest.main.store.dtos.AbstractDto;
+import com.oneune.mater.rest.main.store.dtos.core.AbstractDto;
 import com.oneune.mater.rest.main.store.entities.core.AbstractEntity;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
@@ -16,6 +16,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -113,19 +115,59 @@ public class PaginationService<D extends AbstractDto, E extends AbstractEntity> 
                         ColumnQuery column) {
         Object columnFilterValue = column.getFilterValue();
 
-        if (columnFilterValue instanceof CharSequence) {
-            filterCharSequence(predicate, entityPath, column, (CharSequence) columnFilterValue);
-        } else if (columnFilterValue instanceof Number) {
-            filterNumber(predicate, entityPath, column, (Number) columnFilterValue);
-        } else if (columnFilterValue instanceof Temporal) {
-            filterTemporal(predicate, entityPath, column, (Temporal) columnFilterValue);
-        } else if (columnFilterValue instanceof Boolean) {
-            filterBoolean(predicate, entityPath, column, (Boolean) columnFilterValue);
-        } else if (columnFilterValue instanceof Date) {
-            filterData(predicate, entityPath, column, (Date) columnFilterValue);
-        } else {
-            throw new IllegalArgumentException("Unsupported type %s".formatted(columnFilterValue.getClass()));
+        try {
+            // Если значение является строкой, попробуем преобразовать его в конкретные типы
+            if (columnFilterValue instanceof String) {
+                String stringValue = (String) columnFilterValue;
+
+                // Попытка преобразовать строку в число (Integer, Long, Double и т.д.)
+                try {
+                    columnFilterValue = Integer.parseInt(stringValue);
+                    filterNumber(predicate, entityPath, column, (Number) columnFilterValue);
+                } catch (NumberFormatException e1) {
+                    try {
+                        columnFilterValue = Long.parseLong(stringValue);
+                        filterNumber(predicate, entityPath, column, (Number) columnFilterValue);
+                    } catch (NumberFormatException e2) {
+                        try {
+                            columnFilterValue = Double.parseDouble(stringValue);
+                            filterNumber(predicate, entityPath, column, (Number) columnFilterValue);
+                        } catch (NumberFormatException e3) {
+                            // Если не удалось преобразовать в число, пробуем другие типы
+                            // Попробуем преобразовать строку в Boolean
+                            if (stringValue.equalsIgnoreCase("true") || stringValue.equalsIgnoreCase("false")) {
+                                columnFilterValue = Boolean.parseBoolean(stringValue);
+                                filterBoolean(predicate, entityPath, column, (Boolean) columnFilterValue);
+                            } else {
+                                // Если не число и не boolean, проверим, является ли строка датой
+                                try {
+                                    Date dateValue = new SimpleDateFormat("yyyy-MM-dd").parse(stringValue);
+                                    filterData(predicate, entityPath, column, dateValue);
+                                } catch (ParseException e4) {
+                                    // Если не дата, считаем это CharSequence
+                                    filterCharSequence(predicate, entityPath, column, stringValue);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (columnFilterValue instanceof Number) {
+                filterNumber(predicate, entityPath, column, (Number) columnFilterValue);
+            } else if (columnFilterValue instanceof Temporal) {
+                filterTemporal(predicate, entityPath, column, (Temporal) columnFilterValue);
+            } else if (columnFilterValue instanceof Boolean) {
+                filterBoolean(predicate, entityPath, column, (Boolean) columnFilterValue);
+            } else if (columnFilterValue instanceof Date) {
+                filterData(predicate, entityPath, column, (Date) columnFilterValue);
+            } else if (columnFilterValue instanceof CharSequence) {
+                filterCharSequence(predicate, entityPath, column, (CharSequence) columnFilterValue);
+            } else {
+                throw new IllegalArgumentException("Unsupported type %s".formatted(columnFilterValue.getClass()));
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error processing filter for value %s".formatted(columnFilterValue), e);
         }
+
     }
 
     private void filterCharSequence(BooleanBuilder predicate,
@@ -159,7 +201,6 @@ public class PaginationService<D extends AbstractDto, E extends AbstractEntity> 
                               ColumnQuery column,
                               Number columnFilterValue) {
         if (columnFilterValue instanceof Integer) {
-            // todo: поправить при сортировке
             NumberPath<Integer> integerNumberPath = entityPath.getNumber(column.getName(), Integer.class);
             Function<Integer, BooleanExpression> integerFilteringMethod = getNumberFilteringMethod(
                     column.getFilterType(), integerNumberPath

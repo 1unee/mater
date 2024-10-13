@@ -35,7 +35,7 @@
                   [numVisible]="1"
                   [numScroll]="1"
                   [showIndicators]="true"
-                  [autoplayInterval]="globalConfig.settings.autoPlayImages ? 5e3 : 1e9"
+                  [autoplayInterval]="JSON.parse(storageService.getSettingByCode(5).selectedOption.value) ? 5e3 : 1e9"
                   [circular]="true"
       >
         <ng-template pTemplate="item" let-image>

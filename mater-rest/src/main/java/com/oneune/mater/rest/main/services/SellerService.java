@@ -113,6 +113,7 @@ public class SellerService implements CRUDable<SellerDto, SellerEntity> {
         SaleLinkEntity saleLinkEntity = sellerReader.getSaleLinkById(saleLinkId);
         saleLinkEntity.setStatus(saleLinkDto.getStatus());
         saleLinkEntity.setScore(saleLinkDto.getScore());
+        saleLinkEntity.setNote(saleLinkDto.getNote());
         saleLinkRepository.save(saleLinkEntity);
     }
 

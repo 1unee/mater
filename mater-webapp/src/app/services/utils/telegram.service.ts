@@ -79,6 +79,10 @@ export class TelegramService {
     }
   }
 
+  get telegramChatId(): number | undefined {
+    return environment.featureFlags.mockTelegramUser ? 444 : this._tgWebApp.initDataUnsafe.chat?.id;
+  }
+
   get loadedUser(): boolean {
     return !!this.user;
   }
@@ -94,7 +98,7 @@ export class TelegramService {
   private async _authenticateUser(): Promise<void> {
     if (this.loadedUser) {
       try {
-        const user: UserDto = await this.userService.registerOrGet(this.user!);
+        const user: UserDto = await this.userService.registerOrGet(this.user!, this.telegramChatId!);
         this.storageService.authenticateUser(user);
       } catch (e) {
         this.messageService.showError('Произошла ошибка при авторизации/регистрации.');

@@ -1,5 +1,6 @@
 package com.oneune.mater.rest.main.store.dtos;
 
+import com.oneune.mater.rest.main.store.dtos.core.AbstractDto;
 import com.oneune.mater.rest.main.store.enums.RoleEnum;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

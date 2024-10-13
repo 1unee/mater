@@ -29,6 +29,7 @@ public class UserEntity extends AbstractEntity {
     boolean isEmailSet;
 
     Long telegramId;
+    Long telegramChatId;
     Instant registeredAt;
 
     @OneToOne(cascade = CascadeType.ALL)

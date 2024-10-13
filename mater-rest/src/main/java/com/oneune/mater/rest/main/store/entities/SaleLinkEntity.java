@@ -9,6 +9,9 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
 
+/**
+ * @see com.oneune.mater.rest.main.store.dtos.SaleLinkDto
+ */
 @Entity
 @Table(name = "sale_link")
 @SequenceGenerator(sequenceName = "sale_link_id_seq", name = "id_seq", allocationSize = 1)
@@ -35,4 +38,6 @@ public class SaleLinkEntity extends AbstractEntity {
 
     @Builder.Default
     Float score = 5.0F;
+
+    String note;
 }

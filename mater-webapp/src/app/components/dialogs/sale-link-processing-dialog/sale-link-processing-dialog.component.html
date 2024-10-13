@@ -49,6 +49,35 @@
       </div>
     </div>
 
+    <div>
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          {{ 'Комментарий' + (formSaleLinkNote.length > 0 ? ' (' + formSaleLinkNote.length + '/4096)' : '') }}
+        </p-inputGroupAddon>
+        <p-inputGroupAddon styleClass="w-12rem text-sm">
+          <textarea id="float-input"
+                    class="w-full"
+                    formControlName="saleLinkNote"
+                    rows="3"
+                    cols="25"
+                    pInputTextarea
+                    placeholder="Тут можно оставить комментарий"
+                    [autoResize]="true"
+          ></textarea>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <div *ngIf="form.get('saleLinkNote')?.invalid && form.get('saleLinkNote')?.touched"
+           class="p-error flex flex-wrap align-items-center justify-content-center m-2"
+      >
+        <div class="text-center">
+          <small *ngIf="form.get('saleLinkNote')?.errors?.['maxlength']">
+            Максимальная длина комментария {{ MAX_LENGTH_SALE_LINK_NOTE }} символов
+          </small>
+        </div>
+      </div>
+    </div>
+
     <div class="p-0 mt-3 mb-0">
       <div class="flex align-items-center justify-content-center gap-3">
         <p-button styleClass='text-center p-1'

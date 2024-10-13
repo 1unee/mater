@@ -129,6 +129,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     seller_id int8,
     registered_at timestamptz(6),
     telegram_id int8,
+    telegram_chat_id int8,
     PRIMARY KEY (id),
     CONSTRAINT fk_from_user_to_personal_id
         FOREIGN KEY (personal_id)

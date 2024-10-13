@@ -12,6 +12,8 @@ import {DialogService} from "primeng/dynamicdialog";
 import {LoaderComponent} from "../../core/loader/loader.component";
 import {RoleDto} from "../../../store/dtos/role.dto";
 import {RoleEnum} from "../../../store/enums/role.enum";
+import {SettingService} from "../../../services/https/setting.service";
+import {UserSettingsDto} from "../../../store/dtos/settings/userSettingsDto";
 
 @Component({
   selector: 'app-support-page',
@@ -33,11 +35,14 @@ export class SupportPageComponent implements OnInit {
 
   constructor(private telegramService: TelegramService,
               private dialogService: DialogService,
-              private storageService: StorageService) {
+              private storageService: StorageService,
+              private settingService: SettingService) {
   }
 
   async ngOnInit(): Promise<void> {
     await this.telegramService.tune();
+    const userSettings: UserSettingsDto = await this.settingService.getByUserId(this.storageService.user.id);
+    this.storageService.setUserSettings(userSettings);
   }
 
   get isSupport(): boolean {

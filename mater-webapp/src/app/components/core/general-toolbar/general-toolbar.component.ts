@@ -54,7 +54,7 @@ export class GeneralToolbarComponent implements OnInit {
         icon: 'pi pi-star',
         items: [
           {
-            label: 'Уведомления',
+            label: 'Проверки по ВИН-коду',
             icon: 'pi pi-list-check',
             command: () => this.messageService.informAboutDeveloping()
           }
@@ -95,10 +95,6 @@ export class GeneralToolbarComponent implements OnInit {
 
   private _openCarsMarketPage(): void {
     this.routerService.relativeRedirect('/cars/market');
-  }
-
-  private _openActionsPage(): void {
-    this.routerService.relativeRedirect('/actions');
   }
 
   private _openSettingsPage(): void {

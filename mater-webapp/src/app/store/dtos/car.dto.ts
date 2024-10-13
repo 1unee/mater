@@ -1,4 +1,4 @@
-import {AbstractDto} from "./abstract.dto";
+import {AbstractDto} from "./core/abstract.dto";
 import {FileDto} from "./file.dto";
 import {GearboxEnum} from "../enums/gearbox.enum";
 import {CarStateEnum} from "../enums/car-state.enum";

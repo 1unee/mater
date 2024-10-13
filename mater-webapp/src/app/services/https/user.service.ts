@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {UserDto} from "../../store/dtos/user.dto";
 import {AbstractHttpService} from "../contracts/abstract-http.service";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {lastValueFrom} from "rxjs";
 import {VariableFieldEnum} from "../../store/enums/variable-field.enum";
 
@@ -16,9 +16,10 @@ export class UserService extends AbstractHttpService{
     super(http);
   }
 
-  async registerOrGet(telegramUser: WebAppUser): Promise<UserDto> {
+  async registerOrGet(telegramUser: WebAppUser, telegramChatId: number): Promise<UserDto> {
+    const params: HttpParams = new HttpParams().append('telegram-chat-id', telegramChatId);
     return lastValueFrom(
-      this.http.post<UserDto>(`${this._REST_PATH}/by-telegram-user`, telegramUser)
+      this.http.post<UserDto>(`${this._REST_PATH}/by-telegram-user`, telegramUser, { params: params })
     );
   }
 

@@ -1,6 +1,7 @@
 package com.oneune.mater.rest.main.store.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.oneune.mater.rest.main.store.dtos.core.AbstractDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;

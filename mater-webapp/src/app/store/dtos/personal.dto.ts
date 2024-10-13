@@ -1,4 +1,4 @@
-import {AbstractDto} from "./abstract.dto";
+import {AbstractDto} from "./core/abstract.dto";
 
 export class PersonalDto extends AbstractDto {
   firstName: string;
