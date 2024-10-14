@@ -66,7 +66,6 @@ export class AdministratingPageComponent implements OnInit {
   }
 
   onUserFiltering(): void {
-    console.log(this.filteringUsername);
     this.filteredUsers = !!this.filteringUsername ? this.users.filter(user => user.username.includes(this.filteringUsername)) : this.users;
   }
 

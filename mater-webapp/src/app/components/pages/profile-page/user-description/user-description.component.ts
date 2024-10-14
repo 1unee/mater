@@ -21,7 +21,6 @@ import {LOADING} from "../../../../app.config";
 import {StorageService} from "../../../../services/utils/storage.service";
 import {VariableFieldEnum} from "../../../../store/enums/variable-field.enum";
 import {LoadingReference} from "../../../../store/interfaces/loading-reference.interface";
-import {LogService} from "../../../../services/https/log.service";
 
 @Component({
   selector: 'app-user-description',

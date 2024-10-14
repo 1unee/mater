@@ -45,6 +45,7 @@
                           optionLabel="label"
                           optionValue="value"
                           appLongClick
+                          [allowEmpty]="false"
                           [options]="selectButtonStatesConfig.states"
                           [(ngModel)]="selectButtonStatesConfig.selectedValue"
                           (ngModelChange)="onChange()"
@@ -197,12 +198,12 @@
                           <div class="flex flex-row justify-content-between align-cars-start gap-2">
                             <div>
                               <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Стоимость:</span>
+                                <p-tag severity="secondary" [value]="_car.price + ' ₽'"/>
+                              </div>
+                              <div class="m-1 text-sm text-600">
                                 <span class="mr-1">Пробег:</span>
                                 <p-tag severity="secondary" [value]="_car.mileage + ' км'"/>
-                              </div>
-                              <div class="m-1 text-sm text-600" (click)="clipboardService.extCopy(_car.VIN, 'Вин-код скопирован!')">
-                                <span class="mr-1">ВИН:</span>
-                                <p-tag severity="secondary" icon="pi pi-copy" [value]="!_car.VIN ? 'не определен' : _car.VIN.substring(0, 10) + '...'"/>
                               </div>
                               <div class="m-1 text-sm text-600">
                                 <span class="mr-1">Владельцы:</span>
@@ -212,9 +213,9 @@
                                 <span class="mr-1">Кол-во Л.С.:</span>
                                 <p-tag severity="secondary" [value]="_car.power"/>
                               </div>
-                              <div class="m-1 text-sm text-600">
-                                <span class="mr-1">Стоимость:</span>
-                                <p-tag severity="secondary" [value]="_car.price + ' ₽'"/>
+                              <div class="m-1 text-sm text-600" (click)="clipboardService.copyWithCustomMessage(_car.VIN, 'Вин-код скопирован!')">
+                                <span class="mr-1">ВИН:</span>
+                                <p-tag severity="secondary" icon="pi pi-copy" [value]="!_car.VIN ? 'не определен' : _car.VIN.substring(0, 10) + '...'"/>
                               </div>
                             </div>
                           </div>
@@ -236,20 +237,14 @@
                           <div class="grid mt-1 ml-2 mr-2 mb-1">
                             <div class="col-12 pl-1 p-0">
                               <div class="m-1 text-sm text-600">
-                                <span class="mr-1">Цвет по док-ам:</span>
-                                <p-tag severity="secondary" [value]="_car.documentsColor"/>
-                              </div>
-                            </div>
-                            <div class="col-12 pl-1 p-0">
-                              <div class="m-1 text-sm text-600">
-                                <span class="mr-1">Коробка:</span>
-                                <p-tag severity="secondary" [value]="getGearboxTitle(_car.gearbox)"/>
-                              </div>
-                            </div>
-                            <div class="col-12 pl-1 p-0">
-                              <div class="m-1 text-sm text-600">
                                 <span class="mr-1">Состояние:</span>
                                 <p-tag severity="secondary" [value]="getCarStateTitle(_car.state)"/>
+                              </div>
+                            </div>
+                            <div class="col-12 pl-1 p-0">
+                              <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Руль:</span>
+                                <p-tag severity="secondary" [value]="getSteeringWheelTitle(_car.steeringWheel)"/>
                               </div>
                             </div>
                             <div class="col-12 pl-1 p-0">
@@ -266,8 +261,14 @@
                             </div>
                             <div class="col-12 pl-1 p-0">
                               <div class="m-1 text-sm text-600">
-                                <span class="mr-1">Руль:</span>
-                                <p-tag severity="secondary" [value]="getSteeringWheelTitle(_car.steeringWheel)"/>
+                                <span class="mr-1">Коробка:</span>
+                                <p-tag severity="secondary" [value]="getGearboxTitle(_car.gearbox)"/>
+                              </div>
+                            </div>
+                            <div class="col-12 pl-1 p-0">
+                              <div class="m-1 text-sm text-600">
+                                <span class="mr-1">Цвет по док-ам:</span>
+                                <p-tag severity="secondary" [value]="_car.documentsColor"/>
                               </div>
                             </div>
                           </div>
@@ -282,8 +283,7 @@
             <!-- car item footer -->
             <div class="col-12 p-0">
               <div class="flex flex-wrap align-items-center justify-content-center">
-                <p-button *ngIf="selectButtonStatesConfig.selectedValue !== CarCategorySortEnum.MINE"
-                          styleClass="text-center text-sm p-2 m-1"
+                <p-button styleClass="text-center text-sm p-2 m-1"
                           icon="pi pi-envelope"
                           severity="secondary"
                           label="Контакты"

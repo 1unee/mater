@@ -25,7 +25,7 @@ export class OneuneRouterService {
   }
 
   public absoluteRedirect(url: string): void {
-    window.location.href = url;
+    window.open(url, '_blank');
     this._trackRedirect(this.router.url, url).finally((): void => {});
   }
 

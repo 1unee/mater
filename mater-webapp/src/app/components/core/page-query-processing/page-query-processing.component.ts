@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {DropdownModule} from "primeng/dropdown";
 import {FormsModule} from "@angular/forms";
 import {Button} from "primeng/button";
@@ -10,6 +10,7 @@ import {InputIconModule} from "primeng/inputicon";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
 import {ColumnQuery} from "../../../store/pagination/column-query.pagination";
 import {LongClickDirective} from "../../../services/directives/long-click.directive";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-page-query-processing',
@@ -21,7 +22,8 @@ import {LongClickDirective} from "../../../services/directives/long-click.direct
     InputTextModule,
     IconFieldModule,
     InputIconModule,
-    LongClickDirective
+    LongClickDirective,
+    NgIf
   ],
   templateUrl: './page-query-processing.component.html',
   styleUrl: './page-query-processing.component.scss'
@@ -30,6 +32,11 @@ export class PageQueryProcessingComponent {
 
   readonly STRING_FILTER_TYPE_KEY = 'string';
   readonly NUMBER_FILTER_TYPE_KEY = 'number';
+  readonly GEARBOX_FILTER_TYPE_KEY = 'gearbox';
+  readonly STATE_FILTER_TYPE_KEY = 'state';
+  readonly ENGINE_OIL_TYPE_FILTER_TYPE_KEY = 'engineOilType';
+  readonly TRANSMISSION_FILTER_TYPE_KEY = 'transmission';
+  readonly STEERING_WHEEL_FILTER_TYPE_KEY = 'steeringWheel';
 
   @Output() onApply: EventEmitter<ColumnQuery[]> = new EventEmitter<ColumnQuery[]>();
   @Output() onCommonSearchValue: EventEmitter<string> = new EventEmitter<string>();
@@ -38,14 +45,14 @@ export class PageQueryProcessingComponent {
 
   filterTypeMap: Map<string, Array<any>> = new Map([
     [this.STRING_FILTER_TYPE_KEY, [
+      { label: FilterTypeTitle.CONTAINS, value: FilterType.CONTAINS },
       { label: FilterTypeTitle.STARTS_WITH, value: FilterType.STARTS_WITH },
-      { label: FilterTypeTitle.ENDS_WITH, value: FilterType.ENDS_WITH },
-      { label: FilterTypeTitle.CONTAINS, value: FilterType.CONTAINS }
+      { label: FilterTypeTitle.ENDS_WITH, value: FilterType.ENDS_WITH }
     ]],
     [this.NUMBER_FILTER_TYPE_KEY, [
       { label: FilterTypeTitle.EQUALS, value: FilterType.EQUALS },
       { label: FilterTypeTitle.GREATER_THAN, value: FilterType.GREATER_THAN },
-      { label: FilterTypeTitle.LESS_THAN, value: FilterType.LESS_THAN },
+      { label: FilterTypeTitle.LESS_THAN, value: FilterType.LESS_THAN }
     ]]
   ]);
 
@@ -57,7 +64,13 @@ export class PageQueryProcessingComponent {
       { label: 'Цена', value: 'price' },
       { label: 'Пробег', value: 'mileage' },
       { label: 'ВИН', value: 'VIN' },
-      { label: 'Количество владельцев', value: 'ownersAmount' }
+      { label: 'Количество владельцев', value: 'ownersAmount' },
+      { label: 'Цвет по документам', value: 'documentsColor' },
+      // { label: 'Коробка передач', value: 'gearbox' },
+      // { label: 'Состояние', value: 'state' },
+      // { label: 'Тип двигателя', value: 'engineOilType' },
+      // { label: 'Привод', value: 'transmission' },
+      // { label: 'Руль', value: 'steeringWheel' }
     ],
     selectedField: null,
     filters: new Map([
@@ -68,6 +81,12 @@ export class PageQueryProcessingComponent {
       ['mileage', this.filterTypeMap.get(this.NUMBER_FILTER_TYPE_KEY)],
       ['VIN', this.filterTypeMap.get(this.STRING_FILTER_TYPE_KEY)],
       ['ownersAmount', this.filterTypeMap.get(this.NUMBER_FILTER_TYPE_KEY)],
+      ['documentsColor', this.filterTypeMap.get(this.STRING_FILTER_TYPE_KEY)],
+      // ['gearbox', this.filterTypeMap.get(this.STRING_FILTER_TYPE_KEY)],
+      // ['state', this.filterTypeMap.get(this.STRING_FILTER_TYPE_KEY)],
+      // ['engineOilType', this.filterTypeMap.get(this.STRING_FILTER_TYPE_KEY)],
+      // ['transmission', this.filterTypeMap.get(this.STRING_FILTER_TYPE_KEY)],
+      // ['steeringWheel', this.filterTypeMap.get(this.STRING_FILTER_TYPE_KEY)]
     ]),
     selectedFilter: null,
     filterValue: null,

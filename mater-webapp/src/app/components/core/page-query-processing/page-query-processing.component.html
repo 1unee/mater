@@ -35,10 +35,12 @@
             ></p-dropdown>
           </div>
           <div class="col-12 p-1">
-            <input class="p-2 w-full"
+            <input *ngIf="true"
+                   class="p-2 w-full"
                    pInputText
                    type="text"
                    placeholder="Значение фильтрации"
+                   [disabled]="!pageQueryProcessingConfig.selectedField"
                    [(ngModel)]="pageQueryProcessingConfig.filterValue"
                    (ngModelChange)="onFilterValueChange($event)"
             />

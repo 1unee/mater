@@ -72,7 +72,7 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
     protected UserDto register(User telegramUser, Long telegramChatId, List<String> additionalRoles) {
         RoleEntity roleEntity = roleService.getEntityByEnum(RoleEnum.USER);
         PersonalEntity personalEntity = personalService.postByTelegramUser(telegramUser,null,null);
-        SellerEntity sellerEntity = sellerService.post();
+        SellerEntity sellerEntity = sellerService.post(telegramUser.getUserName());
         UserEntity userEntity = buildUserByTelegramUser(
                 telegramUser, telegramChatId, null, personalEntity, sellerEntity,
                 Stream.concat(Stream.of(roleEntity), additionalRoles.stream().map(roleService::getEntityByEnum)).toList()

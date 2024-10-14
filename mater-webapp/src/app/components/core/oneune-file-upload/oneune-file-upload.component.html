@@ -5,7 +5,7 @@
         <div *ngFor="let file of files">
           <div class="border-1 border-round-2xl border-200">
             <div class="m-2 grid grid-nogutter">
-              <div class="col-5" (click)="clipboardService.extCopy(file.name, 'Название скопировано!')">
+              <div class="col-5" (click)="clipboardService.copyWithCustomMessage(file.name, 'Название скопировано!')">
                 <div class="flex justify-content-center flex-wrap">
                   <div class="flex align-items-center justify-content-center">
                     {{ file.name.length > 14 ? file.name.substring(0, 11) + '...' : file.name }}

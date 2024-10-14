@@ -65,8 +65,10 @@ public class SellerController implements CRUDable<SellerDto, SellerEntity> {
 
     @PostMapping("{id}/contacts")
     public ContactDto postContact(@PathVariable(name = "id") Long sellerId,
-                                  @RequestBody ContactDto contact) {
-        return sellerService.postContactByParams(sellerId, contact);
+                                  @RequestBody ContactDto contact,
+                                  @RequestParam(name = "whatsapp-linked") boolean whatsappLinked,
+                                  @RequestParam(name = "telegram-linked") boolean telegramLinked) {
+        return sellerService.postContactByParams(sellerId, contact, whatsappLinked, telegramLinked);
     }
 
     @GetMapping("{id}/contacts")

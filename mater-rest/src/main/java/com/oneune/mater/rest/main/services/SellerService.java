@@ -10,6 +10,7 @@ import com.oneune.mater.rest.main.store.dtos.ContactDto;
 import com.oneune.mater.rest.main.store.dtos.SaleLinkDto;
 import com.oneune.mater.rest.main.store.dtos.SellerDto;
 import com.oneune.mater.rest.main.store.entities.*;
+import com.oneune.mater.rest.main.store.enums.ContactTypeEnum;
 import com.oneune.mater.rest.main.store.enums.SaleStatusEnum;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
@@ -45,8 +46,17 @@ public class SellerService implements CRUDable<SellerDto, SellerEntity> {
     }
 
     @Transactional
-    public SellerEntity post() {
-        SellerEntity sellerEntity = new SellerEntity();
+    public SellerEntity post(String telegramUsername) {
+        SellerEntity sellerEntity = SellerEntity.builder().build();
+        ContactEntity autoCreatedTelegramContactEntity = contactService.getEntityById(
+                contactService.post(ContactDto.builder()
+                        .type(ContactTypeEnum.TELEGRAM)
+                        .value("https://t.me/%s".formatted(telegramUsername))
+                        .build())
+                        .getId()
+        );
+        autoCreatedTelegramContactEntity.setSeller(sellerEntity);
+        sellerEntity.getContacts().add(autoCreatedTelegramContactEntity);
         sellerRepository.saveAndFlush(sellerEntity);
         return sellerEntity;
     }
@@ -83,14 +93,46 @@ public class SellerService implements CRUDable<SellerDto, SellerEntity> {
 
     @Transactional
     public ContactDto postContactByParams(Long sellerId,
-                                          ContactDto contactDto) {
+                                          ContactDto contactDto,
+                                          boolean whatsappLinked,
+                                          boolean telegramLinked) {
         SellerEntity sellerEntity = sellerReader.getEntityById(sellerId);
         ContactEntity contactEntity = contactService.getEntityById(contactService.post(contactDto).getId());
         sellerEntity.getContacts().add(contactEntity);
+        if (whatsappLinked) {
+            sellerEntity.getContacts().add(postLinkedWhatsappContact(sellerEntity, contactDto.getValue()));
+        }
+        if (telegramLinked) {
+            sellerEntity.getContacts().add(postLinkedTelegramContact(sellerEntity, contactDto.getValue()));
+        }
         contactEntity.setSeller(sellerEntity);
         sellerRepository.saveAndFlush(sellerEntity);
         contactService.flush();
         return modelMapper.map(contactEntity, ContactDto.class);
+    }
+
+    @Transactional
+    protected ContactEntity postLinkedWhatsappContact(SellerEntity sellerEntity, String phone) {
+        String formatedPhone = phone.startsWith("+7") ? phone : "+7" + phone.substring(1);
+        ContactDto linkedWhatsappContactDto = contactService.post(ContactDto.builder()
+                .type(ContactTypeEnum.WHATSAPP)
+                .value("https://wa.me/%s".formatted(formatedPhone))
+                .build());
+        ContactEntity linkedWhatsappContactEntity = contactService.getEntityById(linkedWhatsappContactDto.getId());
+        linkedWhatsappContactEntity.setSeller(sellerEntity);
+        return linkedWhatsappContactEntity;
+    }
+
+    @Transactional
+    protected ContactEntity postLinkedTelegramContact(SellerEntity sellerEntity, String phone) {
+        String formatedPhone = phone.startsWith("+7") ? phone : "+7" + phone.substring(1);
+        ContactDto linkedTelegramContactDto = contactService.post(ContactDto.builder()
+                .type(ContactTypeEnum.TELEGRAM)
+                .value("https://t.me/%s".formatted(formatedPhone))
+                .build());
+        ContactEntity linkedTelegramContactEntity = contactService.getEntityById(linkedTelegramContactDto.getId());
+        linkedTelegramContactEntity.setSeller(sellerEntity);
+        return linkedTelegramContactEntity;
     }
 
     @Transactional

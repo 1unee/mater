@@ -87,12 +87,23 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
     this.cars = await this.carService.getAll();
   }
 
+  get uniqueCarBrands(): string[] {
+    return [...new Set(this.cars.map((car: CarDto): string => car.brand))];
+  }
+
+  get uniqueCarModels(): string[] {
+    return [...new Set(this.cars.map((car: CarDto): string => car.model))];
+  }
+
+  get uniqueCarDocumentsColor(): string[] {
+    return [...new Set(this.cars.map((car: CarDto): string => car.documentsColor))];
+  }
+
   private _initializeEditingCar(): void {
     this.car = this.dynamicDialogConfig.data.car;
   }
 
   protected override _initializeForm(): void {
-
     this.form = this.formBuilder.group({
       carBrand: [this.car.brand, [
         Validators.required, isText()
@@ -187,7 +198,6 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
   }
 
   onChange(dropdown: Dropdown): void {
-    console.log(this.form.value);
     dropdown.hide();
   }
 }

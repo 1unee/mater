@@ -97,7 +97,6 @@ export class CarListComponent implements OnInit {
   readonly CarCategorySortEnum = CarCategorySortEnum;
   readonly ContactTypeTitle = ContactTypeTitle;
   readonly PaginationDirection = PaginationDirection;
-  readonly environment = environment;
   readonly getGearboxTitle = getGearboxTitle;
   readonly getCarStateTitle = getCarStateTitle;
   readonly getEngineOilTypeTitle = getEngineOilTypeTitle;
@@ -110,12 +109,30 @@ export class CarListComponent implements OnInit {
     pageSize: number,
     processing: boolean,
     columnQueries: ColumnQuery[],
+    defaultColumnQueries: { carId: ColumnQuery, mineCars: ColumnQuery, allCars: ColumnQuery },
     pageResponse: PageResponse<CarDto>
   } = {
     pageNumber: 0,
     pageSize: 3,
     processing: false,
     columnQueries: [],
+    defaultColumnQueries: {
+      carId: {
+        name: 'id',
+        filterType: FilterType.EQUALS,
+        filterValue: null
+      } as ColumnQuery,
+      mineCars: {
+        name: 'seller.id',
+        filterType: FilterType.EQUALS,
+        filterValue: null
+      } as ColumnQuery,
+      allCars: {
+        name: 'seller.id',
+        filterType: FilterType.NOT_EQUALS,
+        filterValue: null
+      } as ColumnQuery
+    },
     pageResponse: {} as PageResponse<CarDto>
   };
 
@@ -200,12 +217,14 @@ export class CarListComponent implements OnInit {
   }
 
   async search(direction: PaginationDirection): Promise<void> {
-    this.paginationConfig.pageNumber = this.paginationConfig.pageNumber + (direction === PaginationDirection.PREV ? -1 : 1);
+    this.paginationConfig.pageNumber =
+      this.paginationConfig.pageNumber + (direction === PaginationDirection.PREV ? -1 : 1);
     await this._paginateCars();
   }
 
   async applyPageQuery(columnQueries: ColumnQuery[]): Promise<void> {
-    this.paginationConfig.columnQueries = columnQueries;
+    const existedColumnQueries: ColumnQuery[] = this.paginationConfig.columnQueries;
+    this.paginationConfig.columnQueries = [...columnQueries, ...existedColumnQueries];
     await this.loadCurrentPage();
   }
 
@@ -344,36 +363,25 @@ export class CarListComponent implements OnInit {
   async onChange(): Promise<void> {
     const foreignLink: ForeignLink = await this._initializeForeignLink();
     if (foreignLink.isForeignLink) {
-      const columnQuery: ColumnQuery = {
-        name: 'id',
-        filterType: FilterType.EQUALS,
-        filterValue: foreignLink.carId
-      } as ColumnQuery;
-      if (this.paginationConfig.columnQueries.findIndex(cq => cq === columnQuery) === -1) {
-        this.paginationConfig.columnQueries.push(columnQuery);
+      const foreignReferenceColumnQuery: ColumnQuery = this.paginationConfig.defaultColumnQueries.carId;
+      foreignReferenceColumnQuery.filterValue = foreignLink.carId;
+      if (this.paginationConfig.columnQueries.findIndex(cq => cq === foreignReferenceColumnQuery) === -1) {
+        this.paginationConfig.columnQueries.push(foreignReferenceColumnQuery);
       }
       await this.loadCurrentPage();
     } else {
       if (this.selectButtonStatesConfig.selectedValue === CarCategorySortEnum.MINE) {
-        const columnQuery: ColumnQuery = {
-          name: 'seller.id',
-          filterType: FilterType.EQUALS,
-          filterValue: this.storageService.user.seller.id
-        } as ColumnQuery;
-
-        if (this.paginationConfig.columnQueries.findIndex(cq => cq === columnQuery) === -1) {
-          this.paginationConfig.columnQueries = [columnQuery];
+        const mineCarsColumnQuery: ColumnQuery = this.paginationConfig.defaultColumnQueries.mineCars;
+        mineCarsColumnQuery.filterValue = this.storageService.user.id;
+        if (this.paginationConfig.columnQueries.findIndex(cq => cq === mineCarsColumnQuery) === -1) {
+          this.paginationConfig.columnQueries = [mineCarsColumnQuery];
         }
         await this.loadCurrentPage();
       } else {
-        const columnQuery: ColumnQuery = {
-          name: 'seller.id',
-          filterType: FilterType.NOT_EQUALS,
-          filterValue: this.storageService.user.seller.id
-        } as ColumnQuery;
-
-        if (this.paginationConfig.columnQueries.findIndex(cq => cq === columnQuery) === -1) {
-          this.paginationConfig.columnQueries = [columnQuery];
+        const allCarsColumnQueries: ColumnQuery = this.paginationConfig.defaultColumnQueries.allCars;
+        allCarsColumnQueries.filterValue = this.storageService.user.id;
+        if (this.paginationConfig.columnQueries.findIndex(cq => cq === allCarsColumnQueries) === -1) {
+          this.paginationConfig.columnQueries = [allCarsColumnQueries];
         }
         await this.loadCurrentPage();
       }
@@ -382,7 +390,8 @@ export class CarListComponent implements OnInit {
 
   onTogglePageQuerying(): void {
     this.paginationConfig.processing = !this.paginationConfig.processing;
-    if (JSON.parse(this.storageService.getSettingByCode(4).selectedOption.value) && this.paginationConfig.processing) {
+    if (JSON.parse(this.storageService.getSettingByCode(4).selectedOption.value)
+      && this.paginationConfig.processing) {
       this.messageService.showWarning(
         'Фильтрация и сортировка работают в тестовом режиме.' +
         'Об ошибках сообщать в форме обратной связи ' +
@@ -415,8 +424,9 @@ export class CarListComponent implements OnInit {
     if (isUrlReference) {
       this._confirmOpeningContactUrlReference(contact);
     } else {
-      this.clipboardService.extCopy(contact.value, 'Скопировано!')
+      this.clipboardService.copyWithCustomMessage(contact.value, 'Скопировано!')
     }
+    this.clipboardService.copyWithoutMessage(contact.value)
     this.sellerService.postSaleLink(this.storageService.user.id, car.id).finally();
     overlayPanel.overlayVisible = false;
   }
@@ -458,10 +468,10 @@ export class CarListComponent implements OnInit {
 
   onCarForeignLinkCopy(car: CarDto): void {
     if (environment.production) {
-      this.clipboardService.extCopy(`${car.brand} ${car.model} (${car.productionYear})`, 'Машина скопирована. Введите скопированное значение в поиске, чтобы ее найти');
+      this.clipboardService.copyWithCustomMessage(`${car.brand} ${car.model} (${car.productionYear})`, 'Машина скопирована. Введите скопированное значение в поиске, чтобы ее найти');
     } else {
       const href: string = `${window.location.href}?car-id=${car.id}`;
-      this.clipboardService.extCopy(href, 'Ссылка на машину скопирована!');
+      this.clipboardService.copyWithCustomMessage(href, 'Ссылка на машину скопирована!');
     }
   }
 
@@ -474,7 +484,8 @@ export class CarListComponent implements OnInit {
     this.actionService.track(ActionTypeEnum.COMMON_SEARCH, commonSearchValue).finally();
     const carBrand: string = commonSearchValue.split(' ')[0];
     const carModel: string | undefined = !!commonSearchValue.split(' ')[1] ? commonSearchValue.split(' ')[1] : undefined;
-    const carProductionYear: string | undefined = commonSearchValue.split(' ')[2] ? commonSearchValue.split(' ')[2].replace('(', '').replace(')', '') : undefined;
+    const carProductionYear: string | undefined
+      = commonSearchValue.split(' ')[2] ? commonSearchValue.split(' ')[2].replace('(', '').replace(')', '') : undefined;
     const brandColumnQuery: ColumnQuery = {
       name: 'brand',
       filterType: FilterType.CONTAINS,

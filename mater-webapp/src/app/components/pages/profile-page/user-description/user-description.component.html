@@ -6,7 +6,7 @@
       <p-inputGroupAddon styleClass="w-6rem text-sm">
         Ник
       </p-inputGroupAddon>
-      <p-inputGroupAddon styleClass="w-8rem text-sm" (click)="clipboardService.extCopy(user.username, 'Ник скопирован!')">
+      <p-inputGroupAddon styleClass="w-8rem text-sm" (click)="clipboardService.copyWithCustomMessage(user.username, 'Ник скопирован!')">
         {{ user.username }}
       </p-inputGroupAddon>
       <p-inputGroupAddon>
@@ -25,7 +25,7 @@
       </p-inputGroupAddon>
       <p-inputGroupAddon *ngIf="user.isEmailSet; else emailNotSetBlock"
                          styleClass="w-8rem text-sm"
-                         (click)="clipboardService.extCopy(user.email, 'Почта скопирована!')"
+                         (click)="clipboardService.copyWithCustomMessage(user.email, 'Почта скопирована!')"
       >
         {{ user.email }}
       </p-inputGroupAddon>
@@ -54,7 +54,7 @@
       Дата регистрации
     </p-inputGroupAddon>
     <p-inputGroupAddon styleClass="w-8rem text-sm"
-                       (click)="clipboardService.extCopy(user.registeredAt.toLocaleDateString(), 'Дата регистрации скопирована!')"
+                       (click)="clipboardService.copyWithCustomMessage(user.registeredAt.toLocaleDateString(), 'Дата регистрации скопирована!')"
     >
       {{ user.registeredAt | date:'shortDate':'UTC+1':'ru' }}
     </p-inputGroupAddon>
@@ -72,7 +72,7 @@
     </p-inputGroupAddon>
     <p-inputGroupAddon *ngIf="user.personal.isFirstNameSet; else firstNameNotSetBlock"
                        styleClass="w-8rem text-sm"
-                       (click)="clipboardService.extCopy(user.personal.firstName, 'Имя скопировано!')"
+                       (click)="clipboardService.copyWithCustomMessage(user.personal.firstName, 'Имя скопировано!')"
     >
       {{ user.personal.firstName }}
     </p-inputGroupAddon>
@@ -101,7 +101,7 @@
     </p-inputGroupAddon>
     <p-inputGroupAddon *ngIf="user.personal.isLastNameSet; else lastNameNotSetBlock"
                        styleClass="w-8rem text-sm"
-                       (click)="clipboardService.extCopy(user.personal.lastName, 'Фамилия скопирована!')"
+                       (click)="clipboardService.copyWithCustomMessage(user.personal.lastName, 'Фамилия скопирована!')"
     >
       {{ user.personal.lastName }}
     </p-inputGroupAddon>
@@ -130,7 +130,7 @@
     </p-inputGroupAddon>
     <p-inputGroupAddon *ngIf="user.personal.isMiddleNameSet; else middleNameNotSetBlock"
                        styleClass="w-8rem text-sm"
-                       (click)="clipboardService.extCopy(user.personal.middleName, 'Отчество скопировано!')"
+                       (click)="clipboardService.copyWithCustomMessage(user.personal.middleName, 'Отчество скопировано!')"
     >
       {{ user.personal.middleName }}
     </p-inputGroupAddon>
@@ -160,7 +160,7 @@
 
     <p-inputGroupAddon *ngIf="user.personal.isBirthDateSet; else birthDateNotSetBlock"
                        styleClass="w-8rem text-sm"
-                       (click)="clipboardService.extCopy(user.personal.birthDate.toLocaleDateString(), 'Дата рождения скопирована!')"
+                       (click)="clipboardService.copyWithCustomMessage(user.personal.birthDate.toLocaleDateString(), 'Дата рождения скопирована!')"
     >
       {{ user.personal.birthDate | date:'shortDate':'UTC+1':'ru' }}
     </p-inputGroupAddon>

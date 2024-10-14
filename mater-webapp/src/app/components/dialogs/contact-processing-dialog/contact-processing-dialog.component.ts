@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {Button} from "primeng/button";
 import {InputGroupAddonModule} from "primeng/inputgroupaddon";
 import {InputGroupModule} from "primeng/inputgroup";
@@ -17,6 +17,15 @@ import {contactReferenceValue} from "../../../services/utils/validators";
 import {NgIf} from "@angular/common";
 import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
 import {LongClickDirective} from "../../../services/directives/long-click.directive";
+import {CheckboxModule} from "primeng/checkbox";
+import {ContactTypeConfig} from "../../../store/interfaces/contact-type-config.interface";
+import {SelectButtonModule} from "primeng/selectbutton";
+import {ConfirmationService} from "primeng/api";
+import {VariableFieldEnum} from "../../../store/enums/variable-field.enum";
+import {LOADING} from "../../../app.config";
+import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
+import {UserDto} from "../../../store/dtos/user.dto";
+import {UserService} from "../../../services/https/user.service";
 
 @Component({
   selector: 'app-contact-processing-dialog',
@@ -29,17 +38,20 @@ import {LongClickDirective} from "../../../services/directives/long-click.direct
     PaginatorModule,
     ReactiveFormsModule,
     NgIf,
-    LongClickDirective
+    LongClickDirective,
+    CheckboxModule,
+    SelectButtonModule
   ],
   templateUrl: './contact-processing-dialog.component.html',
   styleUrl: './contact-processing-dialog.component.scss'
 })
 export class ContactProcessingDialogComponent extends AbstractFormComponent<ContactDto> implements OnInit {
 
+  readonly ContactTypeEnum = ContactTypeEnum;
   readonly ContactTypeTitle = ContactTypeTitle;
 
   contact: ContactDto;
-  contactTypeConfig: { options: { label: string, value: ContactTypeEnum, styleClass: string }[] } = {
+  contactTypeConfig: ContactTypeConfig = {
     options: [
       { label: 'Телефон', value: ContactTypeEnum.PHONE, styleClass: 'p-1 text-sm' },
       { label: 'Почта', value: ContactTypeEnum.EMAIL, styleClass: 'p-1' },
@@ -59,7 +71,10 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
               private sellerService: SellerService,
               private storageService: StorageService,
               private formBuilder: FormBuilder,
-              private routerService: OneuneRouterService) {
+              private routerService: OneuneRouterService,
+              private confirmationService: ConfirmationService,
+              @Inject(LOADING) public loadingReference: LoadingReference,
+              private userService: UserService) {
     super();
   }
 
@@ -79,7 +94,9 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
   protected override _initializeForm(): void {
     this.form = this.formBuilder.group({
       contactType: [this.contact.type, Validators.required],
-      contactReference: [this.contact.value, Validators.required]
+      contactReference: [this.contact.value, Validators.required],
+      whatsappLinked: [false, []],
+      telegramLinked: [false, []]
     }, {
       validators: [contactReferenceValue]
     });
@@ -97,7 +114,13 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
       await this.sellerService.putContact(this.storageService.user.seller.id, this.contact);
       this.messageService.showSuccess('Данные о контакте успешно изменены!');
     } else {
-      await this.sellerService.postContact(this.storageService.user.seller.id, this.contact);
+      await this._askAboutLinkingMailIfNeeded();
+      await this.sellerService.postContact(
+        this.storageService.user.seller.id,
+        this.contact,
+        this.form.value.whatsappLinked,
+        this.form.value.telegramLinked
+      );
       this.messageService.showSuccess('Контакт успешно внесен в список!');
     }
     if (!this.contact.id) {
@@ -114,5 +137,37 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
     await this.onSubmit(true);
     this.routerService.relativeRedirect('/cars/market');
     this.disableCarListRedirectButton = true;
+  }
+
+  private async _askAboutLinkingMailIfNeeded(): Promise<void> {
+    if (this.contact.type === ContactTypeEnum.EMAIL) {
+      this.confirmationService.confirm({
+        message: 'Привязать эту почту к профилю? Если да, то учти, что потом это поле нельзя будет поменять.',
+        header: 'Подтверждение',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Да',
+        acceptButtonStyleClass: 'p-1',
+        accept: async () => this._linkEmail(),
+        rejectLabel: 'Нет',
+        rejectButtonStyleClass: 'p-1',
+        reject: () => this.messageService.showInfo('Понял, тогда не привязываем')
+      });
+    }
+    return Promise.resolve();
+  }
+
+  private async _linkEmail(): Promise<void> {
+    try {
+      this.loadingReference.value.next(true);
+      let user: UserDto = this.storageService.user;
+      user.email = this.contact.value;
+      user = await this.userService.putByParams(user, VariableFieldEnum.EMAIL);
+      this.storageService.updateUser(user);
+      this.messageService.showSuccess('Данные успешно обновлены!');
+    } catch (e) {
+      this.messageService.showError('Не удалось обновить данные!');
+    } finally {
+      this.loadingReference.value.next(false);
+    }
   }
 }

@@ -36,7 +36,7 @@
             {{ getContactTypeLocalized(contact.type) }}
           </p-inputGroupAddon>
           <p-inputGroupAddon styleClass="w-14rem text-sm"
-                             (click)="clipboardService.extCopy(contact.value, 'Контакт скопирован')"
+                             (click)="clipboardService.copyWithCustomMessage(contact.value, 'Контакт скопирован')"
           >
             {{ contact.value.length < 16 ? contact.value : contact.value.substring(0, 13) + '...' }}
           </p-inputGroupAddon>

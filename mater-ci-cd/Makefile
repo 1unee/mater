@@ -37,10 +37,14 @@ START_TIME := $(shell date +%s) # in seconds
 # -------------------------------------------------------------------------------------------------
 
 log-vars:
+	@echo "-----------------------------------------------------------------------"
+	@echo "------------------------  SYSTEM LOGGING  -----------------------------"
+	@echo "-----------------------------------------------------------------------"
 	@echo "App name «$(APP_NAME)»."
 	@echo "App version «$(APP_VERSION)»."
 	@echo "Domain «$(VIRTUAL_CLOUD_DOMAIN)»."
 	@echo "Telegram bot token «$(TELEGRAM_BOT_TOKEN)»."
+	@echo "-----------------------------------------------------------------------"
 lv: log-vars # short alias
 
 remove-backend-container:
@@ -105,7 +109,9 @@ run-frontend:
 rf: run-frontend # short alias
 
 prepare-continuous-delivery:
-	@echo "Continuous Delivery started..."
+	@echo "-----------------------------------------------------------------------"
+	@echo "------------------  Continuous Delivery started... --------------------"
+	@echo "-----------------------------------------------------------------------"
 
 process-maven:
 	mvn -f $(BACKEND_POM_XML) clean install
@@ -118,7 +124,9 @@ calculate-duration:
 	@START_TIME=$(START_TIME); \
 	END_TIME=$$(date +%s); \
 	TIME_DIFF=$$((END_TIME - START_TIME)); \
-	echo "Process duration is $$TIME_DIFF seconds."
+	@echo "-----------------------------------------------------------------------" \
+    @echo "--------------  Process duration is $$TIME_DIFF seconds. --------------" \
+    @echo "-----------------------------------------------------------------------"
 
 start-continuous-delivery-brute-force: \
 	prepare-continuous-delivery \

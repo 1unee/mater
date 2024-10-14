@@ -65,6 +65,67 @@
       </div>
     </div>
 
+    <div *ngIf="!!contactType ? contactType === ContactTypeEnum.PHONE : false">
+      <div>
+        <p-inputGroup>
+          <p-inputGroupAddon styleClass="w-6rem text-sm">
+            Привязан {{ ContactTypeTitle.WHATSAPP }}
+          </p-inputGroupAddon>
+          <p-inputGroupAddon styleClass="w-12rem text-sm">
+            <div class="flex justify-content-between flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <p-checkbox formControlName="whatsappLinked"
+                            inputId="binary"
+                            [binary]="true"
+                />
+              </div>
+              <div class="flex align-items-center justify-content-center">
+                <!-- center content -->
+              </div>
+              <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-question-circle text-lg w-1rem"
+                   (click)="messageService.showInfo(
+                   'Поставь галочку, если у тебя к этому номеру привязан аккаунт в ' +
+                   ContactTypeTitle.WHATSAPP + '. Тогда покупатели смогут быстро и удобно переходить в чат.'
+                   )"
+                ></i>
+              </div>
+            </div>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+
+      <div>
+        <p-inputGroup>
+          <p-inputGroupAddon styleClass="w-6rem text-sm">
+            Привязан {{ ContactTypeTitle.TELEGRAM }}
+          </p-inputGroupAddon>
+          <p-inputGroupAddon styleClass="w-12rem text-sm">
+            <div class="flex justify-content-between flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <p-checkbox formControlName="telegramLinked"
+                            inputId="binary"
+                            [binary]="true"
+                />
+              </div>
+              <div class="flex align-items-center justify-content-center">
+                <!-- center content -->
+              </div>
+              <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-question-circle text-lg w-1rem"
+                   (click)="messageService.showInfo(
+                    'Поставь галочку, если у тебя к этому номеру привязан аккаунт в ' +
+                    ContactTypeTitle.TELEGRAM + '. Тогда покупатели смогут быстро и удобно переходить в чат.' +
+                    'ВНИМАНИЕ!!! Убедись, что в настройках аккаунта телеграмма у тебя разрешен доступ по номеру телефона.'
+                   )"
+                ></i>
+              </div>
+            </div>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+    </div>
+
     <div class="p-0 mt-3 mb-0">
       <div class="flex align-items-center justify-content-center gap-3">
         <p-button styleClass='text-center p-1'

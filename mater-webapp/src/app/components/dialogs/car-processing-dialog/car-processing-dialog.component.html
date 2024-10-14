@@ -4,7 +4,7 @@
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.extCopy(car.brand,'Марка скопирована')"
+                           (click)="clipboardService.copyWithCustomMessage(car.brand,'Марка скопирована')"
         >
           Марка
         </p-inputGroupAddon>
@@ -13,8 +13,6 @@
                       formControlName="carBrand"
                       styleClass="w-full"
                       panelStyleClass="w-full"
-                      optionLabel="brand"
-                      optionValue="brand"
                       placeholder="Марка"
                       filterBy="brand"
                       filterMatchMode="contains"
@@ -25,7 +23,7 @@
                       [loading]="loadingReference.value.getValue()"
                       [filter]="true"
                       [showClear]="true"
-                      [options]="cars"
+                      [options]="uniqueCarBrands"
                       (onChange)="onChange(carBrandDropdown)"
           ></p-dropdown>
         </p-inputGroupAddon>
@@ -49,7 +47,7 @@
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.extCopy(car.model,'Модель скопирована')"
+                           (click)="clipboardService.copyWithCustomMessage(car.model,'Модель скопирована')"
         >
           Модель
         </p-inputGroupAddon>
@@ -58,8 +56,6 @@
                       formControlName="carModel"
                       styleClass="w-full"
                       panelStyleClass="w-full"
-                      optionLabel="model"
-                      optionValue="model"
                       placeholder="Модель"
                       filterBy="model"
                       filterMatchMode="contains"
@@ -70,7 +66,7 @@
                       [loading]="loadingReference.value.getValue()"
                       [filter]="true"
                       [showClear]="true"
-                      [options]="cars"
+                      [options]="uniqueCarModels"
                       (onChange)="onChange(carModelDropdown)"
           ></p-dropdown>
         </p-inputGroupAddon>
@@ -91,7 +87,7 @@
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.extCopy(car.productionYear,'Год выпуска скопирован')"
+                           (click)="clipboardService.copyWithCustomMessage(car.productionYear,'Год выпуска скопирован')"
         >
           Год выпуска
         </p-inputGroupAddon>
@@ -132,7 +128,7 @@
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.extCopy(car.price,'Цена скопирована')"
+                           (click)="clipboardService.copyWithCustomMessage(car.price,'Цена скопирована')"
         >
           Цена (₽)
         </p-inputGroupAddon>
@@ -167,7 +163,7 @@
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.extCopy(car.mileage,'Пробег скопирован')"
+                           (click)="clipboardService.copyWithCustomMessage(car.mileage,'Пробег скопирован')"
         >
           Пробег (км)
         </p-inputGroupAddon>
@@ -202,7 +198,7 @@
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.extCopy(car.VIN,'ВИН скопирован')"
+                           (click)="clipboardService.copyWithCustomMessage(car.VIN,'ВИН скопирован')"
         >
           ВИН {{ form.get('carVIN')?.invalid && !!form.value['carVIN'] ? ('(' + form.value['carVIN'].length + '/17)') : '' }}
         </p-inputGroupAddon>
@@ -237,7 +233,7 @@
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.extCopy(car.ownersAmount,'Количество владельцев скопировано')"
+                           (click)="clipboardService.copyWithCustomMessage(car.ownersAmount,'Количество владельцев скопировано')"
         >
           Количество владельцев
         </p-inputGroupAddon>
@@ -246,7 +242,7 @@
                  pInputText
                  class="pl-2 p-1 w-full"
                  type="text"
-                 placeholder="Кол-во владельцев"
+                 placeholder="Количество"
           />
         </p-inputGroupAddon>
       </p-inputGroup>
@@ -272,7 +268,7 @@
     <div>
       <p-inputGroup>
         <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.extCopy(car.power,'Количество лошадиных сил скопировано')"
+                           (click)="clipboardService.copyWithCustomMessage(car.power,'Количество лошадиных сил скопировано')"
         >
           Кол-во Л.С.
         </p-inputGroupAddon>
@@ -314,8 +310,6 @@
                       formControlName="carDocumentsColor"
                       styleClass="w-full"
                       panelStyleClass="w-full"
-                      optionLabel="documentsColor"
-                      optionValue="documentsColor"
                       placeholder="Цвет по документам"
                       filterBy="documentsColor"
                       filterMatchMode="contains"
@@ -326,7 +320,7 @@
                       [loading]="loadingReference.value.getValue()"
                       [filter]="true"
                       [showClear]="true"
-                      [options]="cars"
+                      [options]="uniqueCarDocumentsColor"
                       (onChange)="onChange(carDocumentsColorDropdown)"
           ></p-dropdown>
         </p-inputGroupAddon>
@@ -358,7 +352,7 @@
                       panelStyleClass="w-full"
                       optionLabel="label"
                       optionValue="value"
-                      placeholder="Коробка передач"
+                      placeholder="Коробка"
                       appendTo="body"
                       [loading]="loadingReference.value.getValue()"
                       [options]="carGearboxes"

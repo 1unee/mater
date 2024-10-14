@@ -30,9 +30,15 @@ export class SellerService extends AbstractHttpService {
     );
   }
 
-  async postContact(sellerId: number, contact: ContactDto): Promise<ContactDto> {
+  async postContact(sellerId: number,
+                    contact: ContactDto,
+                    whatsappLinked: boolean,
+                    telegramLinked: boolean): Promise<ContactDto> {
+    const params: HttpParams = new HttpParams()
+      .append('whatsapp-linked', whatsappLinked)
+      .append('telegram-linked', telegramLinked);
     return lastValueFrom(
-      this.http.post<ContactDto>(`${this._REST_PATH}/${sellerId ?? null}/contacts`, contact)
+      this.http.post<ContactDto>(`${this._REST_PATH}/${sellerId ?? null}/contacts`, contact, { params: params })
     );
   }
 
