@@ -15,6 +15,12 @@ services:
     networks:
       - backend
     restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          memory: "${POSTGRES_MEM}m"
+        limits:
+          memory: "${POSTGRES_MEM}m"
 
   spring-boot:
     image: mater-rest
@@ -33,6 +39,12 @@ services:
     networks:
       - backend
     restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          memory: "${SPRING_BOOT_MEM}m"
+        limits:
+          memory: "${SPRING_BOOT_MEM}m"
 
   angular:
     image: mater-web
@@ -45,6 +57,12 @@ services:
     networks:
       - frontend
     restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          memory: "${ANGULAR_MEM}m"
+        limits:
+          memory: "${ANGULAR_MEM}m"
 
 volumes:
   postgres-data:

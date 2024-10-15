@@ -5,6 +5,7 @@ FRONTEND_PATH_PREFIX := $(PROJECT_PATH_PREFIX)/mater-webapp
 CI_CD_PATH_PREFIX := $(PROJECT_PATH_PREFIX)/mater-ci-cd
 
 # scripts location and names below
+MEMORY_CALCULATING_SCRIPT := $(CI_CD_PATH_PREFIX)/scripts/calculate-memory-limits.py
 REMOVING_CONTAINER_SCRIPT := $(CI_CD_PATH_PREFIX)/scripts/remove-container.sh
 REMOVING_IMAGE_SCRIPT := $(CI_CD_PATH_PREFIX)/scripts/remove-image.sh
 ENVIRONMENT_VALIDATION_SCRIPT := $(CI_CD_PATH_PREFIX)/scripts/validate-env.py
@@ -71,6 +72,10 @@ validate-env:
 	python3 $(ENVIRONMENT_VALIDATION_SCRIPT) -e $(ENV_FILE_PATH) -d $(ENV_DENIED_VALUE) -s $(P12_FILE_PATH)
 ve: validate-env # short alias
 
+calculate-memory-volume:
+	python3 $(MEMORY_CALCULATING_SCRIPT) -e $(ENV_FILE_PATH)
+cmv: calculate-memory-volume # short alias
+
 copy-environment-file-to-backend:
 	chmod +x $(COPYING_ENV_FILE_TO_BACKEND_SCRIPT)
 	$(COPYING_ENV_FILE_TO_BACKEND_SCRIPT)
@@ -79,6 +84,7 @@ ceftb: copy-environment-file-to-backend # short alias
 build-backend: \
 	remove-backend-image \
 	copy-environment-file-to-backend \
+	calculate-memory-volume \
 	validate-env \
 	process-maven
 	chmod +x $(BUILDING_BACKEND_SCRIPT)
@@ -86,6 +92,7 @@ build-backend: \
 bb: build-backend # short alias
 
 build-frontend: \
+	calculate-memory-volume \
 	remove-frontend-image \
 	validate-env
 	# process-npm
@@ -94,6 +101,7 @@ build-frontend: \
 bf: build-frontend # short alias
 
 build-all: \
+	calculate-memory-volume \
 	build-backend \
 	build-frontend
 ba: build-all # short alias
