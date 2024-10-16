@@ -10,7 +10,7 @@ import {InputTextareaModule} from "primeng/inputtextarea";
 import {NotificationService} from "../../../services/https/notification.service";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
 import {StorageService} from "../../../services/utils/storage.service";
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgIf} from "@angular/common";
 import {areOnlyWhitespaces} from "../../../services/utils/validators";
 import {AbstractFormComponent} from "../../core/abstract-form/abstract-form.component";

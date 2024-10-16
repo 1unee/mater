@@ -20,20 +20,15 @@ export class StorageService {
               private messageService: OneuneMessageService) {
   }
 
-  get isAuthorized(): boolean {
-    return !!this.localStorage.getItem(StorageService.USER_KEY);
+  get isUserAuthorized(): boolean {
+    return !!this.user;
   }
 
   get user(): UserDto {
-    if (this.isAuthorized) {
-      return JSON.parse(this.localStorage.getItem(StorageService.USER_KEY)!);
-    } else {
-      this.messageService.showError('Информация о пользователе не получена!');
-      throw new Error("Не удалось авторизоваться!");
-    }
+    return JSON.parse(this.localStorage.getItem(StorageService.USER_KEY)!);
   }
 
-  authenticateUser(user: UserDto): void {
+  authorizeUser(user: UserDto): void {
     this.localStorage.removeItem(StorageService.USER_KEY);
     this.localStorage.setItem(StorageService.USER_KEY, JSON.stringify(user));
   }

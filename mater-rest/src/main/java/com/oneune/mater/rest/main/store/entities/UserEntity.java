@@ -24,13 +24,17 @@ import java.util.List;
 public class UserEntity extends AbstractEntity {
 
     String username;
+    boolean isUsernameSet;
 
     String email;
     boolean isEmailSet;
 
+    boolean registeredByTelegram;
     Long telegramId;
     Long telegramChatId;
-    Instant registeredAt;
+
+    @Builder.Default
+    Instant registeredAt = Instant.now();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "personal_id")

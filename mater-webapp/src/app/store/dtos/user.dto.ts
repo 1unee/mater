@@ -5,10 +5,12 @@ import {SellerDto} from "./seller.dto";
 
 export class UserDto extends AbstractDto {
   username: string;
+  isUsernameSet: boolean;
   email: string;
   isEmailSet: boolean;
   personal: PersonalDto;
   seller: SellerDto;
+  registeredByTelegram: boolean;
   telegramId: number;
   telegramChatId: number;
   registeredAt: Date;

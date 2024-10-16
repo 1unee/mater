@@ -21,6 +21,9 @@ import {LOADING} from "../../../../app.config";
 import {StorageService} from "../../../../services/utils/storage.service";
 import {VariableFieldEnum} from "../../../../store/enums/variable-field.enum";
 import {LoadingReference} from "../../../../store/interfaces/loading-reference.interface";
+import {LongClickDirective} from "../../../../services/directives/long-click.directive";
+import {UserTokenDto} from "../../../../store/dtos/user-token.dto";
+import {OneuneRouterService} from "../../../../services/utils/oneune-router.service";
 
 @Component({
   selector: 'app-user-description',
@@ -39,7 +42,8 @@ import {LoadingReference} from "../../../../store/interfaces/loading-reference.i
     CalendarModule,
     FormsModule,
     InputTextModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    LongClickDirective
   ],
   templateUrl: './user-description.component.html',
   styleUrl: './user-description.component.scss'
@@ -55,7 +59,8 @@ export class UserDescriptionComponent implements OnInit {
               private confirmationService: ConfirmationService,
               private userService: UserService,
               @Inject(LOADING) public loading: LoadingReference,
-              private storageService: StorageService) {
+              private storageService: StorageService,
+              private routerService: OneuneRouterService) {
   }
 
   ngOnInit(): void {
@@ -100,5 +105,24 @@ export class UserDescriptionComponent implements OnInit {
     } finally {
       this.loading.value.next(false);
     }
+  }
+
+  async onOpenTelegramBot(): Promise<void> {
+    const userToken: UserTokenDto = await this.userService.getUserToken(this.storageService.user.id);
+    this.clipboardService.copyWithCustomMessage(userToken.value, 'Код скопирован!');
+  }
+
+  private _confirmTelegramBotOpening(): void {
+    this.confirmationService.confirm({
+      message: 'Регистрация через телеграмм-бота приоритетнее, чтобы ты мог пользоваться уведомлениями через телеграмм-бота. Открыть его?',
+      header: 'Подтверждение',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Да',
+      acceptButtonStyleClass: 'p-1',
+      accept: async () => this.routerService.absoluteRedirect('https://t.me/MaterTelegramBot'),
+      rejectLabel: 'Нет',
+      rejectButtonStyleClass: 'p-1',
+      reject: () => this.messageService.showInfo('Понял, тогда пока оставляем как есть')
+    });
   }
 }

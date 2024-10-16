@@ -22,11 +22,14 @@ import java.util.List;
 @Data
 public class UserDto extends AbstractDto {
     String username;
+    @JsonProperty("isUsernameSet")
+    boolean isUsernameSet;
     String email;
     @JsonProperty("isEmailSet")
     boolean isEmailSet;
     PersonalDto personal;
     SellerDto seller;
+    boolean registeredByTelegram;
     Long telegramId;
     Long telegramChatId;
     Instant registeredAt;

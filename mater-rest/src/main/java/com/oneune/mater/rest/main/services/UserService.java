@@ -4,10 +4,13 @@ import com.oneune.mater.rest.bot.utils.TelegramBotUtils;
 import com.oneune.mater.rest.main.contracts.CRUDable;
 import com.oneune.mater.rest.main.readers.UserReader;
 import com.oneune.mater.rest.main.repositories.UserRepository;
+import com.oneune.mater.rest.main.repositories.UserTokenRepository;
 import com.oneune.mater.rest.main.store.dtos.UserDto;
+import com.oneune.mater.rest.main.store.dtos.UserTokenDto;
 import com.oneune.mater.rest.main.store.entities.*;
 import com.oneune.mater.rest.main.store.enums.RoleEnum;
 import com.oneune.mater.rest.main.store.enums.VariableFieldEnum;
+import com.oneune.mater.rest.main.store.exceptions.BusinessLogicException;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
 import jakarta.annotation.Nullable;
@@ -26,7 +29,9 @@ import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Service
@@ -42,13 +47,19 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
     RoleService roleService;
     SellerService sellerService;
     SettingService settingService;
+    UserTokenRepository userTokenRepository;
 
     @Transactional
     @Override
     public UserDto post(UserDto userDto) {
-        UserEntity userEntity = new UserEntity();
-        modelMapper.map(userDto, userEntity);
-        userRepository.saveAndFlush(userEntity);
+        if (Objects.isNull(userDto)) {
+            return registerByForeignLink();
+        } else {
+            UserEntity userEntity = new UserEntity();
+            modelMapper.map(userDto, userEntity);
+            userEntity.setRegisteredByTelegram(false);
+            userRepository.saveAndFlush(userEntity);
+        }
         return userReader.getById(userDto.getId());
     }
 
@@ -65,11 +76,11 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
     @Transactional
     public UserDto registerOrGet(User telegramUser, String telegramChatId, List<String> additionalRoles) {
         Optional<UserDto> user = userReader.getByUsername(telegramUser.getUserName());
-        return user.orElseGet(() -> register(telegramUser, telegramChatId.equals("undefined") ? -1 : Long.parseLong(telegramChatId), additionalRoles));
+        return user.orElseGet(() -> register(telegramUser, telegramChatId.equals("undefined") ? null : Long.parseLong(telegramChatId), additionalRoles));
     }
 
     @Transactional
-    protected UserDto register(User telegramUser, Long telegramChatId, List<String> additionalRoles) {
+    protected UserDto register(User telegramUser, @Nullable Long telegramChatId, List<String> additionalRoles) {
         RoleEntity roleEntity = roleService.getEntityByEnum(RoleEnum.USER);
         PersonalEntity personalEntity = personalService.postByTelegramUser(telegramUser,null,null);
         SellerEntity sellerEntity = sellerService.post(telegramUser.getUserName());
@@ -83,7 +94,7 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
     }
 
     private UserEntity buildUserByTelegramUser(User telegramUser,
-                                               Long telegramChatId,
+                                               @Nullable Long telegramChatId,
                                                @Nullable @Email String email,
                                                PersonalEntity personalEntity,
                                                SellerEntity sellerEntity,
@@ -96,7 +107,9 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
         UserEntity userEntity = UserEntity.builder()
                 .username(Optional.ofNullable(telegramUser.getUserName())
                         .orElse("user_%s".formatted(telegramUser.getId())))
+                .isUsernameSet(true)
                 .email(email)
+                .registeredByTelegram(true)
                 .telegramId(telegramUser.getId())
                 .telegramChatId(telegramChatId)
                 .registeredAt(Instant.now())
@@ -106,6 +119,34 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
                 .build();
         userRoleLinkEntities.forEach(userRoleLinkEntity -> userRoleLinkEntity.setUser(userEntity));
         return userEntity;
+    }
+
+    @Transactional
+    public UserDto registerByForeignLink() {
+        UserEntity userEntity = UserEntity.builder()
+                .username("user-" + UUID.randomUUID())
+                .isUsernameSet(false)
+                .registeredAt(Instant.now())
+                .personal(PersonalEntity.builder().build())
+                .seller(SellerEntity.builder().build())
+                .registeredByTelegram(false)
+                .build();
+
+        UserRoleLinkEntity userRoleLinkEntity = UserRoleLinkEntity.builder()
+                .user(userEntity)
+                .role(roleService.getEntityByEnum(RoleEnum.USER))
+                .build();
+        userEntity.setUserRoleLinks(List.of(userRoleLinkEntity));
+        userRepository.saveAndFlush(userEntity);
+
+        UserTokenEntity userTokenEntity = UserTokenEntity.builder()
+                .user(userEntity)
+                .value(UserTokenEntity.getUniqueValue())
+                .build();
+        userTokenRepository.save(userTokenEntity);
+
+        settingService.postDefault(userEntity);
+        return userReader.getById(userEntity.getId());
     }
 
     @Transactional
@@ -131,11 +172,13 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
     private void commitVariableField(@NonFinal UserEntity userEntity,
                                      VariableFieldEnum variableField) {
         switch (variableField) {
+            case USERNAME -> userEntity.setUsernameSet(true);
             case EMAIL -> userEntity.setEmailSet(true);
             case FIRST_NAME -> userEntity.getPersonal().setFirstNameSet(true);
             case LAST_NAME -> userEntity.getPersonal().setLastNameSet(true);
             case MIDDLE_NAME -> userEntity.getPersonal().setMiddleNameSet(true);
             case BIRTH_DATE -> userEntity.getPersonal().setBirthDateSet(true);
+            default -> throw new IllegalStateException("Unexpected value: " + variableField);
         }
     }
 
@@ -164,5 +207,39 @@ public class UserService implements CRUDable<UserDto, UserEntity> {
 
     public List<UserDto> getUsers() {
         return userReader.getUsers();
+    }
+
+    public UserTokenDto getUserToken(Long userId) {
+        UserEntity userEntity = getEntityById(userId);
+        Optional<UserTokenEntity> tokenEntity = userTokenRepository.findByUser(userEntity);
+        if (tokenEntity.isPresent()) {
+            return modelMapper.map(tokenEntity.get(), UserTokenDto.class);
+        } else {
+            throw new BusinessLogicException("User token not created yet!");
+        }
+    }
+
+    public UserDto putByTelegramUser(Long userId,
+                                     Integer token,
+                                     User telegramUser,
+                                     String telegramChatId,
+                                     List<String> additionalRoles) {
+        UserEntity userEntity = getEntityById(userId);
+        Optional<UserTokenEntity> optOriginalToken = userTokenRepository.findByUser(userEntity);
+        Optional<UserTokenEntity> optProvidedToken = userTokenRepository.findByValue(token);
+        if (optOriginalToken.isEmpty() || optProvidedToken.isEmpty()) {
+            throw new BusinessLogicException("Такого токена не существует...");
+        } else {
+            if (optOriginalToken.get().getValue().equals(optProvidedToken.get().getValue())) {
+                userEntity.setUsername(telegramUser.getUserName());
+                userEntity.setUsernameSet(true);
+                userEntity.setTelegramId(telegramUser.getId());
+                userEntity.setTelegramChatId(telegramChatId.equals("undefined") ? null : Long.parseLong(telegramChatId));
+                userRepository.saveAndFlush(userEntity);
+                return getById(userEntity.getId());
+            } else {
+                throw new BusinessLogicException("Неверное значение токена!");
+            }
+        }
     }
 }

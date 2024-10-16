@@ -8,7 +8,7 @@ import {authGuard} from "./services/guards/auth.guard";
 import {AdministratingPageComponent} from "./components/pages/administrating-page/administrating-page.component";
 import {GalleriaPageComponent} from "./components/pages/galleria-page/galleria-page.component";
 
-export const defaultRoute: Route = { path: 'support', component: SupportPageComponent };
+export const defaultRoute: Route = { path: 'support', component: SupportPageComponent, canActivate: [authGuard] };
 
 export const routes: Routes = [
   { path: 'profile', component: ProfilePageComponent, canActivate: [authGuard] },

@@ -467,12 +467,14 @@ export class CarListComponent implements OnInit {
   }
 
   onCarForeignLinkCopy(car: CarDto): void {
-    if (environment.production) {
-      this.clipboardService.copyWithCustomMessage(`${car.brand} ${car.model} (${car.productionYear})`, 'Машина скопирована. Введите скопированное значение в поиске, чтобы ее найти');
-    } else {
-      const href: string = `${window.location.href}?car-id=${car.id}`;
-      this.clipboardService.copyWithCustomMessage(href, 'Ссылка на машину скопирована!');
-    }
+    // if (environment.production) {
+    //   this.clipboardService.copyWithCustomMessage(`${car.brand} ${car.model} (${car.productionYear})`, 'Машина скопирована. Введите скопированное значение в поиске, чтобы ее найти');
+    // } else {
+    //   const href: string = `${window.location.href}?car-id=${car.id}`;
+    //   this.clipboardService.copyWithCustomMessage(href, 'Ссылка на машину скопирована!');
+    // }
+    const href: string = `${window.location.href}?car-id=${car.id}`;
+    this.clipboardService.copyWithCustomMessage(href, 'Ссылка на машину скопирована!');
   }
 
   async onCloseOpenedForeignLink(): Promise<void> {

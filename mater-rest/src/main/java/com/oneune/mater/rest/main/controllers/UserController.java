@@ -3,10 +3,12 @@ package com.oneune.mater.rest.main.controllers;
 import com.oneune.mater.rest.main.contracts.CRUDable;
 import com.oneune.mater.rest.main.services.UserService;
 import com.oneune.mater.rest.main.store.dtos.UserDto;
+import com.oneune.mater.rest.main.store.dtos.UserTokenDto;
 import com.oneune.mater.rest.main.store.entities.UserEntity;
 import com.oneune.mater.rest.main.store.enums.VariableFieldEnum;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
+import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,7 +28,7 @@ public class UserController implements CRUDable<UserDto, UserEntity> {
 
     @PostMapping
     @Override
-    public UserDto post(@RequestBody UserDto user) {
+    public UserDto post(@RequestBody @Nullable UserDto user) {
         return userService.post(user);
     }
 
@@ -35,6 +37,15 @@ public class UserController implements CRUDable<UserDto, UserEntity> {
                                  @RequestParam(name = "telegram-chat-id") String telegramChatId,
                                  @RequestParam(required = false, defaultValue = "") List<String> additionalRoles) {
         return this.userService.registerOrGet(telegramUser, telegramChatId, additionalRoles);
+    }
+
+    @PutMapping("by-telegram-user")
+    public UserDto putByTelegramUser(@RequestBody User telegramUser,
+                                     @RequestParam(name = "user-id") Long userId,
+                                     @RequestParam(name = "token") Integer token,
+                                     @RequestParam(name = "telegram-chat-id") String telegramChatId,
+                                     @RequestParam(required = false, defaultValue = "") List<String> additionalRoles) {
+        return this.userService.putByTelegramUser(userId, token, telegramUser, telegramChatId, additionalRoles);
     }
 
     @PutMapping("{id}")
@@ -72,5 +83,10 @@ public class UserController implements CRUDable<UserDto, UserEntity> {
     @GetMapping
     public List<UserDto> getUsers() {
         return userService.getUsers();
+    }
+
+    @GetMapping("{user-id}/token")
+    public UserTokenDto getUserToken(@PathVariable(name = "user-id") Long userId) {
+        return userService.getUserToken(userId);
     }
 }

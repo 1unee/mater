@@ -122,12 +122,14 @@ CREATE SEQUENCE IF NOT EXISTS user_id_seq
 
 CREATE TABLE IF NOT EXISTS "user" (
     id int8 NOT NULL DEFAULT nextval('user_id_seq'),
+    username varchar(255),
+    is_username_set boolean DEFAULT FALSE,
     email varchar(255),
     is_email_set boolean DEFAULT FALSE,
-    username varchar(255),
     personal_id int8,
     seller_id int8,
     registered_at timestamptz(6),
+    registered_by_telegram boolean NOT NULL,
     telegram_id int8,
     telegram_chat_id int8,
     PRIMARY KEY (id),

@@ -6,12 +6,27 @@
       <p-inputGroupAddon styleClass="w-6rem text-sm">
         Ник
       </p-inputGroupAddon>
-      <p-inputGroupAddon styleClass="w-8rem text-sm" (click)="clipboardService.copyWithCustomMessage(user.username, 'Ник скопирован!')">
+      <p-inputGroupAddon *ngIf="user.isUsernameSet; else usernameNotSetBlock"
+                         styleClass="w-8rem text-sm"
+                         (click)="clipboardService.copyWithCustomMessage(user.username, 'Ник скопирован!')">
         {{ user.username }}
       </p-inputGroupAddon>
+      <ng-template #usernameNotSetBlock>
+        <p-inputGroupAddon styleClass="w-8rem">
+          <input pInputText
+                 type="text"
+                 class="p-1 w-full text-sm"
+                 [placeholder]="user.username"
+                 [(ngModel)]="user.username"
+                 (focusout)="confirmEditing(VariableFieldEnum.USERNAME)"
+          />
+        </p-inputGroupAddon>
+      </ng-template>
+
       <p-inputGroupAddon>
-        <i class="pi pi-lock text-lg w-1rem"
-           (click)="messageService.showInfo('Ник менять нельзя. При нажатии левее можно его скопировать в буфер обмена.')"
+        <i class="text-lg w-1rem"
+           [ngClass]="user.isUsernameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
+           (click)="messageService.showInfo('Ник поменять можно только в случае регистрации по внешней ссылке. При регистрации из телеграмма это делать нельзя, чтобы сохранить целостность данных.')"
         ></i>
       </p-inputGroupAddon>
     </p-inputGroup>
@@ -182,4 +197,14 @@
       ></i>
     </p-inputGroupAddon>
   </p-inputGroup>
+
+  <p-button styleClass="text-center p-2 m-1"
+            icon="pi pi-instagram"
+            severity="secondary"
+            appLongClick
+            label="Открыть телеграмм-бота"
+            [outlined]="true"
+            (click)=onOpenTelegramBot()
+            (longClick)="messageService.showInfo('Открывает телеграмм-бота в телеграмме')"
+  ></p-button>
 </div>
