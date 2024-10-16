@@ -8,11 +8,11 @@ import sys
 def _parse_args() -> t.Tuple[str, int, int, int]:
     parser = ap.ArgumentParser()
     parser.add_argument('-e', '--envfilename', default='./.env', help="The *.env file path.")
-    parser.add_argument('-db', '--database-container-limit', default=15, help="A memory limit for database (postgres) docker container in percents.")
-    parser.add_argument('-b', '--backend-container-limit', default=35, help="A memory limit for backend (spring-boot) docker container in percents.")
-    parser.add_argument('-f', '--frontend-container-limit', default=10, help="A memory limit for frontend (angular) docker container in percents.")
+    parser.add_argument('-db', '--databasecontainerlimit', default=15, help="A memory limit for database (postgres) docker container in percents.")
+    parser.add_argument('-b', '--backendcontainerlimit', default=35, help="A memory limit for backend (spring-boot) docker container in percents.")
+    parser.add_argument('-f', '--frontendcontainerlimit', default=10, help="A memory limit for frontend (angular) docker container in percents.")
     args: ap.Namespace = parser.parse_args()
-    return args.envfilename
+    return args.envfilename, args.databasecontainerlimit, args.backendcontainerlimit, args.frontendcontainerlimit
 
 def load_env_file(env_file: str) -> t.Dict[str, str]:
     if os.path.isfile(env_file):
