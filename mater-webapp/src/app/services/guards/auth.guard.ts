@@ -25,8 +25,7 @@ export const authGuard: CanActivateFn = async (route, state): Promise<any> => {
       let user: UserDto;
       const telegramTuningResult: boolean = telegramService.tune();
 
-      console.log(telegramTuningResult);
-      console.log(telegramService.tgWebApp);
+      messageService.showInfo(!telegramService.user ? 'undefined user' : JSON.stringify(telegramService.user));
 
       if (telegramTuningResult) {
         user = await userService.registerOrGet(telegramService.user!, telegramService.telegramChatId!);
