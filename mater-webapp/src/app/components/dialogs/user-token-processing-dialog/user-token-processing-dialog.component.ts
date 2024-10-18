@@ -60,11 +60,6 @@ export class UserTokenProcessingDialogComponent extends AbstractFormComponent<st
     this.clipboardService.copyWithCustomMessage(token.value, 'Код скопирован в буфер обмена!');
   }
 
-  protected _buildModel(): string {
-    this.userToken = this.form.value.userToken;
-    return this.userToken;
-  }
-
   protected _initializeForm(): void {
     this.form = this.formBuilder.group({
       userToken: ['', [
@@ -73,7 +68,13 @@ export class UserTokenProcessingDialogComponent extends AbstractFormComponent<st
     });
   }
 
+  protected _buildModel(): string {
+    this.userToken = this.form.value.userToken;
+    return this.userToken;
+  }
+
   async onSubmit(closeDialog: boolean): Promise<void> {
+    this._buildModel();
     try {
       this.loadingReference.value.next(true);
       const user: UserDto = await this.userService.putByTelegram(
@@ -82,7 +83,8 @@ export class UserTokenProcessingDialogComponent extends AbstractFormComponent<st
         this.telegramService.user!,
         this.telegramService.telegramChatId!
       );
-      this.userToken = '';this.storageService.updateUser(user);
+      this.userToken = '';
+      this.storageService.updateUser(user);
       this.messageService.showSuccess('Данные о твоем аккаунте успешно обновлены!');
       this.form.reset();
       if (closeDialog) {

@@ -78,7 +78,7 @@ public class CarService implements Command, CRUDable<CarDto, CarEntity> {
         modelMapper.map(carDto, carEntity);
         carEntity.setSeller(sellerEntity);
         carRepository.saveAndFlush(carEntity);
-        return carReader.getById(carEntity.getId());
+        return modelMapper.map(carEntity, CarDto.class);
     }
 
     @Transactional

@@ -25,7 +25,7 @@ export class TelegramService {
    * Fetches data from telegram bot.
    */
   tune(): boolean {
-    if (!this._tgWebApp) {
+    if (!this.user) {
       return false;
     } else {
       try {

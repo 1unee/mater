@@ -54,7 +54,7 @@ public class CarReader implements Readable<CarDto, CarEntity>, BaseQueryable<Car
     public JPAQuery<CarEntity> writeLightQuery(Predicate... predicates) {
         return writeBaseQuery(predicates)
                 .join(qSeller).on(qCar.seller.id.eq(qSeller.id)).fetchJoin()
-                .join(qContact).on(qContact.seller.id.eq(qContact.id)).fetchJoin()
+                .join(qContact).on(qContact.seller.id.eq(qSeller.id)).fetchJoin()
                 .leftJoin(qCarFile).on(qCarFile.car.id.eq(qCar.id)).fetchJoin();
     }
 

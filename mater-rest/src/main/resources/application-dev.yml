@@ -20,6 +20,9 @@ server:
 telegram:
   bot:
     token: ${TELEGRAM_BOT_DEV_TOKEN}
+#    menu:
+#      button:
+#        url: https://ca44-85-143-112-77.ngrok-free.app
 
 selectel:
   s3:
