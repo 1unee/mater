@@ -19,6 +19,7 @@ import {UserService} from "../../../services/https/user.service";
 import {UserDto} from "../../../store/dtos/user.dto";
 import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
 import {SettingService} from "../../../services/https/setting.service";
+import {TelegramService} from "../../../services/utils/telegram.service";
 
 @Component({
   selector: 'app-login-page',
@@ -45,11 +46,20 @@ export class LoginPageComponent extends AbstractFormComponent<UserLoginRequestDt
               @Inject(LOADING) public loadingReference: LoadingReference,
               private userService: UserService,
               private routerService: OneuneRouterService,
-              private settingService: SettingService) {
+              private settingService: SettingService,
+              private telegramService: TelegramService) {
     super(formBuilder, messageService, loadingReference);
   }
 
   async ngOnInit(): Promise<void> {
+    if (this.telegramService.tune()) {
+      const user: UserDto = await this.userService.registerOrGet(
+        this.telegramService.user!, this.telegramService.telegramChatId!
+      );
+      this.storageService.setUserSettings(await this.settingService.getByUserId(user.id));
+      this.routerService.relativeRedirect('support')
+      this.messageService.showSuccess(`Успешная авторизация с помощью телеграмма!`);
+    }
     this._initializeForm();
   }
 
