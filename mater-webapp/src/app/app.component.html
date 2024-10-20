@@ -25,8 +25,32 @@
   ></button>
 </div>
 
+<!-- custom confirmation content -->
 <p-confirmDialog acceptButtonStyleClass="p-2 p-button-secondary"
-                 rejectButtonStyleClass="p-2 p-button-secondary"
-                 [style]="{width: '80vw'}"
+                 rejectButtonStyleClass="p-2 p-button-secondary p-button-outlined"
+                 acceptLabel="Да"
+                 rejectLabel="Нет"
+                 [style]="{ width: '80vw' }"
                  [closable]="false"
-></p-confirmDialog>
+>
+  <ng-template pTemplate="header">
+    <div class="flex flex-column align-items-center w-full gap-3">
+      <div class="flex flex-row flex-wrap gap-3 text-xl">
+        <div class="flex align-items-center justify-content-center">
+          <i class="pi pi-spin pi-exclamation-circle text-2xl"></i>
+        </div>
+        <div class="flex align-items-center justify-content-center">
+          <b>
+            Подтверждение
+          </b>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="icon"></ng-template>
+  <ng-template pTemplate="message" let-message>
+    <div class="flex flex-column align-items-center w-full gap-3">
+      <p>{{ message.message }}</p>
+    </div>
+  </ng-template>
+</p-confirmDialog>

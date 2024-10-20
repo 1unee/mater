@@ -11,17 +11,17 @@ import {Button, ButtonDirective} from "primeng/button";
 import {ClipboardService} from "../../../services/utils/clipboard.service";
 import {CarService} from "../../../services/https/car.service";
 import {AbstractFormComponent} from "../../core/abstract-form/abstract-form.component";
-import {isInteger, isNumber, isText} from "../../../services/utils/validators";
 import {StorageService} from "../../../services/utils/storage.service";
 import {LOADING} from "../../../app.config";
 import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
-import {Dropdown, DropdownChangeEvent, DropdownModule} from "primeng/dropdown";
+import {Dropdown, DropdownModule} from "primeng/dropdown";
 import {GearboxEnum, GearboxTitle} from "../../../store/enums/gearbox.enum";
 import {CarStateEnum, CarStateTitle} from "../../../store/enums/car-state.enum";
 import {EngineOilTypeEnum, EngineOilTypeTitle} from "../../../store/enums/engine-oil-type.enum";
 import {SteeringWheelEnum, SteeringWheelTitle} from "../../../store/enums/steering-wheel.enum";
 import {TransmissionEnum, TransmissionTitle} from "../../../store/enums/transmission.enum";
 import {LongClickDirective} from "../../../services/directives/long-click.directive";
+import {OneuneValidators} from "../../../services/utils/validators";
 
 @Component({
   selector: 'app-car-processing-dialog',
@@ -43,7 +43,6 @@ import {LongClickDirective} from "../../../services/directives/long-click.direct
 })
 export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> implements OnInit {
 
-  car: CarDto;
   cars: CarDto[];
   carGearboxes: { label: string, value: GearboxEnum }[] = [
     { label: GearboxTitle.AUTOMATIC, value: GearboxEnum.AUTOMATIC },
@@ -78,7 +77,7 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
               private formBuilder: FormBuilder,
               private storageService: StorageService,
               @Inject(LOADING) public loadingReference: LoadingReference) {
-    super();
+    super(formBuilder, messageService, loadingReference);
   }
 
   async ngOnInit(): Promise<void> {
@@ -100,52 +99,56 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
   }
 
   private _initializeEditingCar(): void {
-    this.car = this.dynamicDialogConfig.data.car;
+    this.formObject = this.dynamicDialogConfig.data.car;
   }
 
   protected override _initializeForm(): void {
     this.form = this.formBuilder.group({
-      carBrand: [this.car.brand, [
-        Validators.required, isText()
+      carBrand: [this.formObject.brand, [
+        Validators.required, OneuneValidators.isText()
       ]],
-      carModel: [this.car.model, [
+      carModel: [this.formObject.model, [
         Validators.required
       ]],
-      carProductionYear: [this.car.productionYear, [
-        Validators.required, isNumber(), Validators.min(1500), Validators.max(2500), isInteger()
+      carProductionYear: [this.formObject.productionYear, [
+        Validators.required,
+        OneuneValidators.isNumber(),
+        Validators.min(1500),
+        Validators.max(2500),
+        OneuneValidators.isInteger()
       ]],
-      carPrice: [this.car.price, [
-        Validators.required, isNumber(), Validators.min(0)
+      carPrice: [this.formObject.price, [
+        Validators.required, OneuneValidators.isNumber(), Validators.min(0)
       ]],
-      carMileage: [this.car.mileage, [
-        Validators.required, isNumber(), Validators.min(0)
+      carMileage: [this.formObject.mileage, [
+        Validators.required, OneuneValidators.isNumber(), Validators.min(0)
       ]],
-      carVIN: [this.car.VIN, [
+      carVIN: [this.formObject.VIN, [
         Validators.required, Validators.minLength(17), Validators.maxLength(17)
       ]],
-      carOwnersAmount: [this.car.ownersAmount, [
-        Validators.required, isNumber(), Validators.min(0)
+      carOwnersAmount: [this.formObject.ownersAmount, [
+        Validators.required, OneuneValidators.isNumber(), Validators.min(0)
       ]],
-      carPower: [this.car.power, [
-        Validators.required, isNumber(), Validators.min(0)
+      carPower: [this.formObject.power, [
+        Validators.required, OneuneValidators.isNumber(), Validators.min(0)
       ]],
-      carDocumentsColor: [this.car.documentsColor, [
-        Validators.required, isText()
+      carDocumentsColor: [this.formObject.documentsColor, [
+        Validators.required, OneuneValidators.isText()
       ]],
-      carGearbox: [this.car.gearbox, [
-        Validators.required, isText()
+      carGearbox: [this.formObject.gearbox, [
+        Validators.required, OneuneValidators.isText()
       ]],
-      carState: [this.car.state, [
-        Validators.required, isText()
+      carState: [this.formObject.state, [
+        Validators.required, OneuneValidators.isText()
       ]],
-      carEngineOilType: [this.car.engineOilType, [
-        Validators.required, isText()
+      carEngineOilType: [this.formObject.engineOilType, [
+        Validators.required, OneuneValidators.isText()
       ]],
-      carTransmission: [this.car.transmission, [
-        Validators.required, isText()
+      carTransmission: [this.formObject.transmission, [
+        Validators.required, OneuneValidators.isText()
       ]],
-      carSteeringWheel: [this.car.steeringWheel, [
-        Validators.required, isText()
+      carSteeringWheel: [this.formObject.steeringWheel, [
+        Validators.required, OneuneValidators.isText()
       ]]
     }, {
       validators: []
@@ -153,38 +156,38 @@ export class CarProcessingDialogComponent extends AbstractFormComponent<CarDto> 
   }
 
   protected override _buildModel(): CarDto {
-    this.car.brand = this.form.value.carBrand;
-    this.car.model = this.form.value.carModel;
-    this.car.productionYear = this.form.value.carProductionYear;
-    this.car.price = this.form.value.carPrice;
-    this.car.mileage = this.form.value.carMileage;
-    this.car.VIN = this.form.value.carVIN;
-    this.car.ownersAmount = this.form.value.carOwnersAmount;
-    this.car.power = this.form.value.carPower;
-    this.car.documentsColor = this.form.value.carDocumentsColor.substring(0, 1).toUpperCase()
+    this.formObject.brand = this.form.value.carBrand;
+    this.formObject.model = this.form.value.carModel;
+    this.formObject.productionYear = this.form.value.carProductionYear;
+    this.formObject.price = this.form.value.carPrice;
+    this.formObject.mileage = this.form.value.carMileage;
+    this.formObject.VIN = this.form.value.carVIN;
+    this.formObject.ownersAmount = this.form.value.carOwnersAmount;
+    this.formObject.power = this.form.value.carPower;
+    this.formObject.documentsColor = this.form.value.carDocumentsColor.substring(0, 1).toUpperCase()
       + this.form.value.carDocumentsColor.substring(1);
-    this.car.gearbox = this.form.value.carGearbox;
-    this.car.state = this.form.value.carState;
-    this.car.engineOilType = this.form.value.carEngineOilType;
-    this.car.transmission = this.form.value.carTransmission;
-    this.car.steeringWheel = this.form.value.carSteeringWheel;
-    return this.car;
+    this.formObject.gearbox = this.form.value.carGearbox;
+    this.formObject.state = this.form.value.carState;
+    this.formObject.engineOilType = this.form.value.carEngineOilType;
+    this.formObject.transmission = this.form.value.carTransmission;
+    this.formObject.steeringWheel = this.form.value.carSteeringWheel;
+    return this.formObject;
   }
 
   async onSubmit(closeDialog: boolean): Promise<void> {
-    const carId: number = this.car.id;
-    this.car = this._buildModel();
+    const carId: number = this.formObject.id;
+    this.formObject = this._buildModel();
     try {
       this.loadingReference.value.next(true);
-      if (!!this.car.id) {
-        this.car = await this.carService.put(this.car);
+      if (!!this.formObject.id) {
+        this.formObject = await this.carService.put(this.formObject);
         this.messageService.showSuccess('Данные о машине успешно изменены!');
       } else {
-        this.car = await this.carService.post(this.storageService.user.seller.id, this.car);
+        this.formObject = await this.carService.post(this.storageService.user.seller.id, this.formObject);
         this.messageService.showSuccess('Машина успешно внесена в список!');
       }
       if (!carId) {
-        this.car = new CarDto();
+        this.formObject = new CarDto();
         this.form.reset();
       }
       if (closeDialog) {

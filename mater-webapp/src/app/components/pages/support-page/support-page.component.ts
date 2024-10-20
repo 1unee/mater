@@ -9,11 +9,7 @@ import {TagModule} from "primeng/tag";
 import {FeedbackDialogComponent} from "../../dialogs/feedback-dialog/feedback-dialog.component";
 import {DialogService} from "primeng/dynamicdialog";
 import {LoaderComponent} from "../../core/loader/loader.component";
-import {RoleDto} from "../../../store/dtos/role.dto";
 import {RoleEnum} from "../../../store/enums/role.enum";
-import {
-  UserTokenProcessingDialogComponent
-} from "../../dialogs/user-token-processing-dialog/user-token-processing-dialog.component";
 
 @Component({
   selector: 'app-support-page',
@@ -38,30 +34,19 @@ export class SupportPageComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    if (!this.storageService.user.registeredByTelegram) {
-      this.openTokenDialog();
-    }
   }
 
   get isSupport(): boolean {
-    return this.storageService.user.roles.map((role: RoleDto): RoleEnum => role.name).includes(RoleEnum.SUPPORT);
+    return this.storageService.userHasRole(RoleEnum.SUPPORT);
   }
 
   get isAdmin(): boolean {
-    return this.storageService.user.roles.map((role: RoleDto): RoleEnum => role.name).includes(RoleEnum.ADMIN);
+    return this.storageService.userHasRole(RoleEnum.ADMIN);
   }
 
   onOpenFeedbackDialog(): void {
     this.dialogService.open(FeedbackDialogComponent, {
       header: `Обратная связь`,
-      width: '80%',
-      height: 'auto',
-    });
-  }
-
-  openTokenDialog(): void {
-    this.dialogService.open(UserTokenProcessingDialogComponent, {
-      header: `Синхронизация с телеграммом`,
       width: '80%',
       height: 'auto',
     });

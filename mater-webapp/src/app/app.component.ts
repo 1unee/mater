@@ -17,6 +17,7 @@ import {LoaderComponent} from "./components/core/loader/loader.component";
 import {ThemeService} from "./services/utils/theme.service";
 import {LongClickDirective} from "./services/directives/long-click.directive";
 import {StorageService} from "./services/utils/storage.service";
+import {SelectButtonModule} from "primeng/selectbutton";
 
 @Component({
   selector: 'app-root',
@@ -33,7 +34,8 @@ import {StorageService} from "./services/utils/storage.service";
     ConfirmDialogModule,
     StyleClassModule,
     LoaderComponent,
-    LongClickDirective
+    LongClickDirective,
+    SelectButtonModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -95,4 +97,6 @@ export class AppComponent implements OnInit {
     this.messageService.clearScreen();
     this.messages = [];
   }
+
+    protected readonly JSON = JSON;
 }

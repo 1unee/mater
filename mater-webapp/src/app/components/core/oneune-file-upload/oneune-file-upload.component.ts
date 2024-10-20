@@ -121,13 +121,7 @@ export class OneuneFileUploadComponent implements OnInit {
   private _confirmCleaning(): void {
     this.confirmationService.confirm({
       message: 'Ты уверен, что хочешь убрать выбранные файлы? Потом придется выбирать их заново',
-      header: 'Подтверждение',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Да',
-      acceptButtonStyleClass: 'p-1',
       accept: () => this.files = [],
-      rejectLabel: 'Нет',
-      rejectButtonStyleClass: 'p-1',
       reject: () => {}
     });
   }

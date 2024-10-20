@@ -1,4 +1,6 @@
-<div class="container">
+<div *ngIf="storageService.isUserAuthorized"
+     class="container"
+>
   <p-menubar styleClass="border-round-xl"
              [model]="items"
   />

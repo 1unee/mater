@@ -12,12 +12,12 @@ import {OneuneMessageService} from "../../../services/utils/oneune-message.servi
 import {StorageService} from "../../../services/utils/storage.service";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgIf} from "@angular/common";
-import {areOnlyWhitespaces} from "../../../services/utils/validators";
 import {AbstractFormComponent} from "../../core/abstract-form/abstract-form.component";
 import {LOADING} from "../../../app.config";
 import {LoadingReference} from "../../../store/interfaces/loading-reference.interface";
 import {DynamicDialogRef} from "primeng/dynamicdialog";
 import {LongClickDirective} from "../../../services/directives/long-click.directive";
+import {OneuneValidators} from "../../../services/utils/validators";
 
 @Component({
   selector: 'app-feedback-dialog',
@@ -40,15 +40,13 @@ import {LongClickDirective} from "../../../services/directives/long-click.direct
 })
 export class FeedbackDialogComponent extends AbstractFormComponent<string> implements OnInit {
 
-  messageBody: string;
-
   constructor(private dynamicDialogRef: DynamicDialogRef,
               private notificationService: NotificationService,
               public messageService: OneuneMessageService,
               private storageService: StorageService,
               private formBuilder: FormBuilder,
               @Inject(LOADING) public loadingReference: LoadingReference) {
-    super();
+    super(formBuilder, messageService, loadingReference);
   }
 
   ngOnInit(): void {
@@ -58,7 +56,7 @@ export class FeedbackDialogComponent extends AbstractFormComponent<string> imple
   protected override _initializeForm(): void {
     this.form = this.formBuilder.group({
       messageBody: ['', [
-        Validators.required, areOnlyWhitespaces()
+        Validators.required, OneuneValidators.areOnlyWhitespaces()
       ]],
     });
   }
@@ -71,8 +69,11 @@ export class FeedbackDialogComponent extends AbstractFormComponent<string> imple
     try {
       this.loadingReference.value.next(true);
       this.notificationService.sendSimpleMailToSelf(this.storageService.user.username, this._buildModel())
-        .catch((): void => this.messageService.showError('К сожалению, доставить твое пожелание разработчику не получилось по техническим причинам. Попробуй чуть позже...'))
-      this.messageBody = '';
+        .catch((): void => this.messageService.showError(
+          'К сожалению, доставить твое пожелание разработчику ' +
+          'не получилось по техническим причинам. Попробуй чуть позже...'
+        ));
+      this.formObject = '';
       this.messageService.showSuccess('Обращение успешно отправлено разработчику!');
       this.form.reset();
       if (closeDialog) {

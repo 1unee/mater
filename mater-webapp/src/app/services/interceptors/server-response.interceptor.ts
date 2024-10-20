@@ -12,7 +12,7 @@ export const serverResponseInterceptor: HttpInterceptorFn = (
   return next(req).pipe(
     catchError((_error: any): Observable<never> => {
       if (_error && _error.error && _error.error.message && _error.error.message !== 'Нет информации') {
-        oneuneMessageService.showError(`${_error.error.message}: ${JSON.stringify(_error)}`);
+        oneuneMessageService.showError(`${_error.error.message}`);
         return throwError(_error.error.message);
       } else {
         oneuneMessageService.showByHttpStatusCode(_error.status);

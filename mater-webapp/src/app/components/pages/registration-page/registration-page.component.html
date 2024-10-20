@@ -1,0 +1,147 @@
+<form [formGroup]="form">
+  <div>
+    <div class="flex justify-content-center flex-wrap">
+      <div class="flex align-items-center justify-content-center">
+        <div class="grid p-3">
+
+          <!-- username -->
+          <div class="col-12 mt-2 p-0">
+            <div class="flex justify-content-center flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <p-iconField iconPosition="left">
+                  <p-inputIcon styleClass="pi pi-user"/>
+                  <input formControlName="username"
+                         class="w-full"
+                         type="text"
+                         pInputText
+                         placeholder="Введи логин"
+                  />
+                </p-iconField>
+              </div>
+            </div>
+
+            <div class="flex justify-content-center flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <div *ngIf="form.get('username')?.invalid && form.get('username')?.touched" class="p-error m-2">
+                  <small *ngIf="form.get('username')?.errors?.['username']">
+                    Поле не может быть пустым
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- first password -->
+          <div class="col-12 mt-2 p-0">
+            <div class="flex justify-content-center flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <p-password formControlName="firstPassword"
+                            placeholder="Введи пароль"
+                            [feedback]="false"
+                            [toggleMask]="true"
+                />
+              </div>
+            </div>
+
+            <div class="flex justify-content-center flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <div *ngIf="form.get('firstPassword')?.invalid && form.get('firstPassword')?.touched" class="p-error m-2">
+                  <small *ngIf="form.get('firstPassword')?.errors?.['required']">
+                    Поле не может быть пустым
+                  </small>
+                  <small *ngIf="form.get('firstPassword')?.errors?.['minlength']">
+                    Минимальная длина пароля {{ form.get('firstPassword')?.errors?.['minlength']?.['requiredLength'] }} символов
+                  </small>
+                  <small *ngIf="form.get('firstPassword')?.errors?.['maxlength']">
+                    Максимальная длина пароля {{ form.get('firstPassword')?.errors?.['maxlength']?.['requiredLength'] }} символов
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- second password -->
+          <div class="col-12 mt-2 p-0">
+            <div class="flex justify-content-center flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <p-password formControlName="secondPassword"
+                            placeholder="Введи пароль повторно"
+                            [feedback]="false"
+                            [toggleMask]="true"
+                />
+              </div>
+            </div>
+
+            <div class="flex justify-content-center flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <div *ngIf="form.get('secondPassword')?.invalid && form.get('secondPassword')?.touched" class="p-error m-2">
+                  <small *ngIf="form.get('secondPassword')?.errors?.['required']">
+                    Поле не может быть пустым
+                  </small>
+                  <small *ngIf="form.get('secondPassword')?.errors?.['minlength']">
+                    Минимальная длина пароля {{ form.get('secondPassword')?.errors?.['minlength']?.['requiredLength'] }} символов
+                  </small>
+                  <small *ngIf="form.get('firstPassword')?.errors?.['maxlength']">
+                    Максимальная длина пароля {{ form.get('secondPassword')?.errors?.['maxlength']?.['requiredLength'] }} символов
+                  </small>
+                </div>
+                <small *ngIf="form.errors?.['passwordsNotEqual']" class="p-error m-2">
+                  Пароли не совпадают
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <!-- email -->
+          <div class="col-12 mt-2 p-0">
+            <div class="flex justify-content-center flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <p-iconField iconPosition="left">
+                  <p-inputIcon styleClass="pi pi-envelope"/>
+                  <input formControlName="email"
+                         class="w-full"
+                         type="text"
+                         pInputText
+                         placeholder="Введи почту (необязательно)"
+                  />
+                </p-iconField>
+              </div>
+            </div>
+
+            <div class="flex justify-content-center flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <div *ngIf="form.get('firstPassword')?.invalid && form.get('firstPassword')?.touched" class="p-error m-2">
+                  <small *ngIf="form.get('firstPassword')?.errors?.['required']">
+                    Поле не может быть пустым
+                  </small>
+                  <small *ngIf="form.get('firstPassword')?.errors?.['minlength']">
+                    Минимальная длина пароля {{ form.get('firstPassword')?.errors?.['minlength']?.['requiredLength'] }} символов
+                  </small>
+                  <small *ngIf="form.get('firstPassword')?.errors?.['maxlength']">
+                    Максимальная длина пароля {{ form.get('firstPassword')?.errors?.['maxlength']?.['requiredLength'] }} символов
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- buttons -->
+          <div class="col-12 mt-3 p-1">
+            <div class="flex justify-content-center flex-wrap">
+              <div class="flex align-items-center justify-content-center">
+                <p-button styleClass='text-center p-2 text-sm'
+                          label="Зарегистрироваться"
+                          icon="pi pi-check"
+                          severity="secondary"
+                          appLongClick
+                          (click)="onSubmit(true)"
+                          (longClick)="messageService.showInfo('Регистрация в приложении')"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

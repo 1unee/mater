@@ -2,6 +2,7 @@ package com.oneune.mater.rest.main.store.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oneune.mater.rest.main.store.dtos.core.AbstractDto;
+import com.oneune.mater.rest.main.store.enums.UserRegistrationState;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,14 +25,15 @@ public class UserDto extends AbstractDto {
     String username;
     @JsonProperty("isUsernameSet")
     boolean isUsernameSet;
+    String password;
     String email;
     @JsonProperty("isEmailSet")
     boolean isEmailSet;
     PersonalDto personal;
     SellerDto seller;
-    boolean registeredByTelegram;
     Long telegramId;
     Long telegramChatId;
     Instant registeredAt;
+    UserRegistrationState status;
     List<RoleDto> roles;
 }

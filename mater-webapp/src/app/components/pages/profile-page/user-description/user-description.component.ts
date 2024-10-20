@@ -5,7 +5,7 @@ import {UserDto} from "../../../../store/dtos/user.dto";
 import {ListboxModule} from "primeng/listbox";
 import {InputGroupAddonModule} from "primeng/inputgroupaddon";
 import {InputGroupModule} from "primeng/inputgroup";
-import {DatePipe, NgClass, NgIf} from "@angular/common";
+import {DatePipe, NgClass, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault} from "@angular/common";
 import '@angular/common/locales/global/ru';
 import {StyleClassModule} from "primeng/styleclass";
 import {OneuneMessageService} from "../../../../services/utils/oneune-message.service";
@@ -24,6 +24,11 @@ import {LoadingReference} from "../../../../store/interfaces/loading-reference.i
 import {LongClickDirective} from "../../../../services/directives/long-click.directive";
 import {UserTokenDto} from "../../../../store/dtos/user-token.dto";
 import {OneuneRouterService} from "../../../../services/utils/oneune-router.service";
+import {
+  RegistrationPageComponent
+} from "../../registration-page/registration-page.component";
+import {DialogService} from "primeng/dynamicdialog";
+import {UserRegistrationStateEnum} from "../../../../store/enums/user-registration-state.enum";
 
 @Component({
   selector: 'app-user-description',
@@ -43,7 +48,10 @@ import {OneuneRouterService} from "../../../../services/utils/oneune-router.serv
     FormsModule,
     InputTextModule,
     ConfirmDialogModule,
-    LongClickDirective
+    LongClickDirective,
+    NgSwitch,
+    NgSwitchCase,
+    NgSwitchDefault
   ],
   templateUrl: './user-description.component.html',
   styleUrl: './user-description.component.scss'
@@ -51,6 +59,7 @@ import {OneuneRouterService} from "../../../../services/utils/oneune-router.serv
 export class UserDescriptionComponent implements OnInit {
 
   readonly VariableFieldEnum = VariableFieldEnum;
+  readonly UserRegistrationStatusEnum = UserRegistrationStateEnum;
 
   user: UserDto;
 
@@ -60,7 +69,8 @@ export class UserDescriptionComponent implements OnInit {
               private userService: UserService,
               @Inject(LOADING) public loading: LoadingReference,
               private storageService: StorageService,
-              private routerService: OneuneRouterService) {
+              private routerService: OneuneRouterService,
+              private dialogService: DialogService) {
   }
 
   ngOnInit(): void {
@@ -75,13 +85,7 @@ export class UserDescriptionComponent implements OnInit {
     if (this._isEmailValid(this.user.email)) {
       this.confirmationService.confirm({
         message: 'Потом это поле нельзя будет поменять. Ты уверен в своем выборе?',
-        header: 'Подтверждение',
-        icon: 'pi pi-exclamation-triangle',
-        acceptLabel: 'Да',
-        acceptButtonStyleClass: 'p-1',
         accept: async () => this._editUser(variableField),
-        rejectLabel: 'Нет',
-        rejectButtonStyleClass: 'p-1',
         reject: () => this.messageService.showInfo('Понял, пока не сохраняем!')
       });
     } else {
@@ -98,7 +102,7 @@ export class UserDescriptionComponent implements OnInit {
     try {
       this.loading.value.next(true);
       this.user = await this.userService.putByParams(this.user, variableField);
-      this.storageService.updateUser(this.user);
+      this.storageService.setUser(this.user);
       this.messageService.showSuccess('Данные успешно обновлены!');
     } catch (e) {
       this.messageService.showError('Не удалось обновить данные!');
@@ -108,21 +112,27 @@ export class UserDescriptionComponent implements OnInit {
   }
 
   async onOpenTelegramBot(): Promise<void> {
-    const userToken: UserTokenDto = await this.userService.getUserToken(this.storageService.user.id);
-    this.clipboardService.copyWithCustomMessage(userToken.value, 'Код скопирован!');
+    this._confirmTelegramBotOpening();
   }
 
   private _confirmTelegramBotOpening(): void {
     this.confirmationService.confirm({
-      message: 'Регистрация через телеграмм-бота приоритетнее, чтобы ты мог пользоваться уведомлениями через телеграмм-бота. Открыть его?',
-      header: 'Подтверждение',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Да',
-      acceptButtonStyleClass: 'p-1',
-      accept: async () => this.routerService.absoluteRedirect('https://t.me/MaterTelegramBot'),
-      rejectLabel: 'Нет',
-      rejectButtonStyleClass: 'p-1',
+      message: 'Рекомендую тебе сейчас синхронизировать данные с телеграммом, ' +
+        'чтобы использовать его преимущества (защищенность, уведомления и так далее). ' +
+        'Открыть приложение через телеграмм?',
+      accept: async () => {
+        this.clipboardService.copyWithCustomMessage(this.storageService.user.password, 'Твой пароль скопирован!');
+        this.routerService.absoluteRedirect('https://t.me/MaterTelegramBot');
+      },
       reject: () => this.messageService.showInfo('Понял, тогда пока оставляем как есть')
+    });
+  }
+
+  register(): void {
+    this.dialogService.open(RegistrationPageComponent, {
+      header: `Регистрация`,
+      width: '80%',
+      height: 'auto',
     });
   }
 }

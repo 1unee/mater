@@ -20,29 +20,25 @@ export class StorageService {
               private messageService: OneuneMessageService) {
   }
 
-  get isUserAuthorized(): boolean {
-    return !!this.user;
+  setUser(user: UserDto): void {
+    this.localStorage.removeItem(StorageService.USER_KEY);
+    this.localStorage.setItem(StorageService.USER_KEY, JSON.stringify(user));
   }
 
   get user(): UserDto {
     return JSON.parse(this.localStorage.getItem(StorageService.USER_KEY)!);
   }
 
-  authorizeUser(user: UserDto): void {
-    this.localStorage.removeItem(StorageService.USER_KEY);
-    this.localStorage.setItem(StorageService.USER_KEY, JSON.stringify(user));
+  get isUserAuthorized(): boolean {
+    return !!this.user;
+  }
+
+  userHasRole(role: RoleEnum): boolean {
+    return this.isUserAuthorized && this.user.roles.map((role: RoleDto): RoleEnum => role.name).includes(role);
   }
 
   logoutUser(): void {
     this.localStorage.removeItem(StorageService.USER_KEY);
-  }
-
-  updateUser(user: UserDto): void {
-    this.localStorage.setItem(StorageService.USER_KEY, JSON.stringify(user));
-  }
-
-  userHasRole(role: RoleEnum): boolean {
-    return this.user.roles.map((role: RoleDto): RoleEnum => role.name).includes(role);
   }
 
   setUserSettings(settings: UserSettingsDto): void {

@@ -246,13 +246,7 @@ export class CarListComponent implements OnInit {
   private _confirmRedirecting(): void {
     this.confirmationService.confirm({
       message: 'Чтобы добавлять машины, сначала нужно оставить свои контакты для связи в профиле. Открыть профиль?',
-      header: 'Информация',
-      icon: 'pi pi-question-circle',
-      acceptLabel: 'Да',
-      acceptButtonStyleClass: 'p-1',
       accept: async () => this._openProfilePage('user-contacts'),
-      rejectLabel: 'Нет',
-      rejectButtonStyleClass: 'p-1',
       reject: () => {}
     });
   }
@@ -292,13 +286,7 @@ export class CarListComponent implements OnInit {
   private _confirmRemoving(carId: number): void {
     this.confirmationService.confirm({
       message: 'Ты уверен, что хочешь удалить машину? Потом это действие отменить нельзя будет.',
-      header: 'Подтверждение',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Да',
-      acceptButtonStyleClass: 'p-1',
       accept: async () => this._removeCar(carId),
-      rejectLabel: 'Нет',
-      rejectButtonStyleClass: 'p-1',
       reject: () => this.messageService.showInfo('Понял, оставляем как есть')
     });
   }
@@ -403,13 +391,7 @@ export class CarListComponent implements OnInit {
   private _confirmOpeningContactUrlReference(contact: ContactDto): void {
     this.confirmationService.confirm({
       message: 'Открыть ссылку?',
-      header: 'Подтверждение',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Да',
-      acceptButtonStyleClass: 'p-1',
       accept: () => this.routerService.absoluteRedirect(contact.value),
-      rejectLabel: 'Нет',
-      rejectButtonStyleClass: 'p-1',
       reject: () => this.messageService.showInfo('Понял, но контакт все равно скопирован в буфер обмена!')
     });
   }
@@ -434,13 +416,7 @@ export class CarListComponent implements OnInit {
   private _chooseCarImagesDemonstratingType(event: MouseEvent, overlayPanel: OverlayPanel, car: CarDto): void {
     this.confirmationService.confirm({
       message: 'Открыть в галерее прикрепленные фото машины?',
-      header: 'Подтверждение',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Да',
-      acceptButtonStyleClass: 'p-1',
       accept: () => this.routerService.relativeRedirect('galleria', { 'car-id': car.id }),
-      rejectLabel: 'Нет',
-      rejectButtonStyleClass: 'p-1',
       reject: () => overlayPanel.toggle(event)
     });
   }
@@ -467,12 +443,6 @@ export class CarListComponent implements OnInit {
   }
 
   onCarForeignLinkCopy(car: CarDto): void {
-    // if (environment.production) {
-    //   this.clipboardService.copyWithCustomMessage(`${car.brand} ${car.model} (${car.productionYear})`, 'Машина скопирована. Введите скопированное значение в поиске, чтобы ее найти');
-    // } else {
-    //   const href: string = `${window.location.href}?car-id=${car.id}`;
-    //   this.clipboardService.copyWithCustomMessage(href, 'Ссылка на машину скопирована!');
-    // }
     const href: string = `${window.location.href}?car-id=${car.id}`;
     this.clipboardService.copyWithCustomMessage(href, 'Ссылка на машину скопирована!');
   }
@@ -483,7 +453,7 @@ export class CarListComponent implements OnInit {
   }
 
   async onCommonSearchValue(commonSearchValue: string): Promise<void> {
-    this.actionService.track(ActionTypeEnum.COMMON_SEARCH, commonSearchValue).finally();
+    this.actionService.track(ActionTypeEnum.COMMON_SEARCH, commonSearchValue, this.storageService.user).finally();
     const carBrand: string = commonSearchValue.split(' ')[0];
     const carModel: string | undefined = !!commonSearchValue.split(' ')[1] ? commonSearchValue.split(' ')[1] : undefined;
     const carProductionYear: string | undefined

@@ -13,7 +13,7 @@ import {SellerService} from "../../../services/https/seller.service";
 import {ContactTypeEnum, ContactTypeTitle} from "../../../store/enums/contact-type.enum";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AbstractFormComponent} from "../../core/abstract-form/abstract-form.component";
-import {contactReferenceValue} from "../../../services/utils/validators";
+import {OneuneValidators} from "../../../services/utils/validators";
 import {NgIf} from "@angular/common";
 import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
 import {LongClickDirective} from "../../../services/directives/long-click.directive";
@@ -50,7 +50,6 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
   readonly ContactTypeEnum = ContactTypeEnum;
   readonly ContactTypeTitle = ContactTypeTitle;
 
-  contact: ContactDto;
   contactTypeConfig: ContactTypeConfig = {
     options: [
       { label: 'Телефон', value: ContactTypeEnum.PHONE, styleClass: 'p-1 text-sm' },
@@ -75,7 +74,7 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
               private confirmationService: ConfirmationService,
               @Inject(LOADING) public loadingReference: LoadingReference,
               private userService: UserService) {
-    super();
+    super(formBuilder, messageService, loadingReference);
   }
 
   ngOnInit(): void {
@@ -88,43 +87,43 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
   }
 
   private _initializeContact(): void {
-    this.contact = this.dynamicDialogConfig.data.contact;
+    this.formObject = this.dynamicDialogConfig.data.contact;
   }
 
   protected override _initializeForm(): void {
     this.form = this.formBuilder.group({
-      contactType: [this.contact.type, Validators.required],
-      contactReference: [this.contact.value, Validators.required],
+      contactType: [this.formObject.type, Validators.required],
+      contactReference: [this.formObject.value, Validators.required],
       whatsappLinked: [false, []],
       telegramLinked: [false, []]
     }, {
-      validators: [contactReferenceValue]
+      validators: [OneuneValidators.contactReferenceValue]
     });
   }
 
   protected override _buildModel(): ContactDto {
-    this.contact.type = this.form.value.contactType;
-    this.contact.value = this.form.value.contactReference;
-    return this.contact;
+    this.formObject.type = this.form.value.contactType;
+    this.formObject.value = this.form.value.contactReference;
+    return this.formObject;
   }
 
   async onSubmit(closeDialog: boolean): Promise<void> {
-    this.contact = this._buildModel();
-    if (!!this.contact.id) {
-      await this.sellerService.putContact(this.storageService.user.seller.id, this.contact);
+    this.formObject = this._buildModel();
+    if (!!this.formObject.id) {
+      await this.sellerService.putContact(this.storageService.user.seller.id, this.formObject);
       this.messageService.showSuccess('Данные о контакте успешно изменены!');
     } else {
       await this._askAboutLinkingMailIfNeeded();
       await this.sellerService.postContact(
         this.storageService.user.seller.id,
-        this.contact,
+        this.formObject,
         this.form.value.whatsappLinked,
         this.form.value.telegramLinked
       );
       this.messageService.showSuccess('Контакт успешно внесен в список!');
     }
-    if (!this.contact.id) {
-      this.contact = new ContactDto();
+    if (!this.formObject.id) {
+      this.formObject = new ContactDto();
       this.form.reset();
     }
     this.disableCarListRedirectButton = false;
@@ -140,16 +139,10 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
   }
 
   private async _askAboutLinkingMailIfNeeded(): Promise<void> {
-    if (this.contact.type === ContactTypeEnum.EMAIL) {
+    if (this.formObject.type === ContactTypeEnum.EMAIL) {
       this.confirmationService.confirm({
         message: 'Привязать эту почту к профилю? Если да, то учти, что потом это поле нельзя будет поменять.',
-        header: 'Подтверждение',
-        icon: 'pi pi-exclamation-triangle',
-        acceptLabel: 'Да',
-        acceptButtonStyleClass: 'p-1',
         accept: async () => this._linkEmail(),
-        rejectLabel: 'Нет',
-        rejectButtonStyleClass: 'p-1',
         reject: () => this.messageService.showInfo('Понял, тогда не привязываем')
       });
     }
@@ -160,9 +153,9 @@ export class ContactProcessingDialogComponent extends AbstractFormComponent<Cont
     try {
       this.loadingReference.value.next(true);
       let user: UserDto = this.storageService.user;
-      user.email = this.contact.value;
+      user.email = this.formObject.value;
       user = await this.userService.putByParams(user, VariableFieldEnum.EMAIL);
-      this.storageService.updateUser(user);
+      this.storageService.setUser(user);
       this.messageService.showSuccess('Данные успешно обновлены!');
     } catch (e) {
       this.messageService.showError('Не удалось обновить данные!');

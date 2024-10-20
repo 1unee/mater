@@ -63,13 +63,7 @@ export class SettingsPageComponent implements OnInit, OnDestroy {
   private _confirmRedirecting(): void {
     this.confirmationService.confirm({
       message: 'К твоему аккаунту не привязана почта. Открыть твой профиль?',
-      header: 'Информация',
-      icon: 'pi pi-question-circle',
-      acceptLabel: 'Да',
-      acceptButtonStyleClass: 'p-1',
       accept: async () => this.routerService.relativeRedirect('/profile', {'target-profile-tab': 'user-description'}),
-      rejectLabel: 'Нет',
-      rejectButtonStyleClass: 'p-1',
       reject: () => this.messageService.showWarning('Окей, тогда пока уведомлений не будет')
     });
   }

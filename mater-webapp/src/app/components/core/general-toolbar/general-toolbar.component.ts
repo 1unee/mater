@@ -1,19 +1,18 @@
 import {Component, OnInit} from '@angular/core';
 import {MenubarModule} from "primeng/menubar";
 import {MenuItem} from "primeng/api";
-import {Router} from "@angular/router";
 import {OneuneMessageService} from "../../../services/utils/oneune-message.service";
-import {ActionService} from "../../../services/https/action.service";
 import {StorageService} from "../../../services/utils/storage.service";
 import {RoleEnum} from "../../../store/enums/role.enum";
 import {OneuneRouterService} from "../../../services/utils/oneune-router.service";
-import {BlockUI} from "primeng/blockui";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-general-toolbar',
   standalone: true,
   imports: [
-    MenubarModule
+    MenubarModule,
+    NgIf
   ],
   templateUrl: './general-toolbar.component.html',
   styleUrl: './general-toolbar.component.scss'
@@ -24,7 +23,7 @@ export class GeneralToolbarComponent implements OnInit {
 
   constructor(private routerService: OneuneRouterService,
               private messageService: OneuneMessageService,
-              private storageService: StorageService) {
+              public storageService: StorageService) {
   }
 
   ngOnInit(): void {

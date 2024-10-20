@@ -122,14 +122,15 @@ CREATE SEQUENCE IF NOT EXISTS user_id_seq
 
 CREATE TABLE IF NOT EXISTS "user" (
     id int8 NOT NULL DEFAULT nextval('user_id_seq'),
-    username varchar(255),
+    username varchar(255) UNIQUE,
     is_username_set boolean DEFAULT FALSE,
+    password VARCHAR(512) NOT NULL,
     email varchar(255),
     is_email_set boolean DEFAULT FALSE,
     personal_id int8,
     seller_id int8,
-    registered_at timestamptz(6),
-    registered_by_telegram boolean NOT NULL,
+    registered_at timestamptz(6) DEFAULT NOW(),
+    status VARCHAR(100) NOT NULL,
     telegram_id int8,
     telegram_chat_id int8,
     PRIMARY KEY (id),
@@ -153,7 +154,7 @@ CREATE TABLE IF NOT EXISTS user_role_link (
     id int8 NOT NULL DEFAULT nextval('user_role_link_id_seq'),
     user_id int8 NOT NULL,
     role_id int8 NOT NULL,
-    created_at timestamptz(6),
+    created_at timestamptz(6) DEFAULT NOW(),
     PRIMARY KEY (id),
     CONSTRAINT fk_from_user_role_link_to_user_id
         FOREIGN KEY (user_id)
@@ -175,7 +176,7 @@ CREATE SEQUENCE IF NOT EXISTS log_id_seq
 CREATE TABLE IF NOT EXISTS "log" (
    id int8 NOT NULL DEFAULT nextval('log_id_seq'),
    body text,
-   threw_at timestamptz(6),
+   threw_at timestamptz(6) DEFAULT NOW(),
    PRIMARY KEY (id)
 );
 
@@ -192,7 +193,7 @@ CREATE TABLE IF NOT EXISTS action (
     user_id int8,
     body text,
     type varchar(256),
-    timestamp timestamptz(6),
+    timestamp timestamptz(6) DEFAULT NOW(),
     PRIMARY KEY (id),
     CONSTRAINT fk_from_action_to_user_id
         FOREIGN KEY (user_id)

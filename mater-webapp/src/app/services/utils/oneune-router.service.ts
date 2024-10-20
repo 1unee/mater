@@ -4,6 +4,7 @@ import {ActionService} from "../https/action.service";
 import {ActionTypeEnum} from "../../store/enums/action-type.enum";
 import {defaultRoute} from "../../app.routes";
 import {Location} from "@angular/common";
+import {StorageService} from "./storage.service";
 
 @Injectable({
   providedIn: 'root'
@@ -12,11 +13,18 @@ export class OneuneRouterService {
 
   constructor(private router: Router,
               private actionService: ActionService,
-              private location: Location) {
+              private location: Location,
+              private storageService: StorageService) {
   }
 
   private async _trackRedirect(currentUrl: string, futureUrl: string): Promise<void> {
-    await this.actionService.track(ActionTypeEnum.REDIRECT, `${currentUrl} -> ${futureUrl}`);
+    if (this.storageService.isUserAuthorized) {
+      await this.actionService.track(
+        ActionTypeEnum.REDIRECT,
+        `${currentUrl} -> ${futureUrl}`,
+        this.storageService.user
+      );
+    }
   }
 
   public relativeRedirect(futureRoute: string, queryParams?: { [key: string]: any }): void {

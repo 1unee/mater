@@ -1,6 +1,7 @@
 package com.oneune.mater.rest.main.store.entities;
 
 import com.oneune.mater.rest.main.store.entities.core.AbstractEntity;
+import com.oneune.mater.rest.main.store.enums.UserRegistrationState;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -26,15 +27,19 @@ public class UserEntity extends AbstractEntity {
     String username;
     boolean isUsernameSet;
 
+    String password;
+
     String email;
     boolean isEmailSet;
 
-    boolean registeredByTelegram;
     Long telegramId;
     Long telegramChatId;
 
     @Builder.Default
     Instant registeredAt = Instant.now();
+
+    @Enumerated(EnumType.STRING)
+    UserRegistrationState status;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "personal_id")

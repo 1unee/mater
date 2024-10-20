@@ -1,0 +1,98 @@
+<div class="flex justify-content-center flex-wrap">
+  <div class="flex align-items-center justify-content-center">
+    <div class="mt-10">
+      <form [formGroup]="form">
+        <div>
+          <div class="flex justify-content-center flex-wrap">
+            <div class="flex align-items-center justify-content-center">
+              <div class="grid p-3">
+
+                <!-- username -->
+                <div class="col-12 mt-2 p-0">
+                  <div class="flex justify-content-center flex-wrap">
+                    <div class="flex align-items-center justify-content-center">
+                      <p-iconField iconPosition="left">
+                        <p-inputIcon styleClass="pi pi-user"/>
+                        <input formControlName="username"
+                               class="w-full"
+                               type="text"
+                               pInputText
+                               placeholder="Введи логин"
+                        />
+                      </p-iconField>
+                    </div>
+                  </div>
+
+                  <div class="flex justify-content-center flex-wrap">
+                    <div class="flex align-items-center justify-content-center">
+                      <div *ngIf="form.get('username')?.invalid && form.get('username')?.touched" class="p-error m-2">
+                        <small *ngIf="form.get('username')?.errors?.['username']">
+                          Поле не может быть пустым
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- password -->
+                <div class="col-12 mt-2 p-0">
+                  <div class="flex justify-content-center flex-wrap">
+                    <div class="flex align-items-center justify-content-center">
+                      <p-password formControlName="password"
+                                  placeholder="Введи пароль"
+                                  [feedback]="false"
+                                  [toggleMask]="true"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="flex justify-content-center flex-wrap">
+                    <div class="flex align-items-center justify-content-center">
+                      <div *ngIf="form.get('firstPassword')?.invalid && form.get('firstPassword')?.touched" class="p-error m-2">
+                        <small *ngIf="form.get('firstPassword')?.errors?.['required']">
+                          Поле не может быть пустым
+                        </small>
+                        <small *ngIf="form.get('firstPassword')?.errors?.['minlength']">
+                          Минимальная длина пароля {{ form.get('firstPassword')?.errors?.['minlength']?.['requiredLength'] }} символов
+                        </small>
+                        <small *ngIf="form.get('firstPassword')?.errors?.['maxlength']">
+                          Максимальная длина пароля {{ form.get('firstPassword')?.errors?.['maxlength']?.['requiredLength'] }} символов
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- buttons -->
+                <div class="col-12 mt-3 p-1">
+                  <div class="flex justify-content-center flex-wrap">
+                    <div class="flex align-items-center justify-content-center">
+                      <p-button styleClass='text-center p-2 text-sm'
+                                label="Войти"
+                                icon="pi pi-check"
+                                severity="secondary"
+                                appLongClick
+                                [disabled]="form.invalid"
+                                (click)="onSubmit(false)"
+                                (longClick)="messageService.showInfo('Регистрирует тебя в приложении')"
+                      />
+
+                      <p-button styleClass='ml-2 text-center p-2 text-sm'
+                                icon="pi pi-user"
+                                label="Регистрация"
+                                severity="secondary"
+                                appLongClick
+                                (click)="onOpenRegistrationPage()"
+                                (longClick)="messageService.showInfo('Открытие страницы регистрации')"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

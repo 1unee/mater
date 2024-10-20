@@ -5,10 +5,10 @@ import com.oneune.mater.rest.main.services.UserService;
 import com.oneune.mater.rest.main.store.dtos.UserDto;
 import com.oneune.mater.rest.main.store.dtos.UserTokenDto;
 import com.oneune.mater.rest.main.store.entities.UserEntity;
+import com.oneune.mater.rest.main.store.enums.RoleEnum;
 import com.oneune.mater.rest.main.store.enums.VariableFieldEnum;
 import com.oneune.mater.rest.main.store.pagination.PageQuery;
 import com.oneune.mater.rest.main.store.pagination.PageResponse;
-import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,23 +28,23 @@ public class UserController implements CRUDable<UserDto, UserEntity> {
 
     @PostMapping
     @Override
-    public UserDto post(@RequestBody @Nullable UserDto user) {
+    public UserDto post(@RequestBody UserDto user) {
         return userService.post(user);
     }
 
-    @PostMapping("by-telegram-user")
+    @PostMapping("by-telegram")
     public UserDto registerOrGet(@RequestBody User telegramUser,
                                  @RequestParam(name = "telegram-chat-id") String telegramChatId,
-                                 @RequestParam(required = false, defaultValue = "") List<String> additionalRoles) {
+                                 @RequestParam(required = false, defaultValue = "") List<RoleEnum> additionalRoles) {
         return this.userService.registerOrGet(telegramUser, telegramChatId, additionalRoles);
     }
 
-    @PutMapping("by-telegram-user")
+    @PutMapping("by-telegram")
     public UserDto putByTelegramUser(@RequestBody User telegramUser,
                                      @RequestParam(name = "user-id") Long userId,
                                      @RequestParam(name = "token") Integer token,
                                      @RequestParam(name = "telegram-chat-id") String telegramChatId,
-                                     @RequestParam(required = false, defaultValue = "") List<String> additionalRoles) {
+                                     @RequestParam(required = false, defaultValue = "") List<RoleEnum> additionalRoles) {
         return this.userService.putByTelegramUser(userId, token, telegramUser, telegramChatId, additionalRoles);
     }
 
@@ -60,6 +60,12 @@ public class UserController implements CRUDable<UserDto, UserEntity> {
                         @PathVariable(name = "enum")  VariableFieldEnum variableField,
                         @RequestBody UserDto user) {
         return userService.putByParams(userId, user, variableField);
+    }
+
+    @GetMapping("authorization")
+    public UserDto login(@RequestParam(name = "username") String username,
+                         @RequestParam(name = "password") String password) {
+        return userService.login(username, password);
     }
 
     @DeleteMapping("{id}")

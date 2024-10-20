@@ -1,210 +1,259 @@
-<div class="container">
-
-  <!-- username -->
-  <div>
-    <p-inputGroup>
-      <p-inputGroupAddon styleClass="w-6rem text-sm">
-        Ник
-      </p-inputGroupAddon>
-      <p-inputGroupAddon *ngIf="user.isUsernameSet; else usernameNotSetBlock"
-                         styleClass="w-8rem text-sm"
-                         (click)="clipboardService.copyWithCustomMessage(user.username, 'Ник скопирован!')">
-        {{ user.username }}
-      </p-inputGroupAddon>
-      <ng-template #usernameNotSetBlock>
-        <p-inputGroupAddon styleClass="w-8rem">
-          <input pInputText
-                 type="text"
-                 class="p-1 w-full text-sm"
-                 [placeholder]="user.username"
-                 [(ngModel)]="user.username"
-                 (focusout)="confirmEditing(VariableFieldEnum.USERNAME)"
-          />
-        </p-inputGroupAddon>
-      </ng-template>
-
-      <p-inputGroupAddon>
-        <i class="text-lg w-1rem"
-           [ngClass]="user.isUsernameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
-           (click)="messageService.showInfo('Ник поменять можно только в случае регистрации по внешней ссылке. При регистрации из телеграмма это делать нельзя, чтобы сохранить целостность данных.')"
-        ></i>
-      </p-inputGroupAddon>
-    </p-inputGroup>
+<div class="grid">
+  <div class="col-12">
+    <div class="header">
+      <div [ngSwitch]="user.status">
+        <div *ngSwitchCase="UserRegistrationStatusEnum.BY_TELEGRAM">
+          <div class="p-2 flex justify-content-center flex-wrap border-1 border-round-xl border-200">
+            <div class="p-1 flex align-items-center justify-content-center">
+              <i class="pi pi-check"></i>
+            </div>
+            <div class="p-1 flex align-items-center justify-content-center">
+              <div>
+                Телеграмм привязан!
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngSwitchCase="UserRegistrationStatusEnum.MANUALLY"
+             (click)="onOpenTelegramBot()"
+        >
+          <div class="p-2 flex justify-content-center flex-wrap border-1 border-round-xl border-200">
+            <div class="p-1 flex align-items-center justify-content-center">
+              <i class="pi pi-spin pi-info-circle"></i>
+            </div>
+            <div class="p-1 flex align-items-center justify-content-center">
+              <div>
+                Телеграмм не привязан!
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngSwitchDefault>
+          <div class="p-1 flex align-items-center justify-content-center border-1 border-round-xl border-200">
+            <div class="p-1 flex align-items-center justify-content-center">
+              <i class="pi pi-check"></i>
+            </div>
+            <div class="p-1 flex align-items-center justify-content-center">
+              <div>
+                Неизвестный статус!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- email -->
-  <div>
-    <p-inputGroup>
-      <p-inputGroupAddon styleClass="w-6rem text-sm">
-        Почта
-      </p-inputGroupAddon>
-      <p-inputGroupAddon *ngIf="user.isEmailSet; else emailNotSetBlock"
-                         styleClass="w-8rem text-sm"
-                         (click)="clipboardService.copyWithCustomMessage(user.email, 'Почта скопирована!')"
-      >
-        {{ user.email }}
-      </p-inputGroupAddon>
-      <ng-template #emailNotSetBlock>
-        <p-inputGroupAddon styleClass="w-8rem">
-          <input pInputText
-                 type="text"
-                 class="p-1 w-full text-sm"
-                 [(ngModel)]="user.email"
-                 (focusout)="confirmEditing(VariableFieldEnum.EMAIL)"
-          />
+  <div class="col-12">
+    <div class="body">
+
+      <!-- username -->
+      <div>
+        <p-inputGroup>
+          <p-inputGroupAddon styleClass="w-6rem text-sm">
+            Ник
+          </p-inputGroupAddon>
+          <p-inputGroupAddon *ngIf="user.isUsernameSet; else usernameNotSetBlock"
+                             styleClass="w-8rem text-sm"
+                             (click)="clipboardService.copyWithCustomMessage(user.username, 'Ник скопирован!')">
+            {{ user.username }}
+          </p-inputGroupAddon>
+          <ng-template #usernameNotSetBlock>
+            <p-inputGroupAddon styleClass="w-8rem">
+              <input pInputText
+                     type="text"
+                     class="p-1 w-full text-sm"
+                     [placeholder]="user.username"
+                     [(ngModel)]="user.username"
+                     (focusout)="confirmEditing(VariableFieldEnum.USERNAME)"
+              />
+            </p-inputGroupAddon>
+          </ng-template>
+
+          <p-inputGroupAddon>
+            <i class="text-lg w-1rem"
+               [ngClass]="user.isUsernameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
+               (click)="messageService.showInfo('Ник поменять можно только в случае регистрации по внешней ссылке. При регистрации из телеграмма это делать нельзя, чтобы сохранить целостность данных.')"
+            ></i>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+
+      <!-- email -->
+      <div>
+        <p-inputGroup>
+          <p-inputGroupAddon styleClass="w-6rem text-sm">
+            Почта
+          </p-inputGroupAddon>
+          <p-inputGroupAddon *ngIf="user.isEmailSet; else emailNotSetBlock"
+                             styleClass="w-8rem text-sm"
+                             (click)="clipboardService.copyWithCustomMessage(user.email, 'Почта скопирована!')"
+          >
+            {{ user.email }}
+          </p-inputGroupAddon>
+          <ng-template #emailNotSetBlock>
+            <p-inputGroupAddon styleClass="w-8rem">
+              <input pInputText
+                     type="text"
+                     class="p-1 w-full text-sm"
+                     [(ngModel)]="user.email"
+                     (focusout)="confirmEditing(VariableFieldEnum.EMAIL)"
+              />
+            </p-inputGroupAddon>
+          </ng-template>
+          <p-inputGroupAddon>
+            <i class="text-lg w-1rem"
+               [ngClass]="user.isEmailSet ? 'pi pi-lock' : 'pi pi-lock-open'"
+               (click)="messageService.showInfo('Почту можно поменять только один раз. При нажатии левее ее можно скопировать в буфер обмена.')"
+            ></i>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+
+      <!-- registration timestamp -->
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Дата регистрации
         </p-inputGroupAddon>
-      </ng-template>
-      <p-inputGroupAddon>
-        <i class="text-lg w-1rem"
-           [ngClass]="user.isEmailSet ? 'pi pi-lock' : 'pi pi-lock-open'"
-           (click)="messageService.showInfo('Почту можно поменять только один раз. При нажатии левее ее можно скопировать в буфер обмена.')"
-        ></i>
-      </p-inputGroupAddon>
-    </p-inputGroup>
+        <p-inputGroupAddon styleClass="w-8rem text-sm"
+                           (click)="clipboardService.copyWithCustomMessage(user.registeredAt.toLocaleDateString(), 'Дата регистрации скопирована!')"
+        >
+          {{ user.registeredAt | date:'shortDate':'UTC+1':'ru' }}
+        </p-inputGroupAddon>
+        <p-inputGroupAddon>
+          <i class="pi pi-lock text-lg w-1rem"
+             (click)="messageService.showInfo('Это дата регистрации в приложении, а не в телеграмме. Менять ее нельзя, но можно скопировать, нажав левее.')"
+          ></i>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <!-- personal.firstName -->
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Имя
+        </p-inputGroupAddon>
+        <p-inputGroupAddon *ngIf="user.personal.isFirstNameSet; else firstNameNotSetBlock"
+                           styleClass="w-8rem text-sm"
+                           (click)="clipboardService.copyWithCustomMessage(user.personal.firstName, 'Имя скопировано!')"
+        >
+          {{ user.personal.firstName }}
+        </p-inputGroupAddon>
+        <ng-template #firstNameNotSetBlock>
+          <p-inputGroupAddon styleClass="w-8rem text-sm">
+            <input pInputText
+                   type="text"
+                   class="p-1 w-full text-sm"
+                   [(ngModel)]="user.personal.firstName"
+                   (focusout)="confirmEditing(VariableFieldEnum.FIRST_NAME)"
+            />
+          </p-inputGroupAddon>
+        </ng-template>
+        <p-inputGroupAddon>
+          <i class="text-lg w-1rem"
+             [ngClass]="user.personal.isFirstNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
+             (click)="messageService.showInfo('Это твое настоящее имя, которое можно поменять только один раз при желании. Также можно скопировать, нажав левее.')"
+          ></i>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <!-- personal.lastName -->
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Фамилия
+        </p-inputGroupAddon>
+        <p-inputGroupAddon *ngIf="user.personal.isLastNameSet; else lastNameNotSetBlock"
+                           styleClass="w-8rem text-sm"
+                           (click)="clipboardService.copyWithCustomMessage(user.personal.lastName, 'Фамилия скопирована!')"
+        >
+          {{ user.personal.lastName }}
+        </p-inputGroupAddon>
+        <ng-template #lastNameNotSetBlock>
+          <p-inputGroupAddon styleClass="w-8rem">
+            <input pInputText
+                   class="p-1 w-full text-sm"
+                   type="text"
+                   [(ngModel)]="user.personal.lastName"
+                   (focusout)="confirmEditing(VariableFieldEnum.LAST_NAME)"
+            />
+          </p-inputGroupAddon>
+        </ng-template>
+        <p-inputGroupAddon>
+          <i class="text-lg w-1rem"
+             [ngClass]="user.personal.isLastNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
+             (click)="messageService.showInfo('Твоя фамилия, которую можно только лишь один раз поменять.')"
+          ></i>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <!-- personal.middleName -->
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Отчество
+        </p-inputGroupAddon>
+        <p-inputGroupAddon *ngIf="user.personal.isMiddleNameSet; else middleNameNotSetBlock"
+                           styleClass="w-8rem text-sm"
+                           (click)="clipboardService.copyWithCustomMessage(user.personal.middleName, 'Отчество скопировано!')"
+        >
+          {{ user.personal.middleName }}
+        </p-inputGroupAddon>
+        <ng-template #middleNameNotSetBlock>
+          <p-inputGroupAddon styleClass="w-8rem">
+            <input pInputText
+                   class="p-1 w-full text-sm"
+                   type="text"
+                   [(ngModel)]="user.personal.middleName"
+                   (focusout)="confirmEditing(VariableFieldEnum.MIDDLE_NAME)"
+            />
+          </p-inputGroupAddon>
+        </ng-template>
+        <p-inputGroupAddon>
+          <i class="text-lg w-1rem"
+             [ngClass]="user.personal.isMiddleNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
+             (click)="messageService.showInfo('Отчество, если есть!')"
+          ></i>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+      <!-- personal.birthDate -->
+      <p-inputGroup>
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
+          Дата рождения
+        </p-inputGroupAddon>
+
+        <p-inputGroupAddon *ngIf="user.personal.isBirthDateSet; else birthDateNotSetBlock"
+                           styleClass="w-8rem text-sm"
+                           (click)="clipboardService.copyWithCustomMessage(user.personal.birthDate.toLocaleDateString(), 'Дата рождения скопирована!')"
+        >
+          {{ user.personal.birthDate | date:'shortDate':'UTC+1':'ru' }}
+        </p-inputGroupAddon>
+
+        <ng-template #birthDateNotSetBlock>
+          <p-inputGroupAddon styleClass="w-8rem">
+            <p-calendar styleClass="calendar-field"
+                        inputStyleClass="p-1 text-sm"
+                        [(ngModel)]="user.personal.birthDate"
+                        (ngModelChange)="confirmEditing(VariableFieldEnum.BIRTH_DATE)"
+            />
+          </p-inputGroupAddon>
+        </ng-template>
+
+        <p-inputGroupAddon>
+          <i class="text-lg w-1rem"
+             [ngClass]="user.personal.isBirthDateSet ? 'pi pi-lock' : 'pi pi-lock-open'"
+             (click)="messageService.showInfo('Твой день рождения. Убедись, что выбрал правильную дату, потому что обманывать нехорошо!')"
+          ></i>
+        </p-inputGroupAddon>
+      </p-inputGroup>
+
+    </div>
   </div>
 
-  <!-- registration timestamp -->
-  <p-inputGroup>
-    <p-inputGroupAddon styleClass="w-6rem text-sm">
-      Дата регистрации
-    </p-inputGroupAddon>
-    <p-inputGroupAddon styleClass="w-8rem text-sm"
-                       (click)="clipboardService.copyWithCustomMessage(user.registeredAt.toLocaleDateString(), 'Дата регистрации скопирована!')"
-    >
-      {{ user.registeredAt | date:'shortDate':'UTC+1':'ru' }}
-    </p-inputGroupAddon>
-    <p-inputGroupAddon>
-      <i class="pi pi-lock text-lg w-1rem"
-         (click)="messageService.showInfo('Это дата регистрации в приложении, а не в телеграмме. Менять ее нельзя, но можно скопировать, нажав левее.')"
-      ></i>
-    </p-inputGroupAddon>
-  </p-inputGroup>
-
-  <!-- personal.firstName -->
-  <p-inputGroup>
-    <p-inputGroupAddon styleClass="w-6rem text-sm">
-      Имя
-    </p-inputGroupAddon>
-    <p-inputGroupAddon *ngIf="user.personal.isFirstNameSet; else firstNameNotSetBlock"
-                       styleClass="w-8rem text-sm"
-                       (click)="clipboardService.copyWithCustomMessage(user.personal.firstName, 'Имя скопировано!')"
-    >
-      {{ user.personal.firstName }}
-    </p-inputGroupAddon>
-    <ng-template #firstNameNotSetBlock>
-      <p-inputGroupAddon styleClass="w-8rem text-sm">
-        <input pInputText
-               type="text"
-               class="p-1 w-full text-sm"
-               [(ngModel)]="user.personal.firstName"
-               (focusout)="confirmEditing(VariableFieldEnum.FIRST_NAME)"
-        />
-      </p-inputGroupAddon>
-    </ng-template>
-    <p-inputGroupAddon>
-      <i class="text-lg w-1rem"
-         [ngClass]="user.personal.isFirstNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
-         (click)="messageService.showInfo('Это твое настоящее имя, которое можно поменять только один раз при желании. Также можно скопировать, нажав левее.')"
-      ></i>
-    </p-inputGroupAddon>
-  </p-inputGroup>
-
-  <!-- personal.lastName -->
-  <p-inputGroup>
-    <p-inputGroupAddon styleClass="w-6rem text-sm">
-      Фамилия
-    </p-inputGroupAddon>
-    <p-inputGroupAddon *ngIf="user.personal.isLastNameSet; else lastNameNotSetBlock"
-                       styleClass="w-8rem text-sm"
-                       (click)="clipboardService.copyWithCustomMessage(user.personal.lastName, 'Фамилия скопирована!')"
-    >
-      {{ user.personal.lastName }}
-    </p-inputGroupAddon>
-    <ng-template #lastNameNotSetBlock>
-      <p-inputGroupAddon styleClass="w-8rem">
-        <input pInputText
-               class="p-1 w-full text-sm"
-               type="text"
-               [(ngModel)]="user.personal.lastName"
-               (focusout)="confirmEditing(VariableFieldEnum.LAST_NAME)"
-        />
-      </p-inputGroupAddon>
-    </ng-template>
-    <p-inputGroupAddon>
-      <i class="text-lg w-1rem"
-         [ngClass]="user.personal.isLastNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
-         (click)="messageService.showInfo('Твоя фамилия, которую можно только лишь один раз поменять.')"
-      ></i>
-    </p-inputGroupAddon>
-  </p-inputGroup>
-
-  <!-- personal.middleName -->
-  <p-inputGroup>
-    <p-inputGroupAddon styleClass="w-6rem text-sm">
-      Отчество
-    </p-inputGroupAddon>
-    <p-inputGroupAddon *ngIf="user.personal.isMiddleNameSet; else middleNameNotSetBlock"
-                       styleClass="w-8rem text-sm"
-                       (click)="clipboardService.copyWithCustomMessage(user.personal.middleName, 'Отчество скопировано!')"
-    >
-      {{ user.personal.middleName }}
-    </p-inputGroupAddon>
-    <ng-template #middleNameNotSetBlock>
-      <p-inputGroupAddon styleClass="w-8rem">
-        <input pInputText
-               class="p-1 w-full text-sm"
-               type="text"
-               [(ngModel)]="user.personal.middleName"
-               (focusout)="confirmEditing(VariableFieldEnum.MIDDLE_NAME)"
-        />
-      </p-inputGroupAddon>
-    </ng-template>
-    <p-inputGroupAddon>
-      <i class="text-lg w-1rem"
-         [ngClass]="user.personal.isMiddleNameSet ? 'pi pi-lock' : 'pi pi-lock-open'"
-         (click)="messageService.showInfo('Отчество, если есть!')"
-      ></i>
-    </p-inputGroupAddon>
-  </p-inputGroup>
-
-  <!-- personal.birthDate -->
-  <p-inputGroup>
-    <p-inputGroupAddon styleClass="w-6rem text-sm">
-      Дата рождения
-    </p-inputGroupAddon>
-
-    <p-inputGroupAddon *ngIf="user.personal.isBirthDateSet; else birthDateNotSetBlock"
-                       styleClass="w-8rem text-sm"
-                       (click)="clipboardService.copyWithCustomMessage(user.personal.birthDate.toLocaleDateString(), 'Дата рождения скопирована!')"
-    >
-      {{ user.personal.birthDate | date:'shortDate':'UTC+1':'ru' }}
-    </p-inputGroupAddon>
-
-    <ng-template #birthDateNotSetBlock>
-      <p-inputGroupAddon styleClass="w-8rem">
-        <p-calendar styleClass="calendar-field"
-                    inputStyleClass="p-1 text-sm"
-                    [(ngModel)]="user.personal.birthDate"
-                    (ngModelChange)="confirmEditing(VariableFieldEnum.BIRTH_DATE)"
-        />
-      </p-inputGroupAddon>
-    </ng-template>
-
-    <p-inputGroupAddon>
-      <i class="text-lg w-1rem"
-         [ngClass]="user.personal.isBirthDateSet ? 'pi pi-lock' : 'pi pi-lock-open'"
-         (click)="messageService.showInfo('Твой день рождения. Убедись, что выбрал правильную дату, потому что обманывать нехорошо!')"
-      ></i>
-    </p-inputGroupAddon>
-  </p-inputGroup>
-
-  <p-button styleClass="text-center p-2 m-1"
-            icon="pi pi-instagram"
-            severity="secondary"
-            appLongClick
-            label="Открыть телеграмм-бота"
-            [outlined]="true"
-            (click)=onOpenTelegramBot()
-            (longClick)="messageService.showInfo('Открывает телеграмм-бота в телеграмме')"
-  ></p-button>
+<!--  <div class="col-12">-->
+<!--    <div class="footer">-->
+<!--      <div class="flex justify-content-center flex-wrap">-->
+<!--        <div class="flex align-items-center justify-content-center">-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
 </div>

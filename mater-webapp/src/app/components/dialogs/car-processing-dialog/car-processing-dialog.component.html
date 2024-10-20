@@ -3,9 +3,7 @@
     <!-- brand -->
     <div>
       <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.copyWithCustomMessage(car.brand,'Марка скопирована')"
-        >
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
           Марка
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
@@ -46,9 +44,7 @@
     <!-- model -->
     <div>
       <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.copyWithCustomMessage(car.model,'Модель скопирована')"
-        >
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
           Модель
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
@@ -86,9 +82,7 @@
     <!-- production year -->
     <div>
       <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.copyWithCustomMessage(car.productionYear,'Год выпуска скопирован')"
-        >
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
           Год выпуска
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
@@ -127,9 +121,7 @@
     <!-- price -->
     <div>
       <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.copyWithCustomMessage(car.price,'Цена скопирована')"
-        >
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
           Цена (₽)
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
@@ -162,9 +154,7 @@
     <!-- mileage -->
     <div>
       <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.copyWithCustomMessage(car.mileage,'Пробег скопирован')"
-        >
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
           Пробег (км)
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
@@ -197,9 +187,7 @@
     <!-- VIN -->
     <div>
       <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.copyWithCustomMessage(car.VIN,'ВИН скопирован')"
-        >
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
           ВИН {{ form.get('carVIN')?.invalid && !!form.value['carVIN'] ? ('(' + form.value['carVIN'].length + '/17)') : '' }}
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
@@ -232,9 +220,7 @@
     <!-- owners amount -->
     <div>
       <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.copyWithCustomMessage(car.ownersAmount,'Количество владельцев скопировано')"
-        >
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
           Количество владельцев
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
@@ -267,9 +253,7 @@
     <!-- power -->
     <div>
       <p-inputGroup>
-        <p-inputGroupAddon styleClass="w-6rem text-sm"
-                           (click)="clipboardService.copyWithCustomMessage(car.power,'Количество лошадиных сил скопировано')"
-        >
+        <p-inputGroupAddon styleClass="w-6rem text-sm">
           Кол-во Л.С.
         </p-inputGroupAddon>
         <p-inputGroupAddon styleClass="w-12rem text-sm">
